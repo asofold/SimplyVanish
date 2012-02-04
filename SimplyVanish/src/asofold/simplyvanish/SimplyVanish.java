@@ -31,11 +31,6 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 	 * Vanished players.
 	 */
 	Set<String> vanished = new HashSet<String>();
-	
-	/**
-	 * Players that don't need be checked fully.
-	 */
-	Set<String> consistent = new HashSet<String>();
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
