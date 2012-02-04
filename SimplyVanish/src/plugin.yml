@@ -1,0 +1,10 @@
+name: SimplyVanish
+main: asofold.simplyvanish.SimplyVanish
+version: 0.0.0
+commands:
+  vanish: 
+     description: no description available
+     usage:
+  reappear:
+     description: no description available
+     usage:
