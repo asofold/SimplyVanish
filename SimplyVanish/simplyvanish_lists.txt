@@ -1,0 +1,9 @@
+
+
+? add configurability and on demand event registrations (by config !)
+? add cancelling of more interaction !
+? use entity ids for fastest checking ?
+
+
+(0.1.0)
+- (add) API for checking if a player is vanished).

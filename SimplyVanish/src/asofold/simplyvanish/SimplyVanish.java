@@ -26,7 +26,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  */
 public class SimplyVanish extends JavaPlugin implements Listener {
-	
+	static SimplyVanish instance = null;
 	/**
 	 * Vanished players.
 	 */
@@ -60,6 +60,8 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
+		instance = null;
+		super.onDisable();
 		System.out.println("[SimplyVanish] Disabled.");
 	}
 
@@ -71,6 +73,8 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 		}
 		getServer().getPluginManager().registerEvents(this, this);
 		System.out.println("[SimplyVanish] Enabled");
+		super.onEnable();
+		instance = this;
 	}
 	
 	@EventHandler(priority=EventPriority.MONITOR)
@@ -171,6 +175,26 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 	 */
 	boolean hasPermission(Player player, String perm) {
 		return player.isOp() || player.hasPermission(perm);
+	}
+	
+	/**
+	 * API
+	 * @param playerName Exact player name.
+	 * @return
+	 */
+	public static boolean isVanished(String playerName){
+		if ( instance == null ) return false;
+		else return instance.vanished.contains(playerName);
+	}
+	
+	/**
+	 * API
+	 * @param player 
+	 * @return
+	 */
+	public static boolean isVanished(Player player){
+		if ( instance == null ) return false;
+		else return instance.vanished.contains(player.getName());
 	}
 
 }
