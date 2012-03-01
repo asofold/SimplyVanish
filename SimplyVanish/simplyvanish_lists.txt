@@ -15,6 +15,7 @@
 
 (0.1.2)
 - (bugfix) Remove empty entries from plugin.yml .
+- (bugfix) Exception if vanish is called by console.
 
 (0.1.1)
 - (add) API: getVanishedPlayers();

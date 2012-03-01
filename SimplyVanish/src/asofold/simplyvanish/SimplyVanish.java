@@ -38,19 +38,20 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 		
 		if ( !(sender instanceof Player)){
 			sender.sendMessage("[SimplyVanish] Commands are only available for players!");
+			return true;
 		}
 		Player player = (Player) sender;
 		if ( label.equalsIgnoreCase("vanish")){
 			if ( !hasPermission(player, "simplyvanish.vanish")){
 				player.sendMessage(ChatColor.DARK_RED+"[SimplyVanish] No permission.");
-				return false;
+				return true;
 			}
 			vanish(player);
 			return true;
 		} else if (label.equalsIgnoreCase("reappear")){
 			if ( !hasPermission(player, "simplyvanish.vanish")){
 				player.sendMessage(ChatColor.DARK_RED+"[SimplyVanish] No permission.");
-				return false;
+				return true;
 			}
 			reappear(player);
 			return true;
