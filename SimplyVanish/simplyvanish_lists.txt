@@ -4,6 +4,20 @@
 ? add cancelling of more interaction !
 ? use entity ids for fastest checking ?
 
+(0.2.0)
+
+- !(add) prevent chat toggle 
+- ? (add) API to allow sending fake join/leave messages (+VANILLA SUPPORT)
+- ? (add) Support for setting join/leave message to null if vanished (maybe send to all that have the see-all permission)
+- !(add) /vanish <player>  (+reappear) to make possible to have someone join in vanished state.
+- !(add) /vanished command
+- !(add) other message if already vanished or not vanished (!)  [maybe still force state update]
+
+(0.1.2)
+- (bugfix) Remove empty entries from plugin.yml .
+
+(0.1.1)
+- (add) API: getVanishedPlayers();
 
 (0.1.0)
 - (add) API for checking if a player is vanished).

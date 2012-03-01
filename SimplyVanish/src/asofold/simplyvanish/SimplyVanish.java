@@ -139,15 +139,21 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 		player.sendMessage(ChatColor.GOLD+"[SimplyVanish] "+ChatColor.GRAY+"You are now "+ChatColor.RED+"visible"+ChatColor.GRAY+" to everyone!");
 	}
 	
+	/**
+	 * Heavy update for who can see this player and whom this player can see.
+	 * @param player
+	 */
 	public void updateVanishState(Player player){
 		String playerName = player.getName();
 		Server server = getServer();
+		// Show to or hide from online players:
 		if ( vanished.contains(playerName)) vanish(player);
 		else{
 			for (Player other : server.getOnlinePlayers()){
 				if ( !other.canSee(player)) other.showPlayer(player);
 			}
 		}
+		// Show or hide other vanished players:
 		if ( !hasPermission(player, "simplyvanish.see-all")){
 			for (String name : vanished){
 				if ( name.equals(playerName)) continue;
@@ -168,7 +174,7 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 	}
 
 	/**
-	 * Simplistic.
+	 * Simplistic: Ops have permissions always, others get checked (superperms).
 	 * @param player
 	 * @param perm
 	 * @return
@@ -195,6 +201,16 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 	public static boolean isVanished(Player player){
 		if ( instance == null ) return false;
 		else return instance.vanished.contains(player.getName());
+	}
+	
+	/**
+	 * API
+	 * NOTE: It returns the internally used HashSet instance, do not manipulate it, do not iterate in an asynchronous task or thread.
+	 * @return
+	 */
+	public static Set<String> getVanishedPlayers(){
+		if ( instance == null ) return new HashSet<String>();
+		else return instance.vanished;
 	}
 
 }
