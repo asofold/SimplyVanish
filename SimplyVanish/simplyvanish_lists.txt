@@ -4,7 +4,7 @@
 ? add cancelling of more interaction !
 ? use entity ids for fastest checking ?
 
-[.....]
+[......]
 
 (0.2.0)
 
