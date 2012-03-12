@@ -6,3 +6,5 @@ commands:
      description: no description available
   reappear:
      description: no description available
+  vanished:
+     description: no description available

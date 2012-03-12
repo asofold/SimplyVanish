@@ -11,9 +11,18 @@
 - !(add) prevent chat toggle 
 - ? (add) API to allow sending fake join/leave messages (+VANILLA SUPPORT)
 - ? (add) Support for setting join/leave message to null if vanished (maybe send to all that have the see-all permission)
-- !(add) /vanish <player>  (+reappear) to make possible to have someone join in vanished state.
-- !(add) /vanished command
-- !(add) other message if already vanished or not vanished (!)  [maybe still force state update]
+- ?(add) other message if already vanished or not vanished (!)  [maybe still force state update]
+
+
+(0.1.3)
+- ??(bugfix) Workaround for Experience orbs: prevent targeting, prevent pickup
+- (add) /vanish <player>  (+reappear) to change vanish state of others.
+- (add) /vanished command
+- (add) API for setVanished(Player/String)
+- (add) API calls: setVanished(Player, boolean)
+- (refactor) Split into some classes.
+- (add) deprecated: public methods vanish(Player) and reappear(Player)
+- (refactor) Use lower case names internally, to allow for vanish(other) 
 
 (0.1.2)
 - (bugfix) Remove empty entries from plugin.yml .
