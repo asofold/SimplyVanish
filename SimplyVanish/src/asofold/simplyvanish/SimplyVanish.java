@@ -4,10 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,6 +20,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 /**
  * Example plugin for the vanish API as of CB 1914 !
@@ -28,7 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class SimplyVanish extends JavaPlugin implements Listener {
 	static SimplyVanish instance = null;
 	/**
-	 * Vanished players.
+	 * Names of vanished players, lower-case.
 	 */
 	Set<String> vanished = new HashSet<String>();
 
@@ -73,9 +76,9 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 			updateVanishState(player);
 		}
 		getServer().getPluginManager().registerEvents(this, this);
-		System.out.println("[SimplyVanish] Enabled");
-		super.onEnable();
+		
 		instance = this;
+		System.out.println("[SimplyVanish] Enabled");
 	}
 	
 	@EventHandler(priority=EventPriority.MONITOR)
@@ -89,16 +92,51 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 		Entity target = event.getTarget();
 		if (!(target instanceof Player)) return;
 		String playerName = ((Player) target).getName();
-		if ( vanished.contains(playerName)) event.setTarget(null);
+		if ( vanished.contains(playerName.toLowerCase())){
+			event.setTarget(null);
+			Entity entity = event.getEntity();
+			if ( entity instanceof ExperienceOrb){
+				repellExpOrb((Player) target, (ExperienceOrb) entity);
+				event.setCancelled(true);
+			}
+		}
 	}
 	
+	/**
+	 * Attempt some workaround for experience orbs:
+	 * prevent it getting near the player.
+	 * @param target
+	 * @param entity
+	 */
+	private void repellExpOrb(Player player, ExperienceOrb orb) {
+		Location pLoc = player.getLocation();
+		Location oLoc = orb.getLocation();
+		Vector dir = oLoc.toVector().subtract(pLoc.toVector());
+		double dx = Math.abs(dir.getX());
+		double dz = Math.abs(dir.getZ());
+		if ( (dx == 0) && (dz == 0)){
+			// Special case probably never happens
+			dir.setX(0.001);
+		}
+		double threshold = 3.0;
+		double killDist = 0.5;
+		if ((dx < threshold) && (dz < threshold)){
+			Vector newV = dir.normalize().multiply(0.3);
+			newV.setY(0);
+			orb.setVelocity(newV);
+			if ((dx < killDist) && (dz < killDist)){
+				orb.remove();
+			} 
+		} 
+	}
+
 	@EventHandler(priority=EventPriority.LOW)
 	void onEntityDamage(EntityDamageEvent event){
 		if ( event.isCancelled() ) return;
 		Entity entity = event.getEntity();
 		if (!(entity instanceof Player)) return;
 		String playerName = ((Player) entity).getName();
-		if ( !vanished.contains(playerName)) return;
+		if ( !vanished.contains(playerName.toLowerCase())) return;
 		event.setCancelled(true);
 		if ( entity.getFireTicks()>0) entity.setFireTicks(0);
 	}
@@ -107,7 +145,7 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 	void onItemPickUp(PlayerPickupItemEvent event){
 		if ( event.isCancelled() ) return;
 		Player player = event.getPlayer();
-		if ( !vanished.contains(player.getName())) return;
+		if ( !vanished.contains(player.getName().toLowerCase())) return;
 		event.setCancelled(true);
 	}
 	
@@ -115,29 +153,8 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 	void onItemDrop(PlayerDropItemEvent event){
 		if ( event.isCancelled() ) return;
 		Player player = event.getPlayer();
-		if ( !vanished.contains(player.getName())) return;
+		if ( !vanished.contains(player.getName().toLowerCase())) return;
 		event.setCancelled(true);
-	}
-	
-	public void vanish(Player player) {
-		vanished.add(player.getName());
-		for ( Player other : getServer().getOnlinePlayers()){
-			if (!other.equals(player) && other.canSee(player)){
-				if ( !hasPermission(other, "simplyvanish.see-all")) other.hidePlayer(player);
-			}
-		}
-		player.sendMessage(ChatColor.GOLD+"[SimplyVanish] "+ChatColor.GRAY+"You are now "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players!");
-
-	}
-
-	public void reappear(Player player) {
-		vanished.remove(player.getName());
-		for ( Player other : getServer().getOnlinePlayers()){
-			if (!other.equals(player) && !other.canSee(player)){
-				other.showPlayer(player);
-			}
-		}
-		player.sendMessage(ChatColor.GOLD+"[SimplyVanish] "+ChatColor.GRAY+"You are now "+ChatColor.RED+"visible"+ChatColor.GRAY+" to everyone!");
 	}
 	
 	/**
@@ -146,9 +163,10 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 	 */
 	public void updateVanishState(Player player){
 		String playerName = player.getName();
+		String lcName = playerName.toLowerCase();
 		Server server = getServer();
 		// Show to or hide from online players:
-		if ( vanished.contains(playerName)) vanish(player);
+		if ( vanished.contains(lcName)) vanish(player);
 		else{
 			for (Player other : server.getOnlinePlayers()){
 				if ( !other.canSee(player)) other.showPlayer(player);
@@ -165,7 +183,7 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 			}
 		} else{
 			for (String name : vanished){
-				if ( name.equals(playerName)) continue;
+				if ( name.equals(lcName)) continue;
 				Player other = server.getPlayerExact(name);
 				if ( other != null){
 					if ( !player.canSee(other)) player.showPlayer(other);
@@ -186,12 +204,41 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 	
 	/**
 	 * API
+	 * @param player
+	 */
+	public void vanish(Player player) {
+		vanished.add(player.getName().toLowerCase());
+		for ( Player other : getServer().getOnlinePlayers()){
+			if (!other.equals(player) && other.canSee(player)){
+				if ( !hasPermission(other, "simplyvanish.see-all")) other.hidePlayer(player);
+			}
+		}
+		player.sendMessage(ChatColor.GOLD+"[SimplyVanish] "+ChatColor.GRAY+"You are now "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players!");
+
+	}
+
+	/**
+	 * API
+	 * @param player
+	 */
+	public void reappear(Player player) {
+		vanished.remove(player.getName().toLowerCase());
+		for ( Player other : getServer().getOnlinePlayers()){
+			if (!other.equals(player) && !other.canSee(player)){
+				other.showPlayer(player);
+			}
+		}
+		player.sendMessage(ChatColor.GOLD+"[SimplyVanish] "+ChatColor.GRAY+"You are now "+ChatColor.RED+"visible"+ChatColor.GRAY+" to everyone!");
+	}
+	
+	/**
+	 * API
 	 * @param playerName Exact player name.
 	 * @return
 	 */
 	public static boolean isVanished(String playerName){
 		if ( instance == null ) return false;
-		else return instance.vanished.contains(playerName);
+		else return instance.vanished.contains(playerName.toLowerCase());
 	}
 	
 	/**
@@ -201,11 +248,13 @@ public class SimplyVanish extends JavaPlugin implements Listener {
 	 */
 	public static boolean isVanished(Player player){
 		if ( instance == null ) return false;
-		else return instance.vanished.contains(player.getName());
+		else return instance.vanished.contains(player.getName().toLowerCase());
 	}
 	
 	/**
 	 * API
+	 * Get the Set containing the lower case names of Players to be vanished.
+	 * These are not necessarily online.
 	 * NOTE: It returns the internally used HashSet instance, do not manipulate it, do not iterate in an asynchronous task or thread.
 	 * @return
 	 */
