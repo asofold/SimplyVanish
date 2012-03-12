@@ -35,7 +35,8 @@ public class SimplyVanish extends JavaPlugin {
 		defaults.set("pickup.exp.workaround.distance.threshold", 3.0D);
 		defaults.set("pickup.exp.workaround.distance.teleport", 1.0D);
 		defaults.set("pickup.exp.workaround.distance.remove", 0.5D);
-		defaults.set("pickup.exp.workaround.distance.velocity", 0.3D);
+		defaults.set("pickup.exp.workaround.velocity", 0.3D);
+//		defaults.set("persistance", new Boolean(false)); // TODO: load save vanished players.
 	}
 	
 	@Override
@@ -66,7 +67,7 @@ public class SimplyVanish extends JavaPlugin {
 	public void loadSettings() {
 		reloadConfig();
 		Configuration config = getConfig();
-		config.addDefaults(defaults);
+		Utils.forceDefaults(defaults, config);
 		core.applyConfig(config);
 		saveConfig();
 	}

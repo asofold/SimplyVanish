@@ -75,7 +75,7 @@ public class SimplyVanishCore implements Listener{
 		expActive = config.getBoolean("pickup.exp.workaround.active");
 		killDist = config.getDouble("pickup.exp.workaround.distance.remove");
 		teleDist = config.getDouble("pickup.exp.workaround.distance.teleport");
-		expVelocity = config.getDouble("pickup.exp.workaround.distance.velocity");
+		expVelocity = config.getDouble("pickup.exp.workaround.velocity");
 	}
 	
 	@EventHandler(priority=EventPriority.MONITOR)

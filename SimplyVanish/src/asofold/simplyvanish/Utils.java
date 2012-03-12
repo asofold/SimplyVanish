@@ -1,7 +1,10 @@
 package asofold.simplyvanish;
 
+import java.util.Map;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
 /**
@@ -44,6 +47,13 @@ public class Utils {
 		if ( sender instanceof Player) return true;
 		sender.sendMessage("[SimplyVanish] This is only available for players!");
 		return false;
+	}
+	
+	public static void forceDefaults(Configuration defaults, Configuration config){
+		Map<String ,Object> all = defaults.getValues(true);
+		for ( String path : all.keySet()){
+			if ( !config.contains(path)) config.set(path, defaults.get(path));
+		}
 	}
 
 }
