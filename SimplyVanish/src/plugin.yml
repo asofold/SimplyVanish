@@ -1,6 +1,6 @@
 name: SimplyVanish
 main: asofold.simplyvanish.SimplyVanish
-version: 0.1.3
+version: 0.2.0
 commands:
   vanish: 
      description: no description available

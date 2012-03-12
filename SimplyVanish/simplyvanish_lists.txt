@@ -14,8 +14,9 @@
 - ?(add) other message if already vanished or not vanished (!)  [maybe still force state update]
 
 
-(0.1.3)
-- ??(bugfix) Workaround for Experience orbs: prevent targeting, prevent pickup
+(0.2.0)
+- (add) Configuration for workaround + /simplyvanish reload command.
+- (bugfix) Attempt a workaround for Experience orbs: let them "flee" or remove if too close. [Does not prevent adding exp!]
 - (add) /vanish <player>  (+reappear) to change vanish state of others.
 - (add) /vanished command
 - (add) API for setVanished(Player/String)

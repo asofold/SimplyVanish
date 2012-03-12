@@ -9,6 +9,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,30 +24,58 @@ public class SimplyVanish extends JavaPlugin {
 	
 	static final SimplyVanishCore core = new SimplyVanishCore();
 	
+	Configuration defaults;
+	
+	/**
+	 * Constructor: set some defualt configuration values.
+	 */
+	public SimplyVanish(){
+		defaults = new MemoryConfiguration();
+		defaults.set("pickup.exp.workaround.active", new Boolean(true));
+		defaults.set("pickup.exp.workaround.distance.threshold", 3.0D);
+		defaults.set("pickup.exp.workaround.distance.teleport", 1.0D);
+		defaults.set("pickup.exp.workaround.distance.remove", 0.5D);
+		defaults.set("pickup.exp.workaround.distance.velocity", 0.3D);
+	}
+	
 	@Override
 	public void onDisable() {
 		core.setEnabled(false);
-		super.onDisable();
+		// TODO: maybe let all players see each other again?
 		System.out.println("[SimplyVanish] Disabled.");
 	}
 
 	@Override
 	public void onEnable() {
+		// load settings
+		loadSettings();
 		// just in case quadratic time checking:
 		for ( Player player : getServer().getOnlinePlayers()){
 			core.updateVanishState(player);
 		}
+		// register events:
 		getServer().getPluginManager().registerEvents(core, this);
-		
+		// finished enabling.
 		core.setEnabled(true);
 		System.out.println("[SimplyVanish] Enabled");
+	}
+
+	/**
+	 * Force reloading the config.
+	 */
+	public void loadSettings() {
+		reloadConfig();
+		Configuration config = getConfig();
+		config.addDefaults(defaults);
+		core.applyConfig(config);
+		saveConfig();
 	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
 		int length = args.length;
-		
+		boolean isPlayer = sender instanceof Player;
 		if ( label.equalsIgnoreCase("vanish") && length==0 ){
 			if ( !Utils.checkPlayer(sender)) return true;
 			if ( !Utils.hasPermission(sender, "simplyvanish.vanish.self")) return true;
@@ -76,7 +106,6 @@ public class SimplyVanish extends JavaPlugin {
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish")) return true;
 			List<String> vanished = core.getSortedVanished();
 			StringBuilder builder = new StringBuilder();
-			boolean isPlayer = sender instanceof Player;
 			builder.append((isPlayer?ChatColor.GOLD.toString():"")+"[VANISHED]");
 			Server server = getServer();
 			String c = "";
@@ -94,7 +123,17 @@ public class SimplyVanish extends JavaPlugin {
 			if (vanished.isEmpty()) builder.append(" "+((isPlayer?ChatColor.DARK_GRAY:"")+"<none>"));
 			sender.sendMessage(builder.toString());
 			return true;
+		} if ( label.equalsIgnoreCase("simplyvanish")){
+			if (length==1 && args[0].equalsIgnoreCase("reload")){
+				if ( !Utils.checkPerm(sender, "simplyvanish.reload")) return true;
+				loadSettings();
+				sender.sendMessage("[SimplyVanish] Settings reloaded.");
+				return true;
+			}
+			return true;
 		}
+		
+		sender.sendMessage("[SimplyVanish] Unrecognized command or number of arguments.");
 		return false;
 	}
 	
@@ -120,7 +159,8 @@ public class SimplyVanish extends JavaPlugin {
 	 * @param vanished true=vanish, false=reappear
 	 */
 	public static void setVanished(Player player, boolean vanished){
-		if ( core == null ) return;
+		if (!core.isEnabled()) return;
+		
 		if (vanished) core.onVanish(player);
 		else core.onReappear(player);
 	}
@@ -131,7 +171,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @param vanished
 	 */
 	public static void setVanished(String playerName, boolean vanished){
-		if ( core == null ) return;
+		if (!core.isEnabled()) return;
 		
 		Player player = Bukkit.getServer().getPlayerExact(playerName);
 		if (player != null){
@@ -161,7 +201,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @return
 	 */
 	public static boolean isVanished(String playerName){
-		if ( core == null ) return false;
+		if (!core.isEnabled()) return false;
 		else return core.vanished.contains(playerName.toLowerCase());
 	}
 	
@@ -171,7 +211,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @return
 	 */
 	public static boolean isVanished(Player player){
-		if ( core == null ) return false;
+		if (!core.isEnabled()) return false;
 		else return core.vanished.contains(player.getName().toLowerCase());
 	}
 	
@@ -183,7 +223,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @return
 	 */
 	public static Set<String> getVanishedPlayers(){
-		if ( core == null ) return new HashSet<String>();
+		if (!core.isEnabled()) return new HashSet<String>();
 		else return core.vanished;
 	}
 

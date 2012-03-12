@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Server;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
@@ -21,6 +22,7 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
 
 /**
@@ -34,9 +36,46 @@ public class SimplyVanishCore implements Listener{
 	 */
 	final Set<String> vanished = new HashSet<String>();
 	
+	/**
+	 * Flag for if the plugin is enabled.
+	 */
 	boolean enabled = false;
 	
-	public SimplyVanishCore() {
+	/**
+	 * exp-workaround
+	 */
+	double threshold = 3.0;
+	
+	/**
+	 * exp-workaround
+	 */
+	double teleDist = 1.0;
+	
+	/**
+	 * exp-workaround
+	 */
+	double killDist = 0.5;
+	
+	/**
+	 * exp-workaround
+	 */
+	double expVelocity = 0.3;
+	
+	/**
+	 * Exp workaround
+	 */
+	boolean expActive = true;
+	
+	/**
+	 * Adjust internal settings to the given configuration.
+	 * @param config
+	 */
+	public void applyConfig(Configuration config) {
+		threshold = config.getDouble("pickup.exp.workaround.distance.threshold");
+		expActive = config.getBoolean("pickup.exp.workaround.active");
+		killDist = config.getDouble("pickup.exp.workaround.distance.remove");
+		teleDist = config.getDouble("pickup.exp.workaround.distance.teleport");
+		expVelocity = config.getDouble("pickup.exp.workaround.distance.velocity");
 	}
 	
 	@EventHandler(priority=EventPriority.MONITOR)
@@ -52,10 +91,12 @@ public class SimplyVanishCore implements Listener{
 		String playerName = ((Player) target).getName();
 		if ( vanished.contains(playerName.toLowerCase())){
 			event.setTarget(null);
-			Entity entity = event.getEntity();
-			if ( entity instanceof ExperienceOrb){
-				repellExpOrb((Player) target, (ExperienceOrb) entity);
-				event.setCancelled(true);
+			if ( expActive){
+				Entity entity = event.getEntity();
+				if ( entity instanceof ExperienceOrb){
+					repellExpOrb((Player) target, (ExperienceOrb) entity);
+					event.setCancelled(true);
+				}
 			}
 		}
 	}
@@ -66,7 +107,7 @@ public class SimplyVanishCore implements Listener{
 	 * @param target
 	 * @param entity
 	 */
-	private void repellExpOrb(Player player, ExperienceOrb orb) {
+	void repellExpOrb(Player player, ExperienceOrb orb) {
 		Location pLoc = player.getLocation();
 		Location oLoc = orb.getLocation();
 		Vector dir = oLoc.toVector().subtract(pLoc.toVector());
@@ -76,12 +117,15 @@ public class SimplyVanishCore implements Listener{
 			// Special case probably never happens
 			dir.setX(0.001);
 		}
-		double threshold = 3.0;
-		double killDist = 0.5;
 		if ((dx < threshold) && (dz < threshold)){
-			Vector newV = dir.normalize().multiply(0.3);
+			Vector nDir = dir.normalize();
+			Vector newV = nDir.clone().multiply(expVelocity);
 			newV.setY(0);
 			orb.setVelocity(newV);
+			if ((dx < teleDist) && (dz < teleDist)){
+				// maybe oLoc
+				orb.teleport(oLoc.clone().add(nDir.multiply(teleDist)), TeleportCause.PLUGIN);
+			} 
 			if ((dx < killDist) && (dz < killDist)){
 				orb.remove();
 			} 
