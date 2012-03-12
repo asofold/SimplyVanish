@@ -14,6 +14,9 @@
 - ?(add) other message if already vanished or not vanished (!)  [maybe still force state update]
 
 
+(0.2.1)
+- (bugfix) Permission for /vanished : simplyvanish.vanished
+
 (0.2.0)
 - (add) Configuration for workaround + /simplyvanish reload command.
 - (bugfix) Attempt a workaround for Experience orbs: let them "flee" or remove if too close. [Does not prevent adding exp!]

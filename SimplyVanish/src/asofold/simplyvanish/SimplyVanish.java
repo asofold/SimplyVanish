@@ -104,7 +104,7 @@ public class SimplyVanish extends JavaPlugin {
 			sender.sendMessage("Show player: "+name);
 			return true;
 		} else if (label.equalsIgnoreCase("vanished")){
-			if ( !Utils.checkPerm(sender, "simplyvanish.vanish")) return true;
+			if ( !Utils.checkPerm(sender, "simplyvanish.vanished")) return true;
 			List<String> vanished = core.getSortedVanished();
 			StringBuilder builder = new StringBuilder();
 			builder.append((isPlayer?ChatColor.GOLD.toString():"")+"[VANISHED]");
