@@ -13,6 +13,24 @@
 - ? (add) Support for setting join/leave message to null if vanished (maybe send to all that have the see-all permission)
 - ?(add) other message if already vanished or not vanished (!)  [maybe still force state update]
 
+*** CONCEPT (CHECK/DIGETS):
+?extenda
+? vanish configs (determine what is vanished and what not what damage/interaction)
+? vanishcfg: certian perm to see a player.
+? check update for efficiency
+? camera vanish
+! add: toggle command.
+? dynamic command registration (also for vanishcfgs)
+
+- ?(add) Configurable: command aliases for standard commands (read from config, applied directly)
+
+(0.3.0)
+* what with kick
+* what with list ?
+- !(add) Toggle command: /togvan (ish) 
+- !(add) Notify players about others vanishing or reappearing(instead of fake join / leave)
+- !(add) Configurable fake leave / join messages (rather vanilla style)
+- !(add) Configurable: fake a lower number of players on list-ping
 
 (0.2.1)
 - (bugfix) Permission for /vanished : simplyvanish.vanished

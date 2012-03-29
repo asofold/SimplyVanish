@@ -23,6 +23,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.util.Vector;
 
 /**
@@ -65,17 +66,40 @@ public class SimplyVanishCore implements Listener{
 	 * Exp workaround
 	 */
 	boolean expActive = true;
+
+	boolean suppressJoinMessage = false;
+	boolean suppressQuitMessage = false;
+
+	boolean sendFakeMessages = false;
+
+	String fakeJoinMessage = "&e%name joined the game.";
+
+	String fakeQuitMessage = "&e%name left the game.";
+
+	boolean notifyState = false;
+	String notifyStatePerm = "simplyvanish.see-all";
 	
 	/**
 	 * Adjust internal settings to the given configuration.
 	 * @param config
 	 */
 	public void applyConfig(Configuration config) {
+		// Exp workaround.
 		threshold = config.getDouble("pickup.exp.workaround.distance.threshold");
-		expActive = config.getBoolean("pickup.exp.workaround.active");
+		expActive = config.getBoolean("pickup.exp.workaround.enabled") && config.getBoolean("pickup.exp.workaround.active", true);
 		killDist = config.getDouble("pickup.exp.workaround.distance.remove");
 		teleDist = config.getDouble("pickup.exp.workaround.distance.teleport");
 		expVelocity = config.getDouble("pickup.exp.workaround.velocity");
+		// suppress mesages:
+		suppressJoinMessage = config.getBoolean("messages.suppress.join");
+		suppressQuitMessage  = config.getBoolean("messages.suppress.quit");
+		// fake messages:
+		sendFakeMessages = config.getBoolean("messages.fake.enabled");
+		fakeJoinMessage = Utils.withChatColors(config.getString("messages.fake.join"));
+		fakeQuitMessage = Utils.withChatColors(config.getString("messages.fake.quit"));
+		// notify changing vanish stats
+		notifyState = config.getBoolean("messages.notify.state.enabled", false);
+		notifyStatePerm = config.getString("messages.notify.state.permission");
 	}
 	
 	@EventHandler(priority=EventPriority.MONITOR)
@@ -99,6 +123,11 @@ public class SimplyVanishCore implements Listener{
 				}
 			}
 		}
+	}
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	void onServerListPing(ServerListPingEvent event){
+		// TODO: try reflection ??
 	}
 	
 	/**

@@ -31,12 +31,24 @@ public class SimplyVanish extends JavaPlugin {
 	 */
 	public SimplyVanish(){
 		defaults = new MemoryConfiguration();
-		defaults.set("pickup.exp.workaround.active", new Boolean(true));
+		// exp workaround:
+		defaults.set("pickup.exp.workaround.enabled", new Boolean(true));
 		defaults.set("pickup.exp.workaround.distance.threshold", 3.0D);
 		defaults.set("pickup.exp.workaround.distance.teleport", 1.0D);
 		defaults.set("pickup.exp.workaround.distance.remove", 0.5D);
 		defaults.set("pickup.exp.workaround.velocity", 0.3D);
-//		defaults.set("persistance", new Boolean(false)); // TODO: load save vanished players.
+		// supress messages:
+		defaults.set("messages.suppress.join", false);
+		defaults.set("messages.suppress.quit", false);
+		
+		defaults.set("messages.fake.enabled", false);
+		defaults.set("messages.fake.join", "&e%name joined the game.");
+		defaults.set("messages.fake.quit", "&e%name left the game.");
+		defaults.set("messages.notify.state.enabled", false);
+		defaults.set("messages.notify.state.permission", "simplyvanish.see-all");
+		
+//		defaults.set("server-ping.subtract-vanished", false); // TODO: Feature request pending ...
+//		defaults.set("persistence", new Boolean(false)); // TODO: load/save vanished players.
 	}
 	
 	@Override
@@ -79,12 +91,12 @@ public class SimplyVanish extends JavaPlugin {
 		boolean isPlayer = sender instanceof Player;
 		if ( label.equalsIgnoreCase("vanish") && length==0 ){
 			if ( !Utils.checkPlayer(sender)) return true;
-			if ( !Utils.hasPermission(sender, "simplyvanish.vanish.self")) return true;
+			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
 			// Make sure the player is vanished...
 			core.onVanish((Player) sender);
 			return true;
 		} if ( label.equalsIgnoreCase("vanish") && length==1 ){
-			if ( !Utils.hasPermission(sender, "simplyvanish.vanish.other")) return true;
+			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.other")) return true;
 			// Make sure the other player is vanished...
 			String name = args[0].trim();
 			setVanished(name, true);
@@ -97,7 +109,7 @@ public class SimplyVanish extends JavaPlugin {
 			core.onReappear((Player) sender);
 			return true;
 		} if ( label.equalsIgnoreCase("reappear") && length==1 ){
-			if ( !Utils.hasPermission(sender, "simplyvanish.vanish.other")) return true;
+			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.other")) return true;
 			// Make sure the other player is shown...
 			String name = args[0].trim();
 			setVanished(name, false);
