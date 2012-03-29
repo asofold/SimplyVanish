@@ -1,6 +1,7 @@
 package asofold.simplyvanish;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -23,6 +24,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class SimplyVanish extends JavaPlugin {
 	
 	static final SimplyVanishCore core = new SimplyVanishCore();
+
+	public static final String[] baseLabels = new String[]{
+		"vanish", "reappear", "tvanish", "simplyvanish","vanished",
+	};
 	
 	Configuration defaults;
 	
@@ -40,13 +45,16 @@ public class SimplyVanish extends JavaPlugin {
 		// supress messages:
 		defaults.set("messages.suppress.join", false);
 		defaults.set("messages.suppress.quit", false);
-		
+		// messages:
 		defaults.set("messages.fake.enabled", false);
 		defaults.set("messages.fake.join", "&e%name joined the game.");
 		defaults.set("messages.fake.quit", "&e%name left the game.");
 		defaults.set("messages.notify.state.enabled", false);
 		defaults.set("messages.notify.state.permission", "simplyvanish.see-all");
-		
+//		// commands:
+//		for ( String cmd : SimplyVanish.baseLabels){
+//			defaults.set("commands."+cmd+".aliases", new LinkedList<String>());
+//		}
 //		defaults.set("server-ping.subtract-vanished", false); // TODO: Feature request pending ...
 //		defaults.set("persistence", new Boolean(false)); // TODO: load/save vanished players.
 	}
@@ -80,42 +88,54 @@ public class SimplyVanish extends JavaPlugin {
 		reloadConfig();
 		Configuration config = getConfig();
 		Utils.forceDefaults(defaults, config);
-		core.applyConfig(config);
+		core.applyConfig(this, config);
 		saveConfig();
 	}
-
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
+		label = core.getMappedCommandLabel(label);
 		int length = args.length;
 		boolean isPlayer = sender instanceof Player;
-		if ( label.equalsIgnoreCase("vanish") && length==0 ){
+		if ( label.equals("vanish") && length==0 ){
 			if ( !Utils.checkPlayer(sender)) return true;
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
 			// Make sure the player is vanished...
 			core.onVanish((Player) sender);
 			return true;
-		} if ( label.equalsIgnoreCase("vanish") && length==1 ){
+		} 
+		else if ( label.equals("vanish") && length==1 ){
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.other")) return true;
 			// Make sure the other player is vanished...
 			String name = args[0].trim();
 			setVanished(name, true);
 			sender.sendMessage("Vanish player: "+name);
 			return true;
-		} else if (label.equalsIgnoreCase("reappear") && length==0 ){
+		} 
+		else if (label.equals("reappear") && length==0 ){
 			if ( !Utils.checkPlayer(sender)) return true;
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
 			// Let the player be seen...
 			core.onReappear((Player) sender);
 			return true;
-		} if ( label.equalsIgnoreCase("reappear") && length==1 ){
+		} 
+		else if ( label.equals("reappear") && length==1 ){
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.other")) return true;
 			// Make sure the other player is shown...
 			String name = args[0].trim();
 			setVanished(name, false);
 			sender.sendMessage("Show player: "+name);
 			return true;
-		} else if (label.equalsIgnoreCase("vanished")){
+		} 
+		else if ( label.equals("tvanish") && length==0 ){
+			if ( !Utils.checkPlayer(sender)) return true;
+			Player player = (Player) sender;
+			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
+			setVanished(player, !isVanished(player));
+			return true;
+		}
+		else if (label.equals("vanished")){
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanished")) return true;
 			List<String> vanished = core.getSortedVanished();
 			StringBuilder builder = new StringBuilder();
@@ -136,8 +156,9 @@ public class SimplyVanish extends JavaPlugin {
 			if (vanished.isEmpty()) builder.append(" "+((isPlayer?ChatColor.DARK_GRAY:"")+"<none>"));
 			sender.sendMessage(builder.toString());
 			return true;
-		} if ( label.equalsIgnoreCase("simplyvanish")){
-			if (length==1 && args[0].equalsIgnoreCase("reload")){
+		} 
+		else if ( label.equals("simplyvanish")){
+			if (length==1 && args[0].equals("reload")){
 				if ( !Utils.checkPerm(sender, "simplyvanish.reload")) return true;
 				loadSettings();
 				sender.sendMessage("[SimplyVanish] Settings reloaded.");
@@ -173,7 +194,6 @@ public class SimplyVanish extends JavaPlugin {
 	 */
 	public static void setVanished(Player player, boolean vanished){
 		if (!core.isEnabled()) return;
-		
 		if (vanished) core.onVanish(player);
 		else core.onReappear(player);
 	}

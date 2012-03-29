@@ -2,15 +2,20 @@ package asofold.simplyvanish;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Server;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
@@ -66,6 +71,11 @@ public class SimplyVanishCore implements Listener{
 	 * Exp workaround
 	 */
 	boolean expActive = true;
+	
+	/**
+	 * Map aliases to recognized labels.
+	 */
+	Map<String, String> commandAliases = new HashMap<String, String>();
 
 	boolean suppressJoinMessage = false;
 	boolean suppressQuitMessage = false;
@@ -83,7 +93,7 @@ public class SimplyVanishCore implements Listener{
 	 * Adjust internal settings to the given configuration.
 	 * @param config
 	 */
-	public void applyConfig(Configuration config) {
+	public void applyConfig(SimplyVanish plugin, Configuration config) {
 		// Exp workaround.
 		threshold = config.getDouble("pickup.exp.workaround.distance.threshold");
 		expActive = config.getBoolean("pickup.exp.workaround.enabled") && config.getBoolean("pickup.exp.workaround.active", true);
@@ -100,8 +110,42 @@ public class SimplyVanishCore implements Listener{
 		// notify changing vanish stats
 		notifyState = config.getBoolean("messages.notify.state.enabled", false);
 		notifyStatePerm = config.getString("messages.notify.state.permission");
+//		// command aliases:
+//		try{
+//			registerCommandAliases(((CraftServer) (plugin.getServer())).getCommandMap(), plugin, config);
+//		} catch ( Throwable t){
+//			plugin.getServer().getLogger().severe("[SimplyVanish] Failed to register command aliases: "+t.getMessage());
+//		}
 	}
 	
+//	private void registerCommandAliases(SimpleCommandMap cmap, SimplyVanish plugin,
+//			Configuration config) {
+//		for ( String cmd : SimplyVanish.baseLabels){
+//			List<String> mapped = config.getStringList("commands."+cmd+".aliases");
+//			if ( mapped == null || mapped.isEmpty()) continue;
+//			for ( String alias: mapped){
+//				commandAliases.put(alias.trim().toLowerCase(), cmd);
+//			}
+//			ArrayList<String> aliases = new ArrayList<String>(mapped.size());
+//			aliases.addAll(mapped); // TEST
+//			PluginCommand command = plugin.getCommand(cmd);
+//			try{
+//				command.unregister(cmap);
+//				command.setAliases(aliases);
+//				command.register(cmap);
+//				for (String alias : aliases){
+//					PluginCommand aliasCommand = plugin.getCommand(alias);
+//					if ( aliasCommand == null ) plugin.getServer().getLogger().warning("[SimplyVanish] Failed to set up command alias for '"+cmd+"': "+alias);
+//					else aliasCommand.setExecutor(plugin);
+//				}
+//			} catch (Throwable t){
+//				plugin.getServer().getLogger().severe("[SimplyVanish] Failed to register command aliases for '"+cmd+"': "+t.getMessage());
+//				t.printStackTrace();
+//			}
+//			command.setExecutor(plugin);
+//		}
+//	}
+
 	@EventHandler(priority=EventPriority.MONITOR)
 	void onPlayerJoin( PlayerJoinEvent event){
 		updateVanishState(event.getPlayer());
@@ -277,6 +321,18 @@ public class SimplyVanishCore implements Listener{
 		sorted.addAll(vanished);
 		Collections.sort(sorted);
 		return sorted;
+	}
+	
+	/**
+	 * Get standardized lower-case label, possibly mapped from an alias.
+	 * @param label
+	 * @return
+	 */
+	String getMappedCommandLabel(String label){
+		label = label.toLowerCase();
+		String mapped = commandAliases.get(label);
+		if (mapped == null) return label;
+		else return mapped;
 	}
 
 }
