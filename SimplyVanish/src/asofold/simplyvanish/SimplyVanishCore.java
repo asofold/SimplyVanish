@@ -2,20 +2,14 @@ package asofold.simplyvanish;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Server;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.SimpleCommandMap;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
@@ -30,6 +24,8 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.util.Vector;
+
+import asofold.simplyvanish.config.Settings;
 
 /**
  * Core methods for vanish/reappear.
@@ -47,104 +43,11 @@ public class SimplyVanishCore implements Listener{
 	 */
 	boolean enabled = false;
 	
-	/**
-	 * exp-workaround
-	 */
-	double threshold = 3.0;
+	Settings settings = new Settings();
 	
-	/**
-	 * exp-workaround
-	 */
-	double teleDist = 1.0;
-	
-	/**
-	 * exp-workaround
-	 */
-	double killDist = 0.5;
-	
-	/**
-	 * exp-workaround
-	 */
-	double expVelocity = 0.3;
-	
-	/**
-	 * Exp workaround
-	 */
-	boolean expActive = true;
-	
-	/**
-	 * Map aliases to recognized labels.
-	 */
-	Map<String, String> commandAliases = new HashMap<String, String>();
-
-	boolean suppressJoinMessage = false;
-	boolean suppressQuitMessage = false;
-
-	boolean sendFakeMessages = false;
-
-	String fakeJoinMessage = "&e%name joined the game.";
-
-	String fakeQuitMessage = "&e%name left the game.";
-
-	boolean notifyState = false;
-	String notifyStatePerm = "simplyvanish.see-all";
-	
-	/**
-	 * Adjust internal settings to the given configuration.
-	 * @param config
-	 */
-	public void applyConfig(SimplyVanish plugin, Configuration config) {
-		// Exp workaround.
-		threshold = config.getDouble("pickup.exp.workaround.distance.threshold");
-		expActive = config.getBoolean("pickup.exp.workaround.enabled") && config.getBoolean("pickup.exp.workaround.active", true);
-		killDist = config.getDouble("pickup.exp.workaround.distance.remove");
-		teleDist = config.getDouble("pickup.exp.workaround.distance.teleport");
-		expVelocity = config.getDouble("pickup.exp.workaround.velocity");
-		// suppress mesages:
-		suppressJoinMessage = config.getBoolean("messages.suppress.join");
-		suppressQuitMessage  = config.getBoolean("messages.suppress.quit");
-		// fake messages:
-		sendFakeMessages = config.getBoolean("messages.fake.enabled");
-		fakeJoinMessage = Utils.withChatColors(config.getString("messages.fake.join"));
-		fakeQuitMessage = Utils.withChatColors(config.getString("messages.fake.quit"));
-		// notify changing vanish stats
-		notifyState = config.getBoolean("messages.notify.state.enabled", false);
-		notifyStatePerm = config.getString("messages.notify.state.permission");
-//		// command aliases:
-//		try{
-//			registerCommandAliases(((CraftServer) (plugin.getServer())).getCommandMap(), plugin, config);
-//		} catch ( Throwable t){
-//			plugin.getServer().getLogger().severe("[SimplyVanish] Failed to register command aliases: "+t.getMessage());
-//		}
+	public void setSettings(Settings settings){
+		this.settings = settings;
 	}
-	
-//	private void registerCommandAliases(SimpleCommandMap cmap, SimplyVanish plugin,
-//			Configuration config) {
-//		for ( String cmd : SimplyVanish.baseLabels){
-//			List<String> mapped = config.getStringList("commands."+cmd+".aliases");
-//			if ( mapped == null || mapped.isEmpty()) continue;
-//			for ( String alias: mapped){
-//				commandAliases.put(alias.trim().toLowerCase(), cmd);
-//			}
-//			ArrayList<String> aliases = new ArrayList<String>(mapped.size());
-//			aliases.addAll(mapped); // TEST
-//			PluginCommand command = plugin.getCommand(cmd);
-//			try{
-//				command.unregister(cmap);
-//				command.setAliases(aliases);
-//				command.register(cmap);
-//				for (String alias : aliases){
-//					PluginCommand aliasCommand = plugin.getCommand(alias);
-//					if ( aliasCommand == null ) plugin.getServer().getLogger().warning("[SimplyVanish] Failed to set up command alias for '"+cmd+"': "+alias);
-//					else aliasCommand.setExecutor(plugin);
-//				}
-//			} catch (Throwable t){
-//				plugin.getServer().getLogger().severe("[SimplyVanish] Failed to register command aliases for '"+cmd+"': "+t.getMessage());
-//				t.printStackTrace();
-//			}
-//			command.setExecutor(plugin);
-//		}
-//	}
 
 	@EventHandler(priority=EventPriority.MONITOR)
 	void onPlayerJoin( PlayerJoinEvent event){
@@ -159,7 +62,7 @@ public class SimplyVanishCore implements Listener{
 		String playerName = ((Player) target).getName();
 		if ( vanished.contains(playerName.toLowerCase())){
 			event.setTarget(null);
-			if ( expActive){
+			if ( settings.expEnabled){
 				Entity entity = event.getEntity();
 				if ( entity instanceof ExperienceOrb){
 					repellExpOrb((Player) target, (ExperienceOrb) entity);
@@ -190,16 +93,16 @@ public class SimplyVanishCore implements Listener{
 			// Special case probably never happens
 			dir.setX(0.001);
 		}
-		if ((dx < threshold) && (dz < threshold)){
+		if ((dx < settings.expThreshold) && (dz < settings.expThreshold)){
 			Vector nDir = dir.normalize();
-			Vector newV = nDir.clone().multiply(expVelocity);
+			Vector newV = nDir.clone().multiply(settings.expVelocity);
 			newV.setY(0);
 			orb.setVelocity(newV);
-			if ((dx < teleDist) && (dz < teleDist)){
+			if ((dx < settings.expTeleDist) && (dz < settings.expTeleDist)){
 				// maybe oLoc
-				orb.teleport(oLoc.clone().add(nDir.multiply(teleDist)), TeleportCause.PLUGIN);
+				orb.teleport(oLoc.clone().add(nDir.multiply(settings.expTeleDist)), TeleportCause.PLUGIN);
 			} 
-			if ((dx < killDist) && (dz < killDist)){
+			if ((dx < settings.expKillDist) && (dz < settings.expKillDist)){
 				orb.remove();
 			} 
 		} 
@@ -323,16 +226,6 @@ public class SimplyVanishCore implements Listener{
 		return sorted;
 	}
 	
-	/**
-	 * Get standardized lower-case label, possibly mapped from an alias.
-	 * @param label
-	 * @return
-	 */
-	String getMappedCommandLabel(String label){
-		label = label.toLowerCase();
-		String mapped = commandAliases.get(label);
-		if (mapped == null) return label;
-		else return mapped;
-	}
+
 
 }

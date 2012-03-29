@@ -1,8 +1,9 @@
 package asofold.simplyvanish;
 
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -10,10 +11,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import asofold.simplyvanish.config.Settings;
 
 /**
  * Example plugin for the vanish API as of CB 1914 !
@@ -32,31 +35,15 @@ public class SimplyVanish extends JavaPlugin {
 	Configuration defaults;
 	
 	/**
+	 * Map aliases to recognized labels.
+	 */
+	Map<String, String> commandAliases = new HashMap<String, String>();
+	
+	/**
 	 * Constructor: set some defualt configuration values.
 	 */
 	public SimplyVanish(){
-		defaults = new MemoryConfiguration();
-		// exp workaround:
-		defaults.set("pickup.exp.workaround.enabled", new Boolean(true));
-		defaults.set("pickup.exp.workaround.distance.threshold", 3.0D);
-		defaults.set("pickup.exp.workaround.distance.teleport", 1.0D);
-		defaults.set("pickup.exp.workaround.distance.remove", 0.5D);
-		defaults.set("pickup.exp.workaround.velocity", 0.3D);
-		// supress messages:
-		defaults.set("messages.suppress.join", false);
-		defaults.set("messages.suppress.quit", false);
-		// messages:
-		defaults.set("messages.fake.enabled", false);
-		defaults.set("messages.fake.join", "&e%name joined the game.");
-		defaults.set("messages.fake.quit", "&e%name left the game.");
-		defaults.set("messages.notify.state.enabled", false);
-		defaults.set("messages.notify.state.permission", "simplyvanish.see-all");
-//		// commands:
-//		for ( String cmd : SimplyVanish.baseLabels){
-//			defaults.set("commands."+cmd+".aliases", new LinkedList<String>());
-//		}
-//		defaults.set("server-ping.subtract-vanished", false); // TODO: Feature request pending ...
-//		defaults.set("persistence", new Boolean(false)); // TODO: load/save vanished players.
+		defaults = Settings.getDefaultConfig();
 	}
 	
 	@Override
@@ -88,14 +75,17 @@ public class SimplyVanish extends JavaPlugin {
 		reloadConfig();
 		Configuration config = getConfig();
 		Utils.forceDefaults(defaults, config);
-		core.applyConfig(this, config);
-		saveConfig();
+		Settings settings = new Settings();
+		settings.applyConfig(this, config);
+		core.setSettings(settings);
+		registerCommandAliases(config);
+		saveConfig(); // TODO: maybe check for changes, somehow ?
 	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
-		label = core.getMappedCommandLabel(label);
+		label = getMappedCommandLabel(label);
 		int length = args.length;
 		boolean isPlayer = sender instanceof Player;
 		if ( label.equals("vanish") && length==0 ){
@@ -258,6 +248,55 @@ public class SimplyVanish extends JavaPlugin {
 	public static Set<String> getVanishedPlayers(){
 		if (!core.isEnabled()) return new HashSet<String>();
 		else return core.vanished;
+	}
+	
+	void registerCommandAliases(Configuration config) {
+		// OLD ATTEMPT TO REGISTER DYNAMICALLY COMMENTED OUT:
+//for ( String cmd : SimplyVanish.baseLabels){
+//	List<String> mapped = config.getStringList("commands."+cmd+".aliases");
+//	if ( mapped == null || mapped.isEmpty()) continue;
+//	for ( String alias: mapped){
+//		commandAliases.put(alias.trim().toLowerCase(), cmd);
+//	}
+//	ArrayList<String> aliases = new ArrayList<String>(mapped.size());
+//	aliases.addAll(mapped); // TEST
+//	PluginCommand command = plugin.getCommand(cmd);
+//	try{
+//		command.unregister(cmap);
+//		command.setAliases(aliases);
+//		command.register(cmap);
+//		for (String alias : aliases){
+//			PluginCommand aliasCommand = plugin.getCommand(alias);
+//			if ( aliasCommand == null ) plugin.getServer().getLogger().warning("[SimplyVanish] Failed to set up command alias for '"+cmd+"': "+alias);
+//			else aliasCommand.setExecutor(plugin);
+//		}
+//	} catch (Throwable t){
+//		plugin.getServer().getLogger().severe("[SimplyVanish] Failed to register command aliases for '"+cmd+"': "+t.getMessage());
+//		t.printStackTrace();
+//	}
+//	command.setExecutor(plugin);
+//}
+		// JUST TO REGISTER ALIASES FOR onCommand:
+		for ( String label : SimplyVanish.baseLabels){
+			PluginCommand command = getCommand(label);
+			List<String> aliases = command.getAliases();
+			if ( aliases == null) continue;
+			for ( String alias: aliases){
+				commandAliases.put(label, alias.trim().toLowerCase());
+			}
+		}
+	}
+	
+	/**
+	 * Get standardized lower-case label, possibly mapped from an alias.
+	 * @param label
+	 * @return
+	 */
+	String getMappedCommandLabel(String label){
+		label = label.toLowerCase();
+		String mapped = commandAliases.get(label);
+		if (mapped == null) return label;
+		else return mapped;
 	}
 
 }
