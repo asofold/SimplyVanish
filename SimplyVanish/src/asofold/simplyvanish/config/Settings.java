@@ -3,7 +3,6 @@ package asofold.simplyvanish.config;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.MemoryConfiguration;
 
-import asofold.simplyvanish.SimplyVanish;
 import asofold.simplyvanish.Utils;
 
 
@@ -48,7 +47,7 @@ public class Settings {
 	 * TODO: put this to plugin / some settings helper
 	 * @param config
 	 */
-	public void applyConfig(SimplyVanish plugin, Configuration config) {
+	public void applyConfig(Configuration config) {
 		// Exp workaround.
 		expThreshold = config.getDouble("pickup.exp.workaround.distance.threshold");
 		expEnabled = config.getBoolean("pickup.exp.workaround.enabled") && config.getBoolean("pickup.exp.workaround.active", true);

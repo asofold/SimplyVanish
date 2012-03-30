@@ -78,7 +78,7 @@ public class SimplyVanish extends JavaPlugin {
 		Configuration config = getConfig();
 		Utils.forceDefaults(defaults, config);
 		Settings settings = new Settings();
-		settings.applyConfig(this, config);
+		settings.applyConfig(config);
 		core.setSettings(settings);
 		registerCommandAliases(config);
 		saveConfig(); // TODO: maybe check for changes, somehow ?
