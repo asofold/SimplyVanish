@@ -10,18 +10,17 @@
 ? check update for efficiency
 ? camera vanish
 ? dynamic command registration (also for vanishcfgs)
-
-
+- ?(add) Configurable: command aliases for standard commands (read from config, applied directly)
+* what with list ?
 - ?(add) prevent chat toggle 
-? maybe refactor: use some settings object to detach the config from core completely.
 
 (0.3.0)
-- ?(add) Configurable: command aliases for standard commands (read from config, applied directly)
-* what with kick
-* what with list ?
-- !(add) Toggle command: /togvan (ish) 
-- !(add) Notify players about others vanishing or reappearing(instead of fake join / leave)
-- !(add) Configurable fake leave / join messages (rather vanilla style)
+- (add) Toggle command: /tvanish
+- (add) Notify players with permission about others vanishing or reappearing (instead of fake join / leave)
+- (add) Configurable: fake leave / join messages (rather vanilla style)
+- (add) Configurable: suppress join/quit messages
+- (add) Command aliases: vanish(van), reappear(rea), tvanish(vanisht, tvan, vant), simplyvanish(simvan)
+- (refactor) Rework some internals (Settings Class).
 
 (0.2.1)
 - (bugfix) Permission for /vanished : simplyvanish.vanished

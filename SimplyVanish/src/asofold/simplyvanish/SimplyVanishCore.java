@@ -60,6 +60,12 @@ public class SimplyVanishCore implements Listener{
 	void onPlayerQuit(PlayerQuitEvent event){
 		if ( settings.suppressQuitMessage && vanished.contains(event.getPlayer().getName().toLowerCase())){
 			event.setQuitMessage(null);
+			if (settings.notifyState){
+				String msg = SimplyVanish.label+ChatColor.GREEN+event.getPlayer().getName()+ChatColor.GRAY+" quit.";
+				for (Player other : Bukkit.getServer().getOnlinePlayers()){
+					if ( Utils.hasPermission(other, settings.notifyStatePerm)) other.sendMessage(msg);
+				}
+			}
 		}
 	}
 	
@@ -68,6 +74,12 @@ public class SimplyVanishCore implements Listener{
 		// (still set if cancelled)
 		if ( settings.suppressQuitMessage && vanished.contains(event.getPlayer().getName().toLowerCase())){
 			event.setLeaveMessage(null);
+			if (settings.notifyState && !event.isCancelled()){
+				String msg = SimplyVanish.label+ChatColor.GREEN+event.getPlayer().getName()+ChatColor.GRAY+" was kicked.";
+				for (Player other : Bukkit.getServer().getOnlinePlayers()){
+					if ( Utils.hasPermission(other, settings.notifyStatePerm)) other.sendMessage(msg);
+				}
+			}
 		}
 	}
 	
@@ -177,10 +189,26 @@ public class SimplyVanishCore implements Listener{
 	 * @param player
 	 */
 	public void onVanish(Player player) {
-		boolean was = !vanished.add(player.getName().toLowerCase());
+		String name = player.getName();
+		boolean was = !vanished.add(name.toLowerCase());
+		String msg = null;
+		if (settings.sendFakeMessages && !settings.fakeQuitMessage.isEmpty()){
+			msg = settings.fakeQuitMessage.replaceAll("%name", name);
+			msg = msg.replaceAll("%displayname", player.getDisplayName());
+		}
 		for ( Player other : Bukkit.getServer().getOnlinePlayers()){
-			if (!other.equals(player) && other.canSee(player)){
-				if ( !Utils.hasPermission(other, "simplyvanish.see-all")) other.hidePlayer(player);
+			if (other.getName().equals(name)) continue;
+			if ( other.canSee(player)){
+				// (only consider a changed canSee state)
+				if (settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm)){
+					if (!was) other.sendMessage(SimplyVanish.label+ChatColor.GREEN+name+ChatColor.GRAY+" vanished.");
+					if (!Utils.hasPermission(other, "simplyvanish.see-all")) other.hidePlayer(player);
+				} else if (!Utils.hasPermission(other, "simplyvanish.see-all")){
+					other.hidePlayer(player);
+					if (msg != null) other.sendMessage(msg);
+				}
+			} else if (!was && settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm)){
+				other.sendMessage(SimplyVanish.label+ChatColor.GREEN+name+ChatColor.GRAY+" vanished.");
 			}
 		}
 		player.sendMessage(SimplyVanish.label+ChatColor.GRAY+"You are "+(was?"still":"now")+" "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players!");
@@ -192,10 +220,26 @@ public class SimplyVanishCore implements Listener{
 	 * @param player
 	 */
 	public void onReappear(Player player) {
-		boolean was = vanished.remove(player.getName().toLowerCase());
+		String name = player.getName();
+		boolean was = vanished.remove(name.toLowerCase());
+		String msg = null;
+		if (settings.sendFakeMessages && !settings.fakeJoinMessage.isEmpty()){
+			msg = settings.fakeJoinMessage.replaceAll("%name", name);
+			msg = msg.replaceAll("%displayname", player.getDisplayName());
+		}
 		for ( Player other : Bukkit.getServer().getOnlinePlayers()){
-			if (!other.equals(player) && !other.canSee(player)){
+			if (other.getName().equals(name)) continue;
+			if (!other.canSee(player)){
+				// (only consider a changed canSee state)
 				other.showPlayer(player);
+				if (settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm)){
+					other.sendMessage(SimplyVanish.label+ChatColor.RED+name+ChatColor.GRAY+" reappeared.");
+				} else if (!Utils.hasPermission(other, "simplyvanish.see-all")){
+					if (msg != null) other.sendMessage(msg);
+				}
+			} 
+			else if (was && settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm)){
+				other.sendMessage(SimplyVanish.label+ChatColor.RED+name+ChatColor.GRAY+" reappeared.");
 			}
 		}
 		player.sendMessage(SimplyVanish.label+ChatColor.GRAY+"You are "+(was?"still":"now")+" "+ChatColor.RED+"visible"+ChatColor.GRAY+" to everyone!");
@@ -210,10 +254,11 @@ public class SimplyVanishCore implements Listener{
 		String lcName = playerName.toLowerCase();
 		Server server = Bukkit.getServer();
 		// Show to or hide from online players:
-		if (vanished.contains(lcName)) onVanish(player);
+		if (vanished.remove(lcName)) onVanish(player); // remove: people will get notified.
 		else{
 			for (Player other : server.getOnlinePlayers()){
 				if ( !other.canSee(player)) other.showPlayer(player);
+				// TODO: maybe message here too ?
 			}
 		}
 		// Show or hide other vanished players:

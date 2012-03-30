@@ -28,6 +28,8 @@ public class SimplyVanish extends JavaPlugin {
 	
 	static final SimplyVanishCore core = new SimplyVanishCore();
 
+	public static final String label = ChatColor.GOLD+"[SimplyVanish] ";
+	
 	public static final String[] baseLabels = new String[]{
 		"vanish", "reappear", "tvanish", "simplyvanish","vanished",
 	};
