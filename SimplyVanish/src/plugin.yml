@@ -3,24 +3,24 @@ main: asofold.simplyvanish.SimplyVanish
 version: 0.3.0
 commands:
   vanish: 
-     description: Ensure you or another player is vanished (then: /vanish <player>).
+     description: 'Ensure you or another player is vanished (then: /vanish <player>).'
      aliases:
      - van
   reappear:
-     description: Ensure you or another player is visible (then: /vanish <player>).
+     description:'Ensure you or another player is visible (then: /vanish <player>).'
      aliases:
      - rea
   tvanish: 
-     description: Toggle your vanished state.
+     description: 'Toggle your vanished state.'
      aliases:
      - vanisht
      - tvan
      - vant
   vanished:
-     description: Show a list of vanished players.
+     description: 'Show a list of vanished players.'
      aliases:
      - vand
   simplyvanish:
-     description: For reloading the configuration: /simplyvanish reload
+     description: 'For reloading the configuration: /simplyvanish reload'
      aliases:
      - simvan
