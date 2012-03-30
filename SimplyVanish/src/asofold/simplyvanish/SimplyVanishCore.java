@@ -20,7 +20,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.util.Vector;
@@ -44,14 +46,29 @@ public class SimplyVanishCore implements Listener{
 	boolean enabled = false;
 	
 	Settings settings = new Settings();
-	
-	public void setSettings(Settings settings){
-		this.settings = settings;
-	}
 
-	@EventHandler(priority=EventPriority.MONITOR)
+
+	@EventHandler(priority=EventPriority.HIGHEST)
 	void onPlayerJoin( PlayerJoinEvent event){
 		updateVanishState(event.getPlayer());
+		if ( settings.suppressJoinMessage && vanished.contains(event.getPlayer().getName().toLowerCase())){
+			event.setJoinMessage(null);
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	void onPlayerQuit(PlayerQuitEvent event){
+		if ( settings.suppressQuitMessage && vanished.contains(event.getPlayer().getName().toLowerCase())){
+			event.setQuitMessage(null);
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+	void onPlayerKick(PlayerKickEvent event){
+		// (still set if cancelled)
+		if ( settings.suppressQuitMessage && vanished.contains(event.getPlayer().getName().toLowerCase())){
+			event.setLeaveMessage(null);
+		}
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
@@ -151,18 +168,22 @@ public class SimplyVanishCore implements Listener{
 		return enabled;
 	}
 	
+	public void setSettings(Settings settings){
+		this.settings = settings;
+	}
+	
 	/**
 	 * Adjust state of player to vanished.
 	 * @param player
 	 */
 	public void onVanish(Player player) {
-		vanished.add(player.getName().toLowerCase());
+		boolean was = !vanished.add(player.getName().toLowerCase());
 		for ( Player other : Bukkit.getServer().getOnlinePlayers()){
 			if (!other.equals(player) && other.canSee(player)){
 				if ( !Utils.hasPermission(other, "simplyvanish.see-all")) other.hidePlayer(player);
 			}
 		}
-		player.sendMessage(ChatColor.GOLD+"[SimplyVanish] "+ChatColor.GRAY+"You are now "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players!");
+		player.sendMessage(SimplyVanish.label+ChatColor.GRAY+"You are "+(was?"still":"now")+" "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players!");
 
 	}
 
@@ -171,13 +192,13 @@ public class SimplyVanishCore implements Listener{
 	 * @param player
 	 */
 	public void onReappear(Player player) {
-		vanished.remove(player.getName().toLowerCase());
+		boolean was = vanished.remove(player.getName().toLowerCase());
 		for ( Player other : Bukkit.getServer().getOnlinePlayers()){
 			if (!other.equals(player) && !other.canSee(player)){
 				other.showPlayer(player);
 			}
 		}
-		player.sendMessage(ChatColor.GOLD+"[SimplyVanish] "+ChatColor.GRAY+"You are now "+ChatColor.RED+"visible"+ChatColor.GRAY+" to everyone!");
+		player.sendMessage(SimplyVanish.label+ChatColor.GRAY+"You are "+(was?"still":"now")+" "+ChatColor.RED+"visible"+ChatColor.GRAY+" to everyone!");
 	}
 	
 	/**
@@ -189,7 +210,7 @@ public class SimplyVanishCore implements Listener{
 		String lcName = playerName.toLowerCase();
 		Server server = Bukkit.getServer();
 		// Show to or hide from online players:
-		if ( vanished.contains(lcName)) onVanish(player);
+		if (vanished.contains(lcName)) onVanish(player);
 		else{
 			for (Player other : server.getOnlinePlayers()){
 				if ( !other.canSee(player)) other.showPlayer(player);
