@@ -4,11 +4,23 @@ version: 0.3.0
 commands:
   vanish: 
      description: no description available
+     aliases:
+     - van
   reappear:
      description: no description available
+     aliases:
+     - rea
   tvanish: 
      description: no description available
+     aliases:
+     - vanisht
+     - tvan
+     - vant
   vanished:
      description: no description available
+     aliases:
+     - vand
   simplyvanish:
      description: no description available
+     aliases:
+     - simvan
