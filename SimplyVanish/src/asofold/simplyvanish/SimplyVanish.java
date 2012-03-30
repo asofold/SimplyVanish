@@ -282,7 +282,7 @@ public class SimplyVanish extends JavaPlugin {
 			List<String> aliases = command.getAliases();
 			if ( aliases == null) continue;
 			for ( String alias: aliases){
-				commandAliases.put(label, alias.trim().toLowerCase());
+				commandAliases.put(alias.trim().toLowerCase(), label);
 			}
 		}
 	}
