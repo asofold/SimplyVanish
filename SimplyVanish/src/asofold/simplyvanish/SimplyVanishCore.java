@@ -298,7 +298,14 @@ public class SimplyVanishCore implements Listener{
 	 * @param canSee 
 	 */
 	void showPlayer(Player player, Player canSee){
-		canSee.showPlayer(player);
+		if (!Utils.checkOnline(player, "showPlayer")||!Utils.checkOnline(canSee, "showPlayer")) return;
+		try{
+			canSee.showPlayer(player);
+		} catch(Throwable t){
+			Utils.severe("showPlayer failed (show "+player.getName()+" to "+canSee.getName()+"): "+t.getMessage());
+			t.printStackTrace();
+			onPanic(new Player[]{player, canSee});
+		}
 	}
 	
 	/**
@@ -307,7 +314,50 @@ public class SimplyVanishCore implements Listener{
 	 * @param canNotSee
 	 */
 	void hidePlayer(Player player, Player canNotSee){
-		canNotSee.hidePlayer(player);
+		if (!Utils.checkOnline(player, "hidePlayer")||!Utils.checkOnline(canNotSee, "hidePlayer")) return;
+		try{
+			canNotSee.hidePlayer(player);
+		} catch ( Throwable t){
+			Utils.severe("hidePlayer failed (hide "+player.getName()+" from "+canNotSee.getName()+"): "+t.getMessage());
+			t.printStackTrace();
+			onPanic(new Player[]{player, canNotSee});
+		}
+	}
+	
+	void onPanic(Player[] involved){
+		Server server = Bukkit.getServer();
+		if ( settings.panicKickAll){
+			for ( Player player :  server.getOnlinePlayers()){
+				try{
+					player.kickPlayer(settings.panicKickMessage);
+				} catch (Throwable t){
+					// ignore
+				}
+			}
+		} 
+		else if (settings.panicKickInvolved){
+			for ( Player player : involved){
+				try{
+					player.kickPlayer(settings.panicKickMessage);
+				} catch (Throwable t){
+					// ignore
+				}
+			}
+		}
+		try{
+			Utils.sendToTargets(settings.panicMessage, settings.panicMessageTargets);
+		} catch ( Throwable t){
+			Utils.warn("[Panic] Failed to send to: "+settings.panicMessageTargets+" ("+t.getMessage()+")");
+			t.printStackTrace();
+		}
+		if (settings.panicRunCommand && !"".equals(settings.panicCommand)){
+			try{
+				server.dispatchCommand(server.getConsoleSender(), settings.panicCommand);
+			} catch (Throwable t){
+				Utils.warn("[Panic] Failed to dispathc command: "+settings.panicCommand+" ("+t.getMessage()+")");
+				t.printStackTrace();
+			}
+		}
 	}
 
 }

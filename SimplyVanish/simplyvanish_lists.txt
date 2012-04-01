@@ -14,6 +14,13 @@
 * what with list ?
 - ?(add) prevent chat toggle 
 
+- (add) Prevent commands feature ? 
+
+(0.3.1) ["panic update"]
+- (add) Panic settings (hidden) that allow to do stuff, if hiding or showing fails internally.
+- (add) Some consistency checks and log messages for showPlayer and hidePlayer. [If this is an exploit you will probably have the involved players names, for which this failed.] 
+- (refactor) Use central-access methods to delegate showPlayer and hidePlayer to.
+
 (0.3.0)
 - (add) Toggle command: /tvanish
 - (add) Notify players with permission about others vanishing or reappearing (instead of fake join / leave)

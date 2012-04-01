@@ -1,7 +1,10 @@
 package asofold.simplyvanish;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
@@ -71,5 +74,62 @@ public class Utils {
         }
         return new String(chars);
     }
+	
+	public static final boolean checkOnline(final Player player){
+		return checkOnline( player.getName());
+	}
+	
+	public static final boolean checkOnline(final String name){
+		final Player player = Bukkit.getServer().getPlayerExact(name);
+		return player != null;
+	}
+	
+	/**
+	 * Check and log warning message.
+	 * @param player
+	 * @param tag
+	 * @return
+	 */
+	public static final boolean checkOnline(final Player player, final String tag){
+		final boolean res = checkOnline(player);
+		warn("["+tag+"] Player is not online, though should: "+player.getName());
+		return res;
+	}
+	
+	public static final void warn(final String msg){
+		Bukkit.getServer().getLogger().warning("[SimplyVanish] "+msg);
+	}
+	
+	public static final void severe(final String msg){
+		Bukkit.getServer().getLogger().severe("[SimplyVanish] "+msg);
+	}
 
+	public static void sendToTargets(String msg,
+			String targetSpec) {
+		// check targets:
+		List<Player> players = new LinkedList<Player>();
+		Player[] online = Bukkit.getServer().getOnlinePlayers();
+		for ( String x : targetSpec.split(",")){
+			String targets = x.trim();
+			if ( targets.equalsIgnoreCase("ops") || targets.equalsIgnoreCase("operators")){
+				for (Player player : online){
+					if (player.isOp()) players.add(player);
+				}
+			}
+			else if (targets.equalsIgnoreCase("all") || targets.equalsIgnoreCase("everyone") || (targets.equalsIgnoreCase("everybody"))){
+				for (Player player : online){
+					players.add(player);
+				}
+			} 
+			else if (targets.toLowerCase().startsWith("permission:") && targets.length()>11){
+				String perm = targets.substring(11).trim();
+				for (Player player : online){
+					if (Utils.hasPermission(player, perm)) players.add(player);
+				}
+			}
+		}
+		for ( Player player : players){
+			player.sendMessage(msg);
+		}
+	}
 }

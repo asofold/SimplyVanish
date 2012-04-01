@@ -43,7 +43,7 @@ public class Settings {
 	public String notifyStatePerm = "simplyvanish.see-all";
 	
 	public boolean panicKickAll = false;
-	public boolean panicKickInvolve = false;
+	public boolean panicKickInvolved = false;
 	public String panicKickMessage = "[ERROR] Please log in again, contact staff.";
 	public String panicMessage = "§a[SimplyVanish] §eAdmin notice: check the logs.";
 	public String panicMessageTargets = "ops";
@@ -75,10 +75,12 @@ public class Settings {
 		// command aliases: see SimplyVanish plugin.
 		
 		panicKickAll = config.getBoolean("panic.kick-all", false);
-		panicKickInvolve =  config.getBoolean("panic.kick-involved", false);
+		panicKickInvolved =  config.getBoolean("panic.kick-involved", false);
 		panicKickMessage = config.getString("panic.kick-message","[ERROR] Please log in again, contact staff.");
+		
 		panicMessage = config.getString("panic.message", "§a[SimplyVanish] §eAdmin notice: check the logs.");
 		panicMessageTargets = config.getString("panic.message-targets", "ops");
+		
 		panicRunCommand = config.getBoolean("panic.run-command", false);
 		panicCommand = config.getString("panic.command", "");
 	}
