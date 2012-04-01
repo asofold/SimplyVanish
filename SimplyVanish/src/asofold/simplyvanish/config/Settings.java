@@ -42,6 +42,14 @@ public class Settings {
 	public boolean notifyState = false;
 	public String notifyStatePerm = "simplyvanish.see-all";
 	
+	public boolean panicKickAll = false;
+	public boolean panicKickInvolve = false;
+	public String panicKickMessage = "[ERROR] Please log in again, contact staff.";
+	public String panicMessage = "§a[SimplyVanish] §eAdmin notice: check the logs.";
+	public String panicMessageTargets = "ops";
+	public boolean panicRunCommand = false;
+	public String panicCommand = "";
+	
 	/**
 	 * Adjust internal settings to the given configuration.
 	 * TODO: put this to plugin / some settings helper
@@ -65,6 +73,14 @@ public class Settings {
 		notifyState = config.getBoolean("messages.notify.state.enabled");
 		notifyStatePerm = config.getString("messages.notify.state.permission");
 		// command aliases: see SimplyVanish plugin.
+		
+		panicKickAll = config.getBoolean("panic.kick-all", false);
+		panicKickInvolve =  config.getBoolean("panic.kick-involved", false);
+		panicKickMessage = config.getString("panic.kick-message","[ERROR] Please log in again, contact staff.");
+		panicMessage = config.getString("panic.message", "§a[SimplyVanish] §eAdmin notice: check the logs.");
+		panicMessageTargets = config.getString("panic.message-targets", "ops");
+		panicRunCommand = config.getBoolean("panic.run-command", false);
+		panicCommand = config.getString("panic.command", "");
 	}
 	
 	public static MemoryConfiguration getDefaultConfig(){
