@@ -118,7 +118,7 @@ public class SimplyVanishCore implements Listener{
 		Vector dir = oLoc.toVector().subtract(pLoc.toVector());
 		double dx = Math.abs(dir.getX());
 		double dz = Math.abs(dir.getZ());
-		if ( (dx == 0) && (dz == 0)){
+		if ( (dx == 0.0) && (dz == 0.0)){
 			// Special case probably never happens
 			dir.setX(0.001);
 		}
@@ -202,9 +202,9 @@ public class SimplyVanishCore implements Listener{
 				// (only consider a changed canSee state)
 				if (settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm)){
 					if (!was) other.sendMessage(SimplyVanish.label+ChatColor.GREEN+name+ChatColor.GRAY+" vanished.");
-					if (!Utils.hasPermission(other, "simplyvanish.see-all")) other.hidePlayer(player);
+					if (!Utils.hasPermission(other, "simplyvanish.see-all")) hidePlayer(player, other);
 				} else if (!Utils.hasPermission(other, "simplyvanish.see-all")){
-					other.hidePlayer(player);
+					hidePlayer(player, other);
 					if (msg != null) other.sendMessage(msg);
 				}
 			} else if (!was && settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm)){
@@ -231,7 +231,7 @@ public class SimplyVanishCore implements Listener{
 			if (other.getName().equals(name)) continue;
 			if (!other.canSee(player)){
 				// (only consider a changed canSee state)
-				other.showPlayer(player);
+				showPlayer(player, other);
 				if (settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm)){
 					other.sendMessage(SimplyVanish.label+ChatColor.RED+name+ChatColor.GRAY+" reappeared.");
 				} else if (!Utils.hasPermission(other, "simplyvanish.see-all")){
@@ -257,7 +257,7 @@ public class SimplyVanishCore implements Listener{
 		if (vanished.remove(lcName)) onVanish(player); // remove: people will get notified.
 		else{
 			for (Player other : server.getOnlinePlayers()){
-				if ( !other.canSee(player)) other.showPlayer(player);
+				if ( !other.canSee(player)) showPlayer(player, other);
 				// TODO: maybe message here too ?
 			}
 		}
@@ -267,7 +267,7 @@ public class SimplyVanishCore implements Listener{
 				if ( name.equals(playerName)) continue;
 				Player other = server.getPlayerExact(name);
 				if ( other != null){
-					if ( player.canSee(other)) player.hidePlayer(other);
+					if ( player.canSee(other)) hidePlayer(other, player);
 				}
 			}
 		} else{
@@ -275,7 +275,7 @@ public class SimplyVanishCore implements Listener{
 				if ( name.equals(lcName)) continue;
 				Player other = server.getPlayerExact(name);
 				if ( other != null){
-					if ( !player.canSee(other)) player.showPlayer(other);
+					if (!player.canSee(other)) showPlayer(other, player);
 				}
 			}
 		}
@@ -292,6 +292,12 @@ public class SimplyVanishCore implements Listener{
 		return sorted;
 	}
 	
-
+	void showPlayer(Player player, Player canSee){
+		canSee.showPlayer(player);
+	}
+	
+	void hidePlayer(Player player, Player canNotSee){
+		canNotSee.hidePlayer(player);
+	}
 
 }
