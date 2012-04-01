@@ -292,10 +292,20 @@ public class SimplyVanishCore implements Listener{
 		return sorted;
 	}
 	
+	/**
+	 * Delegating method, for the case of other things to be checked.
+	 * @param player The player to show.
+	 * @param canSee 
+	 */
 	void showPlayer(Player player, Player canSee){
 		canSee.showPlayer(player);
 	}
 	
+	/**
+	 * Delegating method, for the case of other things to be checked.
+	 * @param player The player to hide.
+	 * @param canNotSee
+	 */
 	void hidePlayer(Player player, Player canNotSee){
 		canNotSee.hidePlayer(player);
 	}
