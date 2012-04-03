@@ -1,8 +1,16 @@
 package asofold.simplyvanish;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -12,19 +20,20 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.util.Vector;
 
 import asofold.simplyvanish.config.Settings;
@@ -38,7 +47,7 @@ public class SimplyVanishCore implements Listener{
 	/**
 	 * Same as in SimplyVanish.
 	 */
-	final Set<String> vanished = new HashSet<String>();
+	private final Set<String> vanished = new HashSet<String>();
 	
 	/**
 	 * Flag for if the plugin is enabled.
@@ -46,18 +55,116 @@ public class SimplyVanishCore implements Listener{
 	boolean enabled = false;
 	
 	Settings settings = new Settings();
+	
+	/*
+	 * File to save vanished players to.
+	 */
+	private File vanishedFile = null;
 
 
 	@EventHandler(priority=EventPriority.HIGHEST)
 	void onPlayerJoin( PlayerJoinEvent event){
 		Player player = event.getPlayer();
 		if (settings.autoVanishUse){
-			if (Utils.hasPermission(player, settings.autoVanishPerm)) vanished.add(player.getName().toLowerCase());
+			if (Utils.hasPermission(player, settings.autoVanishPerm)) addVanishedName(player.getName());
 		}
 		updateVanishState(event.getPlayer());
 		if ( settings.suppressJoinMessage && vanished.contains(player.getName().toLowerCase())){
 			event.setJoinMessage(null);
 		}
+	}
+	
+	/**
+	 * Save vanished names to file, does NOT update states (!).
+	 */
+	public void saveVanished(){
+		File file = getVanishedFile();
+		if ( file==null){
+			Utils.warn("Can not save vanished players: File is not set.");
+			return;
+		}
+		if (!createFile(file, "vanished players")) return;
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter( new FileWriter(file));
+			for (String n : vanished){
+				writer.write(n+"\n");
+			}
+		} 
+		catch (IOException e) {
+			Utils.warn("Can not save vanished players: "+e.getMessage());
+		}
+		finally{
+			if ( writer != null)
+				try {
+					writer.close();
+				} catch (IOException e) {
+				}
+		}
+	}
+	
+	/**
+	 * Load vanished names from file.<br>
+	 *  This does not update vanished states!
+	 */
+	public void loadVanished(){
+		File file = getVanishedFile();
+		if ( file == null){
+			Utils.warn("Can not load vanished players: File is not set.");
+			return;
+		}
+		if (!createFile(file, "vanished players")) return;
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader( new FileReader(file));
+			String line = "";
+			while ( line != null){
+				String n = line.trim().toLowerCase();
+				if (!n.isEmpty()){
+					vanished.add(n);
+				}
+				line = reader.readLine();
+			}
+		} 
+		catch (IOException e) {
+			Utils.warn("Can not load vanished players: "+e.getMessage());
+		}
+		finally{
+			if ( reader != null)
+				try {
+					reader.close();
+				} catch (IOException e) {
+				}
+		}
+	}
+	
+	/**
+	 * Create if not exists.
+	 * @param file
+	 * @param tag
+	 * @return if exists now.
+	 */
+	public boolean createFile(File file, String tag){
+		if ( !file.exists() ){
+			try {
+				if ( file.createNewFile()) return true;
+				else{
+					Utils.warn("Could not create "+tag+" file.");
+				}
+			} catch (IOException e) {
+				Utils.warn("Could not create "+tag+" file: "+e.getMessage());
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public File getVanishedFile(){
+		return vanishedFile;
+	}
+	
+	public void setVanishedFile(File file) {
+		vanishedFile = file;
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
@@ -106,9 +213,27 @@ public class SimplyVanishCore implements Listener{
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
-	void onServerListPing(ServerListPingEvent event){
-		// TODO: try reflection ??
+	void onPotionSplash(PotionSplashEvent event){
+		try{
+			final List<Entity> rem = new LinkedList<Entity>();
+			final Collection<LivingEntity> affected = event.getAffectedEntities();
+			for ( LivingEntity entity : affected){
+				if (entity instanceof Player ){
+					if ( vanished.contains(((Player)entity).getName().toLowerCase())){
+						rem.add(entity);
+					}
+				}
+			}
+			if (!rem.isEmpty()) affected.removeAll(rem);
+		} catch(Throwable t){
+			// ignore (fast addition.)
+		}
 	}
+	
+//	@EventHandler(priority=EventPriority.HIGHEST)
+//	void onServerListPing(ServerListPingEvent event){
+//		// TODO: try reflection ??
+//	}
 	
 	/**
 	 * Attempt some workaround for experience orbs:
@@ -194,7 +319,7 @@ public class SimplyVanishCore implements Listener{
 	 */
 	public void onVanish(Player player) {
 		String name = player.getName();
-		boolean was = !vanished.add(name.toLowerCase());
+		boolean was = !addVanishedName(name);
 		String msg = null;
 		if (settings.sendFakeMessages && !settings.fakeQuitMessage.isEmpty()){
 			msg = settings.fakeQuitMessage.replaceAll("%name", name);
@@ -225,7 +350,7 @@ public class SimplyVanishCore implements Listener{
 	 */
 	public void onReappear(Player player) {
 		String name = player.getName();
-		boolean was = vanished.remove(name.toLowerCase());
+		boolean was = removeVanishedName(name);
 		String msg = null;
 		if (settings.sendFakeMessages && !settings.fakeJoinMessage.isEmpty()){
 			msg = settings.fakeJoinMessage.replaceAll("%name", name);
@@ -258,7 +383,7 @@ public class SimplyVanishCore implements Listener{
 		String lcName = playerName.toLowerCase();
 		Server server = Bukkit.getServer();
 		// Show to or hide from online players:
-		if (vanished.remove(lcName)) onVanish(player); // remove: people will get notified.
+		if (vanished.remove(lcName)) onVanish(player); // remove: a) do not save 2x b) people will get notified.
 		else{
 			for (Player other : server.getOnlinePlayers()){
 				if ( !other.canSee(player)) showPlayer(player, other);
@@ -363,5 +488,26 @@ public class SimplyVanishCore implements Listener{
 			}
 		}
 	}
+
+	public boolean addVanishedName(String name) {
+		if (vanished.add(name.toLowerCase())){
+			if (settings.saveVanishedAlways) saveVanished();
+			return true;
+		}
+		else return false;
+	}
+
+	public boolean removeVanishedName(String name) {
+		if (vanished.remove(name.toLowerCase())){
+			if (settings.saveVanishedAlways) saveVanished();
+			return true;
+		}
+		else return false;
+	}
+
+	final Set<String> getVanished() {
+		return vanished;
+	}
+
 
 }

@@ -13,8 +13,14 @@
 - ?(add) Configurable: command aliases for standard commands (read from config, applied directly)
 * what with list ?
 - ?(add) prevent chat toggle 
+?(add) '/simplyvanish clear' command to let all players be seen again.
+?(add) Prevent commands feature ? 
 
-- (add) Prevent commands feature ? 
+(0.3.2)
+- (add) '/simplyvanish drop' ('/simvan drop') command to drop the item in hand.
+- (add) Prevent splash potion effects on vanished players.
+- (add) Configurable: save and load vanished players at start/shutdown
+- (add) Configurable: auto-vanish permission [disabled by default] 
 
 (0.3.1) ["panic update"]
 - (add) Panic settings (hidden) that allow to do stuff, if hiding or showing fails internally.

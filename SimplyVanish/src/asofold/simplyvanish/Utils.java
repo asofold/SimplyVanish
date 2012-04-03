@@ -6,9 +6,13 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 /**
  * Some static methods for more generic purpose.
@@ -131,5 +135,15 @@ public class Utils {
 		for ( Player player : players){
 			player.sendMessage(msg);
 		}
+	}
+
+	public static void dropItemInHand(Player player) {
+		ItemStack stack = player.getItemInHand();
+		if ( stack == null) return;
+		if(stack.getType() == Material.AIR) return;
+		ItemStack newStack = stack.clone();
+		Item item = player.getWorld().dropItem(player.getLocation().add(new Vector(0.0, 1.0, 0.0)), newStack);
+		item.setVelocity(player.getLocation().getDirection().normalize().multiply(0.05));
+		if ( item != null && !item.isDead()) player.setItemInHand(null);
 	}
 }

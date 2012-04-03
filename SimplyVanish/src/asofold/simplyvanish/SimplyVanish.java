@@ -1,5 +1,6 @@
 package asofold.simplyvanish;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +51,7 @@ public class SimplyVanish extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
+		if (core.settings.saveVanished) core.saveVanished();
 		core.setEnabled(false);
 		// TODO: maybe let all players see each other again?
 		System.out.println("[SimplyVanish] Disabled.");
@@ -57,8 +59,9 @@ public class SimplyVanish extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		core.setVanishedFile(new File(getDataFolder(), "vanished.dat"));
 		// load settings
-		loadSettings();
+		loadSettings(); // will also load vanished players
 		// just in case quadratic time checking:
 		for ( Player player : getServer().getOnlinePlayers()){
 			core.updateVanishState(player);
@@ -82,6 +85,7 @@ public class SimplyVanish extends JavaPlugin {
 		core.setSettings(settings);
 		registerCommandAliases(config);
 		saveConfig(); // TODO: maybe check for changes, somehow ?
+		if (settings.saveVanished) core.loadVanished();
 	}
 	
 	@Override
@@ -150,13 +154,18 @@ public class SimplyVanish extends JavaPlugin {
 			return true;
 		} 
 		else if ( label.equals("simplyvanish")){
-			if (length==1 && args[0].equals("reload")){
+			if (length==1 && args[0].equalsIgnoreCase("reload")){
 				if ( !Utils.checkPerm(sender, "simplyvanish.reload")) return true;
 				loadSettings();
 				sender.sendMessage("[SimplyVanish] Settings reloaded.");
 				return true;
 			}
-			return true;
+			else if (length==1 && args[0].equalsIgnoreCase("drop")){
+				if ( !Utils.checkPerm(sender, "simplyvanish.cmd.drop")) return true;
+				if (!Utils.checkPlayer(sender)) return true;
+				Utils.dropItemInHand((Player) sender);
+				return true;
+			}
 		}
 		
 		sender.sendMessage("[SimplyVanish] Unrecognized command or number of arguments.");
@@ -205,18 +214,18 @@ public class SimplyVanish extends JavaPlugin {
 			return;
 		}
 		// The less simple part.
-		if (vanished) core.vanished.add(playerName.toLowerCase());
-		else if (core.vanished.remove(playerName)) return;
+		if (vanished) core.addVanishedName(playerName);
+		else if (core.removeVanishedName(playerName)) return;
 		else{
 			// Expensive part:
 			String match = null;
-			for (String n : core.vanished){
+			for (String n : core.getVanished()){
 				if ( n.equalsIgnoreCase(playerName)){
 					match = n;
 					break;
 				}
 			}
-			if ( match != null) core.vanished.remove(match);
+			if ( match != null) core.removeVanishedName(match);
 		}
 	}
 	
@@ -227,7 +236,7 @@ public class SimplyVanish extends JavaPlugin {
 	 */
 	public static boolean isVanished(String playerName){
 		if (!core.isEnabled()) return false;
-		else return core.vanished.contains(playerName.toLowerCase());
+		else return core.getVanished().contains(playerName.toLowerCase());
 	}
 	
 	/**
@@ -237,7 +246,7 @@ public class SimplyVanish extends JavaPlugin {
 	 */
 	public static boolean isVanished(Player player){
 		if (!core.isEnabled()) return false;
-		else return core.vanished.contains(player.getName().toLowerCase());
+		else return core.getVanished().contains(player.getName().toLowerCase());
 	}
 	
 	/**
@@ -249,7 +258,7 @@ public class SimplyVanish extends JavaPlugin {
 	 */
 	public static Set<String> getVanishedPlayers(){
 		if (!core.isEnabled()) return new HashSet<String>();
-		else return core.vanished;
+		else return core.getVanished();
 	}
 	
 	void registerCommandAliases(Configuration config) {
