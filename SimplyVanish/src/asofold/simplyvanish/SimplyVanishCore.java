@@ -50,8 +50,12 @@ public class SimplyVanishCore implements Listener{
 
 	@EventHandler(priority=EventPriority.HIGHEST)
 	void onPlayerJoin( PlayerJoinEvent event){
+		Player player = event.getPlayer();
+		if (settings.autoVanishUse){
+			if (Utils.hasPermission(player, settings.autoVanishPerm)) vanished.add(player.getName().toLowerCase());
+		}
 		updateVanishState(event.getPlayer());
-		if ( settings.suppressJoinMessage && vanished.contains(event.getPlayer().getName().toLowerCase())){
+		if ( settings.suppressJoinMessage && vanished.contains(player.getName().toLowerCase())){
 			event.setJoinMessage(null);
 		}
 	}
