@@ -50,6 +50,11 @@ public class Settings {
 	public boolean panicRunCommand = false;
 	public String panicCommand = "";
 	
+	public boolean saveVanished = true;
+	public boolean saveVanishedAlways = true;
+	public boolean autoVanishUse = false;
+	public String autoVanishPerm = "simplyvanish.auto-vanish";
+	
 	/**
 	 * Adjust internal settings to the given configuration.
 	 * TODO: put this to plugin / some settings helper
@@ -73,6 +78,10 @@ public class Settings {
 		notifyState = config.getBoolean("messages.notify.state.enabled");
 		notifyStatePerm = config.getString("messages.notify.state.permission");
 		// command aliases: see SimplyVanish plugin.
+		saveVanished = config.getBoolean("save-vanished");
+		saveVanishedAlways = config.getBoolean("save-vanished-always");
+		autoVanishUse = config.getBoolean("auto-vanish.use");
+		autoVanishPerm = config.getString("auto-vanish.permission");
 		
 		panicKickAll = config.getBoolean("panic.kick-all", false);
 		panicKickInvolved =  config.getBoolean("panic.kick-involved", false);
@@ -108,7 +117,10 @@ public class Settings {
 //			defaults.set("commands."+cmd+".aliases", new LinkedList<String>());
 //		}
 //		defaults.set("server-ping.subtract-vanished", false); // TODO: Feature request pending ...
-//		defaults.set("persistence", new Boolean(false)); // TODO: load/save vanished players.
+		defaults.set("save-vanished", ref.saveVanished); // TODO: load/save vanished players.
+		defaults.set("save-vanished-always", ref.saveVanishedAlways); // TODO: load/save vanished players.
+		defaults.set("auto-vanish.use", ref.autoVanishUse);
+		defaults.set("auto-vanish.permission", ref.autoVanishPerm);
 		return defaults;
 	}
 }
