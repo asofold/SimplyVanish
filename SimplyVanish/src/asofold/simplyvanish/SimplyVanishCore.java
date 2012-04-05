@@ -524,5 +524,21 @@ public class SimplyVanishCore implements Listener{
 		return vanished;
 	}
 
+	/**
+	 * Toggle nosee state
+	 * @param sender
+	 */
+	public void onToggleNosee(Player player) {
+		String lcn = player.getName().toLowerCase();
+		if (nosee.remove(lcn)){
+			player.sendMessage(SimplyVanish.label+ChatColor.GRAY+"You now "+ChatColor.GREEN+"see "+ChatColor.GRAY+"other vanished players.");
+		}
+		else{
+			nosee.add(lcn);
+			player.sendMessage(SimplyVanish.label+ChatColor.GRAY+"You now "+ChatColor.RED+"can not see "+ChatColor.GRAY+"other vanished players anymore.");
+		}
+		updateVanishState(player);
+	}
+
 
 }

@@ -26,8 +26,12 @@
 - !(add) A way to set/toggle nosee - either a flag for vanish or an extra command.
 - !(add) nosee support, to not see vanished players
 - ?(add) vanish configs for faster checking and easier internals.  
+- !(add) Central access points methods for: adding and removing players to the vanished set + for messaging players (ensure).
 
+(0.4.0-DEV-1) [Quick addition: nosee, might get changed / removed.]
+- (add) Command to not see vanished though you could: "/nosee" - toggle seeing for oneself, permission: simplyvanish.see-all [Subject to changes / removal]
 - (refactor) Use a central access point method to determine if a player should see vanished players, checking the nosee-set.
+- (bugfix) No effect but for later, potentially: Put lower case label to command alias map.
 
 (0.3.3)
 - (bugfix) Only show a panic log message if the server did really not return a Player [showed up always].

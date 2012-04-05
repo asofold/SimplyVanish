@@ -92,16 +92,26 @@ public class SimplyVanish extends JavaPlugin {
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
 		label = getMappedCommandLabel(label);
-		int length = args.length;
+		int len = args.length;
 		boolean isPlayer = sender instanceof Player;
-		if ( label.equals("vanish") && length==0 ){
+		
+		if (label.equals("nosee") && len==0){
+			// TODO: EXPERIMENTAL ADDITION
+			// toggle for oneself.
+			if ( !Utils.checkPlayer(sender)) return true;
+			if ( !Utils.checkPerm(sender, "simplyvanish.see-all")) return true;
+			core.onToggleNosee((Player) sender);
+			return true;
+		}
+		
+		else if ( label.equals("vanish") && len==0 ){
 			if ( !Utils.checkPlayer(sender)) return true;
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
 			// Make sure the player is vanished...
 			core.onVanish((Player) sender);
 			return true;
 		} 
-		else if ( label.equals("vanish") && length==1 ){
+		else if ( label.equals("vanish") && len==1 ){
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.other")) return true;
 			// Make sure the other player is vanished...
 			String name = args[0].trim();
@@ -109,14 +119,14 @@ public class SimplyVanish extends JavaPlugin {
 			sender.sendMessage("Vanish player: "+name);
 			return true;
 		} 
-		else if (label.equals("reappear") && length==0 ){
+		else if (label.equals("reappear") && len==0 ){
 			if ( !Utils.checkPlayer(sender)) return true;
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
 			// Let the player be seen...
 			core.onReappear((Player) sender);
 			return true;
 		} 
-		else if ( label.equals("reappear") && length==1 ){
+		else if ( label.equals("reappear") && len==1 ){
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.other")) return true;
 			// Make sure the other player is shown...
 			String name = args[0].trim();
@@ -124,7 +134,7 @@ public class SimplyVanish extends JavaPlugin {
 			sender.sendMessage("Show player: "+name);
 			return true;
 		} 
-		else if ( label.equals("tvanish") && length==0 ){
+		else if ( label.equals("tvanish") && len==0 ){
 			if ( !Utils.checkPlayer(sender)) return true;
 			Player player = (Player) sender;
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
@@ -154,13 +164,13 @@ public class SimplyVanish extends JavaPlugin {
 			return true;
 		} 
 		else if ( label.equals("simplyvanish")){
-			if (length==1 && args[0].equalsIgnoreCase("reload")){
+			if (len==1 && args[0].equalsIgnoreCase("reload")){
 				if ( !Utils.checkPerm(sender, "simplyvanish.reload")) return true;
 				loadSettings();
 				sender.sendMessage("[SimplyVanish] Settings reloaded.");
 				return true;
 			}
-			else if (length==1 && args[0].equalsIgnoreCase("drop")){
+			else if (len==1 && args[0].equalsIgnoreCase("drop")){
 				if ( !Utils.checkPerm(sender, "simplyvanish.cmd.drop")) return true;
 				if (!Utils.checkPlayer(sender)) return true;
 				Utils.dropItemInHand((Player) sender);
@@ -293,7 +303,7 @@ public class SimplyVanish extends JavaPlugin {
 			List<String> aliases = command.getAliases();
 			if ( aliases == null) continue;
 			for ( String alias: aliases){
-				commandAliases.put(alias.trim().toLowerCase(), label);
+				commandAliases.put(alias.trim().toLowerCase(), label.toLowerCase());
 			}
 		}
 	}
