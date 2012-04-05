@@ -146,4 +146,9 @@ public class Utils {
 		item.setVelocity(player.getLocation().getDirection().normalize().multiply(0.05));
 		if ( item != null && !item.isDead()) player.setItemInHand(null);
 	}
+
+	public static void send(CommandSender sender, String message) {
+		if (sender instanceof Player) sender.sendMessage(message);
+		else sender.sendMessage(ChatColor.stripColor(message));
+	}
 }
