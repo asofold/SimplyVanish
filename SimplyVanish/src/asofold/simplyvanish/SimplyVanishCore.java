@@ -45,9 +45,14 @@ import asofold.simplyvanish.config.Settings;
  */
 public class SimplyVanishCore implements Listener{
 	/**
-	 * Same as in SimplyVanish.
+	 * Vanished players.
 	 */
 	private final Set<String> vanished = new HashSet<String>();
+	
+	/**
+	 * Players that do not want to see vanished players.
+	 */
+	private Set<String> nosee = new HashSet<String>();
 	
 	/**
 	 * Flag for if the plugin is enabled.
@@ -331,8 +336,8 @@ public class SimplyVanishCore implements Listener{
 				// (only consider a changed canSee state)
 				if (settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm)){
 					if (!was) other.sendMessage(SimplyVanish.label+ChatColor.GREEN+name+ChatColor.GRAY+" vanished.");
-					if (!Utils.hasPermission(other, "simplyvanish.see-all")) hidePlayer(player, other);
-				} else if (!Utils.hasPermission(other, "simplyvanish.see-all")){
+					if (!shouldSeeVanished(other)) hidePlayer(player, other);
+				} else if (!shouldSeeVanished(other)){
 					hidePlayer(player, other);
 					if (msg != null) other.sendMessage(msg);
 				}
@@ -342,6 +347,16 @@ public class SimplyVanishCore implements Listener{
 		}
 		player.sendMessage(SimplyVanish.label+ChatColor.GRAY+"You are "+(was?"still":"now")+" "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players!");
 
+	}
+
+	/**
+	 * Central access point for checking if player has permission and wants to see vanished players.
+	 * @param player
+	 * @return
+	 */
+	public  boolean shouldSeeVanished(Player player) {
+		if (nosee.contains(player.getName().toLowerCase())) return false;
+		else return Utils.hasPermission(player, "simplyvanish.see-all"); 
 	}
 
 	/**
@@ -363,7 +378,7 @@ public class SimplyVanishCore implements Listener{
 				showPlayer(player, other);
 				if (settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm)){
 					other.sendMessage(SimplyVanish.label+ChatColor.RED+name+ChatColor.GRAY+" reappeared.");
-				} else if (!Utils.hasPermission(other, "simplyvanish.see-all")){
+				} else if (!shouldSeeVanished(other)){
 					if (msg != null) other.sendMessage(msg);
 				}
 			} 
@@ -391,7 +406,7 @@ public class SimplyVanishCore implements Listener{
 			}
 		}
 		// Show or hide other vanished players:
-		if ( !Utils.hasPermission(player, "simplyvanish.see-all")){
+		if ( !shouldSeeVanished(player)){
 			for (String name : vanished){
 				if ( name.equals(playerName)) continue;
 				Player other = server.getPlayerExact(name);

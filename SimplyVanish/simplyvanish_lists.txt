@@ -16,6 +16,19 @@
 ?(add) '/simplyvanish clear' command to let all players be seen again.
 ?(add) Prevent commands feature ? 
 
+(0.4.0)
+- !(add) Configuration flag for abort-on-inconsistency or similar ()
+*** [FEATURE REQUEST]
+*** Consistent messages for nosee !
+! ENSURE: The command for nosee should be possible for the case: a player can see all but not vanish.
+- !(add) add nosee to vanished output ?
+- ?(add) API: canNowSeeVanished(Player player) 
+- !(add) A way to set/toggle nosee - either a flag for vanish or an extra command.
+- !(add) nosee support, to not see vanished players
+- ?(add) vanish configs for faster checking and easier internals.  
+
+- (refactor) Use a central access point method to determine if a player should see vanished players, checking the nosee-set.
+
 (0.3.3)
 - (bugfix) Only show a panic log message if the server did really not return a Player [showed up always].
 
