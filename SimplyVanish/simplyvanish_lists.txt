@@ -16,6 +16,9 @@
 ?(add) '/simplyvanish clear' command to let all players be seen again.
 ?(add) Prevent commands feature ? 
 
+(0.3.3)
+- (bugfix) Only show a panic log message if the server did really not return a Player [showed up always].
+
 (0.3.2)
 - (add) '/simplyvanish drop' ('/simvan drop') command to drop the item in hand.
 - (add) Prevent splash potion effects on vanished players.
