@@ -28,6 +28,12 @@
 - ?(add) vanish configs for faster checking and easier internals.  
 - !(add) Central access points methods for: adding and removing players to the vanished set + for messaging players (ensure).
 
+(0.4.0-DEV-2)
+- (add) Save nosee state of players.
+- (add) nosee tag for the vanished list
+- (bugfix) Do not show if vanished or not again if just adjusting state due to nosee-toggle.
+- (adjust) Colors to all messages.
+
 (0.4.0-DEV-1) [Quick addition: nosee, might get changed / removed.]
 - (add) Command to not see vanished though you could: "/nosee" - toggle seeing for oneself, permission: simplyvanish.see-all [Subject to changes / removal]
 - (refactor) Use a central access point method to determine if a player should see vanished players, checking the nosee-set.

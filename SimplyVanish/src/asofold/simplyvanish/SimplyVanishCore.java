@@ -95,6 +95,9 @@ public class SimplyVanishCore implements Listener{
 			for (String n : vanished){
 				writer.write(n+"\n");
 			}
+			for ( String n : nosee){
+				writer.write("nosee:"+n+"\n");
+			}
 		} 
 		catch (IOException e) {
 			Utils.warn("Can not save vanished players: "+e.getMessage());
@@ -126,7 +129,11 @@ public class SimplyVanishCore implements Listener{
 			while ( line != null){
 				String n = line.trim().toLowerCase();
 				if (!n.isEmpty()){
-					vanished.add(n);
+					if (n.startsWith("nosee:") && n.length()>6){
+						n = n.substring(7).trim();
+						if (!n.isEmpty()) nosee.add(n);
+					}
+					else vanished.add(n);
 				}
 				line = reader.readLine();
 			}
@@ -177,7 +184,7 @@ public class SimplyVanishCore implements Listener{
 		if ( settings.suppressQuitMessage && vanished.contains(event.getPlayer().getName().toLowerCase())){
 			event.setQuitMessage(null);
 			if (settings.notifyState){
-				String msg = SimplyVanish.label+ChatColor.GREEN+event.getPlayer().getName()+ChatColor.GRAY+" quit.";
+				String msg = SimplyVanish.msgLabel+ChatColor.GREEN+event.getPlayer().getName()+ChatColor.GRAY+" quit.";
 				for (Player other : Bukkit.getServer().getOnlinePlayers()){
 					if ( Utils.hasPermission(other, settings.notifyStatePerm)) other.sendMessage(msg);
 				}
@@ -191,7 +198,7 @@ public class SimplyVanishCore implements Listener{
 		if ( settings.suppressQuitMessage && vanished.contains(event.getPlayer().getName().toLowerCase())){
 			event.setLeaveMessage(null);
 			if (settings.notifyState && !event.isCancelled()){
-				String msg = SimplyVanish.label+ChatColor.GREEN+event.getPlayer().getName()+ChatColor.GRAY+" was kicked.";
+				String msg = SimplyVanish.msgLabel+ChatColor.GREEN+event.getPlayer().getName()+ChatColor.GRAY+" was kicked.";
 				for (Player other : Bukkit.getServer().getOnlinePlayers()){
 					if ( Utils.hasPermission(other, settings.notifyStatePerm)) other.sendMessage(msg);
 				}
@@ -319,10 +326,19 @@ public class SimplyVanishCore implements Listener{
 	}
 	
 	/**
-	 * Adjust state of player to vanished.
+	 * Adjust state of player to vanished, message player.
 	 * @param player
 	 */
 	public void onVanish(Player player) {
+		onVanish(player, true);
+	}
+	
+	/**
+	 * Adjust state of player to vanished.
+	 * @param player
+	 * @param message If to message players.
+	 */
+	public void onVanish(Player player, boolean message) {
 		String name = player.getName();
 		boolean was = !addVanishedName(name);
 		String msg = null;
@@ -335,18 +351,19 @@ public class SimplyVanishCore implements Listener{
 			if ( other.canSee(player)){
 				// (only consider a changed canSee state)
 				if (settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm)){
-					if (!was) other.sendMessage(SimplyVanish.label+ChatColor.GREEN+name+ChatColor.GRAY+" vanished.");
+					if (!was){
+						if (message) other.sendMessage(SimplyVanish.msgLabel+ChatColor.GREEN+name+ChatColor.GRAY+" vanished.");
+					}
 					if (!shouldSeeVanished(other)) hidePlayer(player, other);
 				} else if (!shouldSeeVanished(other)){
 					hidePlayer(player, other);
 					if (msg != null) other.sendMessage(msg);
 				}
 			} else if (!was && settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm)){
-				other.sendMessage(SimplyVanish.label+ChatColor.GREEN+name+ChatColor.GRAY+" vanished.");
+				if (message) other.sendMessage(SimplyVanish.msgLabel+ChatColor.GREEN+name+ChatColor.GRAY+" vanished.");
 			}
 		}
-		player.sendMessage(SimplyVanish.label+ChatColor.GRAY+"You are "+(was?"still":"now")+" "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players!");
-
+		if (message) player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You are "+(was?"still":"now")+" "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players!");
 	}
 
 	/**
@@ -377,16 +394,16 @@ public class SimplyVanishCore implements Listener{
 				// (only consider a changed canSee state)
 				showPlayer(player, other);
 				if (settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm)){
-					other.sendMessage(SimplyVanish.label+ChatColor.RED+name+ChatColor.GRAY+" reappeared.");
+					other.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+name+ChatColor.GRAY+" reappeared.");
 				} else if (!shouldSeeVanished(other)){
 					if (msg != null) other.sendMessage(msg);
 				}
 			} 
 			else if (was && settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm)){
-				other.sendMessage(SimplyVanish.label+ChatColor.RED+name+ChatColor.GRAY+" reappeared.");
+				other.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+name+ChatColor.GRAY+" reappeared.");
 			}
 		}
-		player.sendMessage(SimplyVanish.label+ChatColor.GRAY+"You are "+(was?"still":"now")+" "+ChatColor.RED+"visible"+ChatColor.GRAY+" to everyone!");
+		player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You are "+(was?"still":"now")+" "+ChatColor.RED+"visible"+ChatColor.GRAY+" to everyone!");
 	}
 	
 	/**
@@ -394,11 +411,20 @@ public class SimplyVanishCore implements Listener{
 	 * @param player
 	 */
 	public void updateVanishState(Player player){
+		updateVanishState(player, true);
+	}
+	
+	/**
+	 * Heavy update for who can see this player and whom this player can see.
+	 * @param player
+	 * @param message If to message the player.
+	 */
+	public void updateVanishState(Player player, boolean message){
 		String playerName = player.getName();
 		String lcName = playerName.toLowerCase();
 		Server server = Bukkit.getServer();
 		// Show to or hide from online players:
-		if (vanished.remove(lcName)) onVanish(player); // remove: a) do not save 2x b) people will get notified.
+		if (vanished.remove(lcName)) onVanish(player, message); // remove: a) do not save 2x b) people will get notified.
 		else{
 			for (Player other : server.getOnlinePlayers()){
 				if ( !other.canSee(player)) showPlayer(player, other);
@@ -531,13 +557,35 @@ public class SimplyVanishCore implements Listener{
 	public void onToggleNosee(Player player) {
 		String lcn = player.getName().toLowerCase();
 		if (nosee.remove(lcn)){
-			player.sendMessage(SimplyVanish.label+ChatColor.GRAY+"You now "+ChatColor.GREEN+"see "+ChatColor.GRAY+"other vanished players.");
+			player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You now "+ChatColor.GREEN+"see "+ChatColor.GRAY+"other vanished players.");
 		}
 		else{
 			nosee.add(lcn);
-			player.sendMessage(SimplyVanish.label+ChatColor.GRAY+"You now "+ChatColor.RED+"can not see "+ChatColor.GRAY+"other vanished players anymore.");
+			player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You now "+ChatColor.RED+"can not see "+ChatColor.GRAY+"other vanished players.");
 		}
-		updateVanishState(player);
+		updateVanishState(player, false);
+	}
+
+	public String getVanishedMessage() {
+		List<String> vanished = getSortedVanished();
+		StringBuilder builder = new StringBuilder();
+		builder.append(ChatColor.GOLD+"[VANISHED]");
+		Server server = Bukkit.getServer();
+		for ( String n : vanished){
+			Player player = server.getPlayerExact(n);
+			boolean isNosee = nosee.contains(n); // is lower case
+			if ( player == null ){
+				builder.append(" "+ChatColor.GRAY+"("+n+")");
+				if (isNosee) builder.append(ChatColor.DARK_RED+"[NOSEE]");
+			}
+			else{
+				builder.append(" "+ChatColor.GREEN+player.getName());
+				if (!Utils.hasPermission(player, "simplyvanish.see-all")) builder.append(ChatColor.DARK_RED+"[CANTSEE]");
+				else if (isNosee) builder.append(ChatColor.RED+"[NOSEE]");
+			}
+		}
+		if (vanished.isEmpty()) builder.append(" "+ChatColor.DARK_GRAY+"<none>");
+		return builder.toString();
 	}
 
 

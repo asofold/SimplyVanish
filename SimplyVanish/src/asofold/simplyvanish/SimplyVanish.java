@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -29,7 +28,7 @@ public class SimplyVanish extends JavaPlugin {
 	
 	static final SimplyVanishCore core = new SimplyVanishCore();
 
-	public static final String label = ChatColor.GOLD+"[SimplyVanish] ";
+	public static final String msgLabel = ChatColor.GOLD+"[SimplyVanish] ";
 	
 	public static final String[] baseLabels = new String[]{
 		"vanish", "reappear", "tvanish", "simplyvanish","vanished",
@@ -93,7 +92,6 @@ public class SimplyVanish extends JavaPlugin {
 			String label, String[] args) {
 		label = getMappedCommandLabel(label);
 		int len = args.length;
-		boolean isPlayer = sender instanceof Player;
 		
 		if (label.equals("nosee") && len==0){
 			// TODO: EXPERIMENTAL ADDITION
@@ -103,7 +101,6 @@ public class SimplyVanish extends JavaPlugin {
 			core.onToggleNosee((Player) sender);
 			return true;
 		}
-		
 		else if ( label.equals("vanish") && len==0 ){
 			if ( !Utils.checkPlayer(sender)) return true;
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
@@ -116,7 +113,7 @@ public class SimplyVanish extends JavaPlugin {
 			// Make sure the other player is vanished...
 			String name = args[0].trim();
 			setVanished(name, true);
-			sender.sendMessage("Vanish player: "+name);
+			Utils.send(sender, msgLabel + "Vanish player: "+name);
 			return true;
 		} 
 		else if (label.equals("reappear") && len==0 ){
@@ -131,7 +128,7 @@ public class SimplyVanish extends JavaPlugin {
 			// Make sure the other player is shown...
 			String name = args[0].trim();
 			setVanished(name, false);
-			sender.sendMessage("Show player: "+name);
+			Utils.send(sender, msgLabel + "Show player: "+name);
 			return true;
 		} 
 		else if ( label.equals("tvanish") && len==0 ){
@@ -143,31 +140,14 @@ public class SimplyVanish extends JavaPlugin {
 		}
 		else if (label.equals("vanished")){
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanished")) return true;
-			List<String> vanished = core.getSortedVanished();
-			StringBuilder builder = new StringBuilder();
-			builder.append((isPlayer?ChatColor.GOLD.toString():"")+"[VANISHED]");
-			Server server = getServer();
-			String c = "";
-			for ( String n : vanished){
-				Player player = server.getPlayerExact(n);
-				if ( player == null ){
-					if (isPlayer) c = ChatColor.GRAY.toString();
-					builder.append(" "+c+"("+n+")");
-				}
-				else{
-					if ( isPlayer) c = ChatColor.GREEN.toString();
-					builder.append(" "+c+player.getName());
-				}
-			}
-			if (vanished.isEmpty()) builder.append(" "+((isPlayer?ChatColor.DARK_GRAY:"")+"<none>"));
-			sender.sendMessage(builder.toString());
+			Utils.send(sender, core.getVanishedMessage());
 			return true;
 		} 
 		else if ( label.equals("simplyvanish")){
 			if (len==1 && args[0].equalsIgnoreCase("reload")){
 				if ( !Utils.checkPerm(sender, "simplyvanish.reload")) return true;
 				loadSettings();
-				sender.sendMessage("[SimplyVanish] Settings reloaded.");
+				Utils.send(sender, msgLabel + "Settings reloaded.");
 				return true;
 			}
 			else if (len==1 && args[0].equalsIgnoreCase("drop")){
@@ -178,7 +158,7 @@ public class SimplyVanish extends JavaPlugin {
 			}
 		}
 		
-		sender.sendMessage("[SimplyVanish] Unrecognized command or number of arguments.");
+		Utils.send(sender, msgLabel + ChatColor.DARK_RED+"Unrecognized command or number of arguments.");
 		return false;
 	}
 	
