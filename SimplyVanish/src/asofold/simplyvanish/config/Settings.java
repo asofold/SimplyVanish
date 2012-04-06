@@ -55,6 +55,8 @@ public class Settings {
 	public boolean autoVanishUse = false;
 	public String autoVanishPerm = "simplyvanish.auto-vanish";
 	
+	public boolean noAbort = false;
+	
 	/**
 	 * Adjust internal settings to the given configuration.
 	 * TODO: put this to plugin / some settings helper
@@ -92,6 +94,8 @@ public class Settings {
 		
 		panicRunCommand = config.getBoolean("panic.run-command", false);
 		panicCommand = config.getString("panic.command", "");
+		
+		noAbort = config.getBoolean("no-abort");
 	}
 	
 	public static MemoryConfiguration getDefaultConfig(){
@@ -121,6 +125,7 @@ public class Settings {
 		defaults.set("save-vanished-always", ref.saveVanishedAlways); // TODO: load/save vanished players.
 		defaults.set("auto-vanish.use", ref.autoVanishUse);
 		defaults.set("auto-vanish.permission", ref.autoVanishPerm);
+		defaults.set("no-abort", ref.noAbort);
 		return defaults;
 	}
 }
