@@ -468,7 +468,7 @@ public class SimplyVanishCore implements Listener{
 	 * @param canSee 
 	 */
 	void showPlayer(Player player, Player canSee){
-		if (!Utils.checkOnline(player, "showPlayer")||!Utils.checkOnline(canSee, "showPlayer")) return;
+		if (!checkInvolved(player, canSee, "showPlayer")) return;
 		try{
 			canSee.showPlayer(player);
 		} catch(Throwable t){
@@ -484,7 +484,7 @@ public class SimplyVanishCore implements Listener{
 	 * @param canNotSee
 	 */
 	void hidePlayer(Player player, Player canNotSee){
-		if (!Utils.checkOnline(player, "hidePlayer")||!Utils.checkOnline(canNotSee, "hidePlayer")) return;
+		if (!checkInvolved(player, canNotSee, "hidePlayer")) return;
 		try{
 			canNotSee.hidePlayer(player);
 		} catch ( Throwable t){
@@ -492,6 +492,27 @@ public class SimplyVanishCore implements Listener{
 			t.printStackTrace();
 			onPanic(new Player[]{player, canNotSee});
 		}
+	}
+	
+	/**
+	 * Do online checking and also check settings if to continue.
+	 * @param player1 The player to be shown or hidden.
+	 * @param player2
+	 * @param tag
+	 * @return true if to continue false if to abort.
+	 */
+	boolean checkInvolved(Player player1, Player player2, String tag){
+		boolean inconsistent = false;
+		if (!Utils.checkOnline(player1, tag)) inconsistent = true;
+		if (!Utils.checkOnline(player2, tag)) inconsistent = true;
+		if (settings.noAbort){
+			try{
+				player1.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"Warning: Could not show you to player: "+player2.getName());
+			} catch (Throwable t){	
+			}
+			return true;
+		}
+		return !inconsistent; // "true = continue = not inconsistent"
 	}
 	
 	void onPanic(Player[] involved){
