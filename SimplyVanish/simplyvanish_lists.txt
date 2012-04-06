@@ -28,6 +28,10 @@
 - ?(add) vanish configs for faster checking and easier internals.  
 - !(add) Central access points methods for: adding and removing players to the vanished set + for messaging players (ensure).
 
+(0.4.0-DEV-3)
+- (add) no-abort flag for configuration (on player inconsistency it will still be attempted to show or hide).
+- (bugfix) Ensure that both players are checked for inconsistencies always.
+
 (0.4.0-DEV-2)
 - (add) Save nosee state of players.
 - (add) nosee tag for the vanished list
