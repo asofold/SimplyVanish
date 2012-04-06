@@ -96,7 +96,7 @@ public class Utils {
 	 */
 	public static final boolean checkOnline(final Player player, final String tag){
 		final boolean res = checkOnline(player);
-		if ( !res) warn("["+tag+"] Player is not online, though should: "+player.getName());
+		if ( !res) warn("["+tag+"] Inconsistent online state (flag="+player.isOnline()+") Server returns null for: "+player.getName());
 		return res;
 	}
 	
