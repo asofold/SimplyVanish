@@ -506,11 +506,12 @@ public class SimplyVanishCore implements Listener{
 		if (!Utils.checkOnline(player1, tag)) inconsistent = true;
 		if (!Utils.checkOnline(player2, tag)) inconsistent = true;
 		if (settings.noAbort){
+			return true;
+		} else if (inconsistent){
 			try{
 				player1.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"Warning: Could not use "+tag+" to player: "+player2.getName());
 			} catch (Throwable t){	
 			}
-			return true;
 		}
 		return !inconsistent; // "true = continue = not inconsistent"
 	}

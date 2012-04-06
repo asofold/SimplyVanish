@@ -30,6 +30,7 @@
 
 (0.4.0-DEV-3)
 - (add) no-abort flag for configuration (on player inconsistency it will still be attempted to show or hide).
+- (add) Warning message to the player if hide or show was aborted (might spam a bit).
 - (bugfix) Ensure that both players are checked for inconsistencies always.
 
 (0.4.0-DEV-2)
