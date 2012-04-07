@@ -462,7 +462,7 @@ public class SimplyVanishCore implements Listener{
 		String lcName = playerName.toLowerCase();
 		Server server = Bukkit.getServer();
 		// Show to or hide from online players:
-		if (vanished.remove(lcName)) onVanish(player, message); // remove: a) do not save 2x b) people will get notified.
+		if (removeVanishedName(lcName)) onVanish(player, message); // remove: a) do not save 2x b) people will get notified.
 		else{
 			for (Player other : server.getOnlinePlayers()){
 				if ( !other.canSee(player)) showPlayer(player, other);
@@ -471,7 +471,7 @@ public class SimplyVanishCore implements Listener{
 		}
 		// Show or hide other vanished players:
 		if ( !shouldSeeVanished(player)){
-			for (String name : vanished){
+			for (String name : vanishConfigs.keySet()){
 				if ( name.equals(playerName)) continue;
 				Player other = server.getPlayerExact(name);
 				if ( other != null){
@@ -479,7 +479,7 @@ public class SimplyVanishCore implements Listener{
 				}
 			}
 		} else{
-			for (String name : vanished){
+			for (String name : vanishConfigs.keySet()){
 				if ( name.equals(lcName)) continue;
 				Player other = server.getPlayerExact(name);
 				if ( other != null){
