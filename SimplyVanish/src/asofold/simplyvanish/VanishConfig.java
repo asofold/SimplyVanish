@@ -57,7 +57,8 @@ public class VanishConfig {
 	 * @return
 	 */
 	public void readFromArray(String[] parts, int startIndex, boolean allowVanish){
-		for ( String part : parts){
+		for ( int i = startIndex; i<parts.length; i++){
+			String part = parts[i];
 			String s = part.trim().toLowerCase();
 			if (s.isEmpty() || s.length()<2) continue;
 			boolean state = false;
