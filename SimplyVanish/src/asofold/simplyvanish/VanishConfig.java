@@ -7,10 +7,23 @@ package asofold.simplyvanish;
  * if in vanished: player is vanished.
  * if in parked: player is not vanished.
  * 
+ * TODO: use PriorityValue for this.
+ * 
  * @author mc_dev
  *
  */
 public class VanishConfig {
+	
+	/**
+	 * Player is vanished.
+	 */
+	public boolean vanished = false;
+	
+	/**
+	 * Player does not want to see other vanished players.<br>
+	 * (Though he potentially might y permission to.)
+	 */
+	public boolean see = true;
 	
 	/**
 	 * Player wants to be able to pick up items.
@@ -28,14 +41,54 @@ public class VanishConfig {
 	public boolean damage = false;
 	
 	/**
-	 * Player does not want to see other vanished players.<br>
-	 * (Though he potentially might y permission to.)
+	 * Player wants auto-vanish to be set. If set to null, default configuration behavior is used.
 	 */
-	public boolean nosee = false;
+	public Boolean auto = null;
 	
 	/**
-	 * Player wants to repell experience orbs [might not work well].
+	 * Read flags from an array from start index on.
+	 * @param parts
+	 * @param startIndex
+	 * @return
 	 */
-	public boolean repellExp = false;
+	public void readFromArray(String[] parts, int startIndex, boolean allowVanish){
+		for ( String part : parts){
+			String s = part.trim().toLowerCase();
+			if (s.isEmpty() || s.length()<2) continue;
+			boolean state = false;
+			if (s.startsWith("+")){
+				state = true;
+				s = s.substring(1);
+			}
+			else if (s.startsWith("-")){
+				state = false;
+				s = s.substring(1);
+			}
+			else state = true;
+			if ( s.equals("vanish") || s.equals("vanished")){
+				if (allowVanish) vanished = state;
+			}
+			else if (s.equals("see")) see = state;
+			else if (s.equals("pickup") || s.equals("pick")) pickup = state;
+			else if (s.equals("drop")) drop = state;
+			else if (s.equals("damage") || s.equals("dam") || s.equals("dmg")) damage = state; 
+			else if (s.equals("auto")) auto = state;
+		}
+	}
+
+	/**
+	 * Add all flags with a space in front of each, i.e. starting with a space.
+	 * @return
+	 */
+	public String toLine(){
+		StringBuilder out = new StringBuilder();
+		out.append(" "+(vanished?"+":"-")+"vanished");
+		out.append(" "+(see?"+":"-")+"see");
+		out.append(" "+(pickup?"+":"-")+"pickup");
+		out.append(" "+(drop?"+":"-")+"drop");
+		out.append(" "+(damage?"+":"-")+"damage");
+		out.append(" "+(auto?"+":"-")+"auto");
+		return out.toString();
+	}
 	
 }
