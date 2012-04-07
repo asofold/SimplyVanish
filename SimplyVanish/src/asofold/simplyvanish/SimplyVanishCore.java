@@ -214,10 +214,12 @@ public class SimplyVanishCore implements Listener{
 	@EventHandler(priority=EventPriority.HIGHEST)
 	void onPlayerKick(PlayerKickEvent event){
 		// (still set if cancelled)
-		if ( settings.suppressQuitMessage && vanished.contains(event.getPlayer().getName().toLowerCase())){
+		Player player = event.getPlayer();
+		String name = player.getName();
+		if ( settings.suppressQuitMessage && isVanished(name)){
 			event.setLeaveMessage(null);
 			if (settings.notifyState && !event.isCancelled()){
-				String msg = SimplyVanish.msgLabel+ChatColor.GREEN+event.getPlayer().getName()+ChatColor.GRAY+" was kicked.";
+				String msg = SimplyVanish.msgLabel+ChatColor.GREEN+name+ChatColor.GRAY+" was kicked.";
 				for (Player other : Bukkit.getServer().getOnlinePlayers()){
 					if ( Utils.hasPermission(other, settings.notifyStatePerm)) other.sendMessage(msg);
 				}
