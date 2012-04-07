@@ -77,18 +77,27 @@ public class VanishConfig {
 	}
 
 	/**
-	 * Add all flags with a space in front of each, i.e. starting with a space.
+	 * Add all flags with a space in front of each, i.e. starting with a space.<br>
+	 * Only adds the necessary ones.
 	 * @return
 	 */
 	public String toLine(){
 		StringBuilder out = new StringBuilder();
-		out.append(" "+(vanished?"+":"-")+"vanished");
-		out.append(" "+(see?"+":"-")+"see");
-		out.append(" "+(pickup?"+":"-")+"pickup");
-		out.append(" "+(drop?"+":"-")+"drop");
-		out.append(" "+(damage?"+":"-")+"damage");
-		out.append(" "+(auto?"+":"-")+"auto");
+		if (vanished) out.append(" +vanished");
+		if (!see) out.append(" -see");
+		if (pickup) out.append(" +pickup");
+		if (drop) out.append(" +drop");
+		if (damage) out.append(" +damage");
+		if (auto != null) out.append(" "+(auto?"+":"-")+"auto");
 		return out.toString();
+	}
+	
+	/**
+	 * Convenience method to save some space.
+	 * @return
+	 */
+	public boolean needsSave(){
+		return vanished || !see  || pickup || drop || damage || auto!=null;
 	}
 	
 }
