@@ -41,6 +41,11 @@ public class VanishConfig {
 	public boolean damage = false;
 	
 	/**
+	 * Become target of mobs.
+	 */
+	public boolean target = false;
+	
+	/**
 	 * Player wants auto-vanish to be set. If set to null, default configuration behavior is used.
 	 */
 	public Boolean auto = null;
@@ -72,6 +77,7 @@ public class VanishConfig {
 			else if (s.equals("pickup") || s.equals("pick")) pickup = state;
 			else if (s.equals("drop")) drop = state;
 			else if (s.equals("damage") || s.equals("dam") || s.equals("dmg")) damage = state; 
+			else if (s.equals("target")) target = state;
 			else if (s.equals("auto")) auto = state;
 		}
 	}
@@ -88,6 +94,7 @@ public class VanishConfig {
 		if (pickup) out.append(" +pickup");
 		if (drop) out.append(" +drop");
 		if (damage) out.append(" +damage");
+		if (target) out.append(" +target");
 		if (auto != null) out.append(" "+(auto?"+":"-")+"auto");
 		return out.toString();
 	}
@@ -97,7 +104,7 @@ public class VanishConfig {
 	 * @return
 	 */
 	public boolean needsSave(){
-		return vanished || !see  || pickup || drop || damage || auto!=null;
+		return vanished || !see  || pickup || drop || damage || target || auto!=null;
 	}
 	
 }
