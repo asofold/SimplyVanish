@@ -258,7 +258,7 @@ public class SimplyVanishCore implements Listener{
 			for ( LivingEntity entity : affected){
 				if (entity instanceof Player ){
 					String playerName = ((Player) entity).getName();
-					VanishConfig cfg = vanishConfigs.get(playerName);
+					VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
 					if (cfg == null) continue;
 					if (cfg.vanished){
 						if (!cfg.damage) rem.add(entity);
@@ -495,7 +495,7 @@ public class SimplyVanishCore implements Listener{
 	 */
 	public List<String> getSortedVanished(){
 		Collection<String> vanished = getVanishedPlayers();
-		List<String> sorted = new ArrayList<String>(vanishConfigs.size());
+		List<String> sorted = new ArrayList<String>(vanished.size());
 		sorted.addAll(vanished);
 		Collections.sort(sorted);
 		return sorted;
@@ -628,6 +628,7 @@ public class SimplyVanishCore implements Listener{
 			player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You now "+ChatColor.RED+"can not see "+ChatColor.GRAY+"other vanished players.");
 		}
 		updateVanishState(player, false);
+		if (settings.saveVanished && settings.saveVanishedAlways) saveVanished();
 	}
 
 	public String getVanishedMessage() {
