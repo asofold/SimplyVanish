@@ -104,7 +104,7 @@ public class SimplyVanishCore implements Listener{
 				if (cfg.needsSave()){
 					writer.write(n);
 					writer.write(cfg.toLine());
-					writer.write(n+"\n");
+					writer.write("\n");
 				}
 			}
 		} 
@@ -712,6 +712,11 @@ public class SimplyVanishCore implements Listener{
 			if (entry.getValue().vanished) out.add(entry.getKey());
 		}
 		return out;
+	}
+
+	public void setFlags(String name, String[] args, int i) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
