@@ -96,7 +96,8 @@ public class SimplyVanish extends JavaPlugin {
 			if (args[i].startsWith("+") || args[i].startsWith("-")){
 				len --;
 				hasFlags = true;
-			}
+			} 
+			else break;
 		}
 		
 		if (label.equals("nosee") && len==0){
