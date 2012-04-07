@@ -91,6 +91,13 @@ public class SimplyVanish extends JavaPlugin {
 			String label, String[] args) {
 		label = getMappedCommandLabel(label);
 		int len = args.length;
+		boolean hasFlags = false;
+		for ( int i=args.length-1; i>=0; i++){
+			if (args[i].startsWith("+") || args[i].startsWith("-")){
+				len --;
+				hasFlags = true;
+			}
+		}
 		
 		if (label.equals("nosee") && len==0){
 			// TODO: EXPERIMENTAL ADDITION
@@ -104,6 +111,10 @@ public class SimplyVanish extends JavaPlugin {
 			if ( !Utils.checkPlayer(sender)) return true;
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
 			// Make sure the player is vanished...
+			if (hasFlags){
+				if (Utils.hasPermission(sender, "simplyvanish.flags.self")) core.setFlags(((Player) sender).getName(), args, 0);
+				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags.");
+			}
 			core.onVanish((Player) sender);
 			return true;
 		} 
@@ -111,6 +122,10 @@ public class SimplyVanish extends JavaPlugin {
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.other")) return true;
 			// Make sure the other player is vanished...
 			String name = args[0].trim();
+			if (hasFlags){
+				if (Utils.hasPermission(sender, "simplyvanish.flags.self")) core.setFlags(name, args, 1);
+				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags for others.");
+			}
 			setVanished(name, true);
 			Utils.send(sender, msgLabel + "Vanish player: "+name);
 			return true;
@@ -119,6 +134,10 @@ public class SimplyVanish extends JavaPlugin {
 			if ( !Utils.checkPlayer(sender)) return true;
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
 			// Let the player be seen...
+			if (hasFlags){
+				if (Utils.hasPermission(sender, "simplyvanish.flags.self")) core.setFlags(((Player) sender).getName(), args, 0);
+				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags.");
+			}
 			core.onReappear((Player) sender);
 			return true;
 		} 
@@ -126,6 +145,10 @@ public class SimplyVanish extends JavaPlugin {
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.other")) return true;
 			// Make sure the other player is shown...
 			String name = args[0].trim();
+			if (hasFlags){
+				if (Utils.hasPermission(sender, "simplyvanish.flags.other")) core.setFlags(name, args, 1);
+				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags.");
+			}
 			setVanished(name, false);
 			Utils.send(sender, msgLabel + "Show player: "+name);
 			return true;
@@ -134,6 +157,10 @@ public class SimplyVanish extends JavaPlugin {
 			if ( !Utils.checkPlayer(sender)) return true;
 			Player player = (Player) sender;
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
+			if (hasFlags){
+				if (Utils.hasPermission(sender, "simplyvanish.flags.self")) core.setFlags(player.getName(), args, 0);
+				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags.");
+			}
 			setVanished(player, !isVanished(player));
 			return true;
 		}
@@ -154,6 +181,13 @@ public class SimplyVanish extends JavaPlugin {
 				if (!Utils.checkPlayer(sender)) return true;
 				Utils.dropItemInHand((Player) sender);
 				return true;
+			}
+			else if (hasFlags && len == 0){
+				if (!Utils.checkPlayer(sender)) return true;
+				if (hasFlags){
+					if (Utils.hasPermission(sender, "simplyvanish.flags.self")) core.setFlags(((Player)sender).getName(), args, 0);
+					else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags.");
+				}
 			}
 		}
 		

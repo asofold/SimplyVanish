@@ -714,9 +714,15 @@ public class SimplyVanishCore implements Listener{
 		return out;
 	}
 
+	/**
+	 * Only set the flags, no save.
+	 * @param name
+	 * @param args
+	 * @param i
+	 */
 	public void setFlags(String name, String[] args, int i) {
-		// TODO Auto-generated method stub
-		
+		VanishConfig cfg = getVanishConfig(name);
+		cfg.readFromArray(args, i, false);
 	}
 
 
