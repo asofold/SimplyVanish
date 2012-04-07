@@ -28,6 +28,10 @@
 - ?(add) vanish configs for faster checking and easier internals.  
 - !(add) Central access points methods for: adding and removing players to the vanished set + for messaging players (ensure).
 
+(0.4.0-DEV-4)
+- !(add) Digest warning messages where possible (show one instead of two).
+- (internals) Add VanishConfig for storing customized data per player. 
+
 (0.4.0-DEV-3)
 - (add) no-abort flag for configuration (on player inconsistency it will still be attempted to show or hide).
 - (add) Warning message to the player if hide or show was aborted (might spam a bit).
