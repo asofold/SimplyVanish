@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -185,8 +184,7 @@ public class SimplyVanish extends JavaPlugin {
 	 */
 	public static void setVanished(Player player, boolean vanished){
 		if (!core.isEnabled()) return;
-		if (vanished) core.onVanish(player);
-		else core.onReappear(player);
+		core.setVanished(player.getName(), vanished);
 	}
 	
 	/**
@@ -196,27 +194,7 @@ public class SimplyVanish extends JavaPlugin {
 	 */
 	public static void setVanished(String playerName, boolean vanished){
 		if (!core.isEnabled()) return;
-		
-		Player player = Bukkit.getServer().getPlayerExact(playerName);
-		if (player != null){
-			// The simple part.
-			setVanished(player, vanished);
-			return;
-		}
-		// The less simple part.
-		if (vanished) core.addVanishedName(playerName);
-		else if (core.removeVanishedName(playerName)) return;
-		else{
-			// Expensive part:
-			String match = null;
-			for (String n : core.getVanished()){
-				if ( n.equalsIgnoreCase(playerName)){
-					match = n;
-					break;
-				}
-			}
-			if ( match != null) core.removeVanishedName(match);
-		}
+		core.setVanished(playerName, vanished);
 	}
 	
 	/**
@@ -226,7 +204,7 @@ public class SimplyVanish extends JavaPlugin {
 	 */
 	public static boolean isVanished(String playerName){
 		if (!core.isEnabled()) return false;
-		else return core.getVanished().contains(playerName.toLowerCase());
+		else return core.isVanished(playerName);
 	}
 	
 	/**
@@ -236,19 +214,19 @@ public class SimplyVanish extends JavaPlugin {
 	 */
 	public static boolean isVanished(Player player){
 		if (!core.isEnabled()) return false;
-		else return core.getVanished().contains(player.getName().toLowerCase());
+		else return core.isVanished(player.getName());
 	}
 	
 	/**
 	 * API
-	 * Get the Set containing the lower case names of Players to be vanished.
-	 * These are not necessarily online.
-	 * NOTE: It returns the internally used HashSet instance, do not manipulate it, do not iterate in an asynchronous task or thread.
+	 * Get a new Set containing the lower case names of Players to be vanished.<br>
+	 * These are not necessarily online.<br>
+	 * @deprecated The method signature will most likely change to Collection or List.
 	 * @return
 	 */
 	public static Set<String> getVanishedPlayers(){
 		if (!core.isEnabled()) return new HashSet<String>();
-		else return core.getVanished();
+		else return core.getVanishedPlayers();
 	}
 	
 	void registerCommandAliases(Configuration config) {
