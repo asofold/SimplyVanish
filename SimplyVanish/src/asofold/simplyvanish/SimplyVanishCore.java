@@ -97,6 +97,7 @@ public class SimplyVanishCore implements Listener{
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter( new FileWriter(file));
+			writer.write("\n"); // to write something at least.
 			for (String n : vanishConfigs.keySet()){
 				VanishConfig cfg = getVanishConfig(n);
 				if (cfg.needsSave()){
@@ -137,10 +138,19 @@ public class SimplyVanishCore implements Listener{
 				String n = line.trim().toLowerCase();
 				if (!n.isEmpty()){
 					if (n.startsWith("nosee:") && n.length()>6){
+						// kept for compatibility:
 						n = n.substring(7).trim();
-						if (!n.isEmpty()) nosee.add(n);
+						if (n.isEmpty()) continue;
+						getVanishConfig(n).see = false;
+						
 					}
-					else vanished.add(n);
+					else{
+						String[] split = n.split(" ");
+						n = split[0].trim().toLowerCase();
+						if (n.isEmpty()) continue;
+						VanishConfig cfg = getVanishConfig(n);
+						cfg.readFromArray(split, 1, true);
+					}
 				}
 				line = reader.readLine();
 			}

@@ -29,7 +29,12 @@
 - !(add) Central access points methods for: adding and removing players to the vanished set + for messaging players (ensure).
 
 (0.4.0-DEV-4)
+- !(add) op-permissions flag
+- ?(add) allow-players list
 - !(add) Digest warning messages where possible (show one instead of two).
+- !(add) Make vanished players filename configurable [due to typo: space instead of underscore].
+*** ensure : on reappear: check config.needsSave -> if not remove it.
+- !(add) Use VanishConfig for internals, everywhere ! [prepares internal for flags.]
 - (internals) Add VanishConfig for storing customized data per player. 
 
 (0.4.0-DEV-3)
