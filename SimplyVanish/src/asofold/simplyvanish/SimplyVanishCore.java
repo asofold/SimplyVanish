@@ -454,7 +454,7 @@ public class SimplyVanishCore implements Listener{
 	}
 	
 	/**
-	 * Heavy update for who can see this player and whom this player can see.
+	 * Heavy update for who can see this player and whom this player can see and other way round.
 	 * @param player
 	 * @param message If to message the player.
 	 */
@@ -462,32 +462,19 @@ public class SimplyVanishCore implements Listener{
 		String playerName = player.getName();
 		String lcName = playerName.toLowerCase();
 		Server server = Bukkit.getServer();
-		// Show to or hide from online players:
-		if (removeVanishedName(lcName)) onVanish(player, message); // remove: a) do not save 2x b) people will get notified.
-		else{
-			for (Player other : server.getOnlinePlayers()){
-				if ( !other.canSee(player)) showPlayer(player, other);
-				// TODO: maybe message here too ?
-			}
+		Player[] players = server.getOnlinePlayers();
+		boolean shouldSee = shouldSeeVanished(player);
+		boolean was = removeVanishedName(lcName);
+		// Show or hide other players to player:
+		for (Player other : players){
+			if (shouldSee||!isVanished(other.getName())){
+				if (!player.canSee(other)) showPlayer(other, player);
+			} 
+			else if (player.canSee(other)) hidePlayer(other, player);
+			if (!was && !other.canSee(player)) showPlayer(player, other);   
+			
 		}
-		// Show or hide other vanished players:
-		if ( !shouldSeeVanished(player)){
-			for (String name : vanishConfigs.keySet()){
-				if ( name.equals(playerName)) continue;
-				Player other = server.getPlayerExact(name);
-				if ( other != null){
-					if ( player.canSee(other)) hidePlayer(other, player);
-				}
-			}
-		} else{
-			for (String name : vanishConfigs.keySet()){
-				if ( name.equals(lcName)) continue;
-				Player other = server.getPlayerExact(name);
-				if ( other != null){
-					if (!player.canSee(other)) showPlayer(other, player);
-				}
-			}
-		}
+		if (was) onVanish(player, message); // remove: a) do not save 2x b) people will get notified.		
 	}
 	
 	/**
@@ -503,6 +490,7 @@ public class SimplyVanishCore implements Listener{
 	}
 	
 	/**
+	 * Show player to canSee.
 	 * Delegating method, for the case of other things to be checked.
 	 * @param player The player to show.
 	 * @param canSee 
@@ -519,6 +507,7 @@ public class SimplyVanishCore implements Listener{
 	}
 	
 	/**
+	 * Hide player from canNotSee.
 	 * Delegating method, for the case of other things to be checked.
 	 * @param player The player to hide.
 	 * @param canNotSee
@@ -602,6 +591,11 @@ public class SimplyVanishCore implements Listener{
 		else return false;
 	}
 
+	/**
+	 * 
+	 * @param name
+	 * @return If the player was vanished.
+	 */
 	public boolean removeVanishedName(String name) {
 		VanishConfig cfg = vanishConfigs.get(name.toLowerCase());
 		if (cfg==null) return false;
