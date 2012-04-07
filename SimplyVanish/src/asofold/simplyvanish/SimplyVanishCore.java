@@ -725,5 +725,13 @@ public class SimplyVanishCore implements Listener{
 		cfg.readFromArray(args, i, false);
 	}
 
+	public void onShowFlags(Player player, String name) {
+		if ( name == null) name = player.getName();
+		name = name.toLowerCase();
+		VanishConfig cfg = vanishConfigs.get(name);
+		if (cfg==null) return;
+		player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Special flags("+name+"): "+cfg.toLine());
+	}
+
 
 }

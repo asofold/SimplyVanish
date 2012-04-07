@@ -112,7 +112,7 @@ public class SimplyVanish extends JavaPlugin {
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
 			// Make sure the player is vanished...
 			if (hasFlags){
-				if (Utils.hasPermission(sender, "simplyvanish.flags.self")) core.setFlags(((Player) sender).getName(), args, 0);
+				if (Utils.hasPermission(sender, "simplyvanish.flags.set.self")) core.setFlags(((Player) sender).getName(), args, 0);
 				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags.");
 			}
 			core.onVanish((Player) sender);
@@ -123,7 +123,7 @@ public class SimplyVanish extends JavaPlugin {
 			// Make sure the other player is vanished...
 			String name = args[0].trim();
 			if (hasFlags){
-				if (Utils.hasPermission(sender, "simplyvanish.flags.self")) core.setFlags(name, args, 1);
+				if (Utils.hasPermission(sender, "simplyvanish.flags.set.self")) core.setFlags(name, args, 1);
 				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags for others.");
 			}
 			setVanished(name, true);
@@ -135,7 +135,7 @@ public class SimplyVanish extends JavaPlugin {
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
 			// Let the player be seen...
 			if (hasFlags){
-				if (Utils.hasPermission(sender, "simplyvanish.flags.self")) core.setFlags(((Player) sender).getName(), args, 0);
+				if (Utils.hasPermission(sender, "simplyvanish.flags.set.self")) core.setFlags(((Player) sender).getName(), args, 0);
 				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags.");
 			}
 			core.onReappear((Player) sender);
@@ -146,7 +146,7 @@ public class SimplyVanish extends JavaPlugin {
 			// Make sure the other player is shown...
 			String name = args[0].trim();
 			if (hasFlags){
-				if (Utils.hasPermission(sender, "simplyvanish.flags.other")) core.setFlags(name, args, 1);
+				if (Utils.hasPermission(sender, "simplyvanish.flags.set.other")) core.setFlags(name, args, 1);
 				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags.");
 			}
 			setVanished(name, false);
@@ -158,7 +158,7 @@ public class SimplyVanish extends JavaPlugin {
 			Player player = (Player) sender;
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
 			if (hasFlags){
-				if (Utils.hasPermission(sender, "simplyvanish.flags.self")) core.setFlags(player.getName(), args, 0);
+				if (Utils.hasPermission(sender, "simplyvanish.flags.set.self")) core.setFlags(player.getName(), args, 0);
 				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags.");
 			}
 			setVanished(player, !isVanished(player));
@@ -184,10 +184,21 @@ public class SimplyVanish extends JavaPlugin {
 			}
 			else if (hasFlags && len == 0){
 				if (!Utils.checkPlayer(sender)) return true;
-				if (hasFlags){
-					if (Utils.hasPermission(sender, "simplyvanish.flags.self")) core.setFlags(((Player)sender).getName(), args, 0);
-					else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags.");
-				}
+				if (Utils.hasPermission(sender, "simplyvanish.flags.set.self")) core.setFlags(((Player)sender).getName(), args, 0);
+				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags.");
+				return true;
+			} 
+			else if (len == 0){
+				if (!Utils.checkPlayer(sender)) return true;
+				if (Utils.hasPermission(sender, "simplyvanish.flags.display.self")) core.onShowFlags((Player) sender, null);
+				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to display flags.");
+				return true;
+			} 
+			else if (len==1){
+				if (!Utils.checkPlayer(sender)) return true;
+				if (Utils.hasPermission(sender, "simplyvanish.flags.display.other")) core.onShowFlags((Player) sender, args[0]);
+				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to display flags of others.");
+				return true;
 			}
 		}
 		
