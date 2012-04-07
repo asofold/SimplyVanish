@@ -34,7 +34,7 @@
 - !(add) Digest warning messages where possible (show one instead of two).
 - !(add) Make vanished players filename configurable [due to typo: space instead of underscore].
 *** ensure : on reappear: check config.needsSave -> if not remove it.
-- !(add) Use VanishConfig for internals, everywhere ! [prepares internal for flags.]
+- (add) Use VanishConfig for internals, everywhere ! [prepares internal for flags.]
 - (internals) Add VanishConfig for storing customized data per player. 
 
 (0.4.0-DEV-3)

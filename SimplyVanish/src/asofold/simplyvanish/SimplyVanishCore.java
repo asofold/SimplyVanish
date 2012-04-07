@@ -494,7 +494,8 @@ public class SimplyVanishCore implements Listener{
 	 * @return
 	 */
 	public List<String> getSortedVanished(){
-		List<String> sorted = new ArrayList<String>(vanished.size());
+		Collection<String> vanished = getVanishedPlayers();
+		List<String> sorted = new ArrayList<String>(vanishConfigs.size());
 		sorted.addAll(vanished);
 		Collections.sort(sorted);
 		return sorted;
@@ -591,7 +592,9 @@ public class SimplyVanishCore implements Listener{
 	}
 
 	public boolean addVanishedName(String name) {
-		if (vanished.add(name.toLowerCase())){
+		VanishConfig cfg = getVanishConfig(name);
+		if (!cfg.vanished){
+			cfg.vanished = true;
 			if (settings.saveVanishedAlways) saveVanished();
 			return true;
 		}
@@ -599,15 +602,15 @@ public class SimplyVanishCore implements Listener{
 	}
 
 	public boolean removeVanishedName(String name) {
-		if (vanished.remove(name.toLowerCase())){
+		VanishConfig cfg = vanishConfigs.get(name.toLowerCase());
+		if (cfg==null) return false;
+		if (cfg.vanished){
+			cfg.vanished = false;
+			if (!cfg.needsSave()) vanishConfigs.remove(name.toLowerCase());
 			if (settings.saveVanishedAlways) saveVanished();
 			return true;
 		}
 		else return false;
-	}
-
-	final Set<String> getVanished() {
-		return vanished;
 	}
 
 	/**
@@ -615,12 +618,13 @@ public class SimplyVanishCore implements Listener{
 	 * @param sender
 	 */
 	public void onToggleNosee(Player player) {
-		String lcn = player.getName().toLowerCase();
-		if (nosee.remove(lcn)){
+		VanishConfig cfg = getVanishConfig(player.getName());
+		cfg.see = !cfg.see;
+		if (cfg.see){
 			player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You now "+ChatColor.GREEN+"see "+ChatColor.GRAY+"other vanished players.");
+			if (!cfg.needsSave()) vanishConfigs.remove(player.getName().toLowerCase());
 		}
 		else{
-			nosee.add(lcn);
 			player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You now "+ChatColor.RED+"can not see "+ChatColor.GRAY+"other vanished players.");
 		}
 		updateVanishState(player, false);
@@ -631,10 +635,13 @@ public class SimplyVanishCore implements Listener{
 		StringBuilder builder = new StringBuilder();
 		builder.append(ChatColor.GOLD+"[VANISHED]");
 		Server server = Bukkit.getServer();
+		boolean found = false;
 		for ( String n : sorted){
 			Player player = server.getPlayerExact(n);
-			VanishConfig cfg = vanished.get(n);
-			boolean isNosee = cfg.nosee; // is lower case
+			VanishConfig cfg = vanishConfigs.get(n);
+			if (!cfg.vanished) continue;
+			found = true;
+			boolean isNosee = !cfg.see; // is lower case
 			if ( player == null ){
 				builder.append(" "+ChatColor.GRAY+"("+n+")");
 				if (isNosee) builder.append(ChatColor.DARK_RED+"[NOSEE]");
@@ -645,7 +652,7 @@ public class SimplyVanishCore implements Listener{
 				else if (isNosee) builder.append(ChatColor.RED+"[NOSEE]");
 			}
 		}
-		if (vanished.isEmpty()) builder.append(" "+ChatColor.DARK_GRAY+"<none>");
+		if (!found) builder.append(" "+ChatColor.DARK_GRAY+"<none>");
 		return builder.toString();
 	}
 	
@@ -657,18 +664,17 @@ public class SimplyVanishCore implements Listener{
 	 */
 	public VanishConfig getVanishConfig(String playerName){
 		playerName = playerName.toLowerCase();
-		VanishConfig cfg = vanished.get(playerName);
-		if (cfg != null) return cfg;
-		cfg = parked.get(playerName);
+		VanishConfig cfg = vanishConfigs.get(playerName);
 		if (cfg != null) return cfg;
 		cfg = new VanishConfig();
-		parked.put(playerName, cfg);
+		vanishConfigs.put(playerName, cfg);
 		return cfg;
 	}
 
-	public boolean isVanished(String playerName) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isVanished(final String playerName) {
+		final VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
+		if (cfg == null) return false;
+		else return cfg.vanished;
 	}
 
 	public void setVanished(String playerName, boolean vanished) {
