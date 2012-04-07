@@ -47,6 +47,7 @@ import asofold.simplyvanish.config.Settings;
  *
  */
 public class SimplyVanishCore implements Listener{
+	
 	/**
 	 * Vanished players.
 	 */
@@ -233,9 +234,11 @@ public class SimplyVanishCore implements Listener{
 		Entity target = event.getTarget();
 		if (!(target instanceof Player)) return;
 		String playerName = ((Player) target).getName();
-		if ( vanished.contains(playerName.toLowerCase())){
+		VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
+		if (cfg == null) return;
+		if (cfg.vanished){
 			event.setTarget(null);
-			if ( settings.expEnabled){
+			if (settings.expEnabled && !cfg.pickup){
 				Entity entity = event.getEntity();
 				if ( entity instanceof ExperienceOrb){
 					repellExpOrb((Player) target, (ExperienceOrb) entity);
