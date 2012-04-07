@@ -229,22 +229,24 @@ public class SimplyVanishCore implements Listener{
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	void onEntityTarget(EntityTargetEvent event){
+	final void onEntityTarget(final EntityTargetEvent event){
 		if ( event.isCancelled() ) return;
-		Entity target = event.getTarget();
+		final Entity target = event.getTarget();
 		if (!(target instanceof Player)) return;
-		String playerName = ((Player) target).getName();
-		VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
+		final String playerName = ((Player) target).getName();
+		final VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
 		if (cfg == null) return;
 		if (cfg.vanished){
-			event.setTarget(null);
 			if (settings.expEnabled && !cfg.pickup){
 				Entity entity = event.getEntity();
 				if ( entity instanceof ExperienceOrb){
 					repellExpOrb((Player) target, (ExperienceOrb) entity);
 					event.setCancelled(true);
+					event.setTarget(null);
+					return;
 				}
 			}
+			if (!cfg.target) event.setTarget(null);
 		}
 	}
 	
@@ -255,8 +257,11 @@ public class SimplyVanishCore implements Listener{
 			final Collection<LivingEntity> affected = event.getAffectedEntities();
 			for ( LivingEntity entity : affected){
 				if (entity instanceof Player ){
-					if ( vanished.contains(((Player)entity).getName().toLowerCase())){
-						rem.add(entity);
+					String playerName = ((Player) entity).getName();
+					VanishConfig cfg = vanishConfigs.get(playerName);
+					if (cfg == null) continue;
+					if (cfg.vanished){
+						if (!cfg.damage) rem.add(entity);
 					}
 				}
 			}
@@ -303,12 +308,14 @@ public class SimplyVanishCore implements Listener{
 	}
 
 	@EventHandler(priority=EventPriority.LOW)
-	void onEntityDamage(EntityDamageEvent event){
+	final void onEntityDamage(final EntityDamageEvent event){
 		if ( event.isCancelled() ) return;
-		Entity entity = event.getEntity();
+		final Entity entity = event.getEntity();
 		if (!(entity instanceof Player)) return;
-		String playerName = ((Player) entity).getName();
-		if ( !vanished.contains(playerName.toLowerCase())) return;
+		final String playerName = ((Player) entity).getName();
+		final VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
+		if (cfg == null) return;
+		if (!cfg.vanished || cfg.damage) return;
 		event.setCancelled(true);
 		if ( entity.getFireTicks()>0) entity.setFireTicks(0);
 	}
@@ -317,16 +324,20 @@ public class SimplyVanishCore implements Listener{
 	void onItemPickUp(PlayerPickupItemEvent event){
 		if ( event.isCancelled() ) return;
 		Player player = event.getPlayer();
-		if ( !vanished.contains(player.getName().toLowerCase())) return;
-		event.setCancelled(true);
+		VanishConfig cfg = vanishConfigs.get(player.getName().toLowerCase());
+		if (cfg == null) return;
+		if (!cfg.vanished) return;
+		if (!cfg.pickup) event.setCancelled(true);
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
 	void onItemDrop(PlayerDropItemEvent event){
 		if ( event.isCancelled() ) return;
 		Player player = event.getPlayer();
-		if ( !vanished.contains(player.getName().toLowerCase())) return;
-		event.setCancelled(true);
+		VanishConfig cfg = vanishConfigs.get(player.getName().toLowerCase());
+		if (cfg == null) return;
+		if (!cfg.vanished) return;
+		if (!cfg.drop) event.setCancelled(true);
 	}
 
 	/**
