@@ -9,9 +9,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -47,12 +50,7 @@ public class SimplyVanishCore implements Listener{
 	/**
 	 * Vanished players.
 	 */
-	private final Set<String> vanished = new HashSet<String>();
-	
-	/**
-	 * Players that do not want to see vanished players.
-	 */
-	private Set<String> nosee = new HashSet<String>();
+	private final Map<String, VanishConfig> vanishConfigs = new HashMap<String, VanishConfig>();
 	
 	/**
 	 * Flag for if the plugin is enabled.
@@ -70,11 +68,18 @@ public class SimplyVanishCore implements Listener{
 	@EventHandler(priority=EventPriority.HIGHEST)
 	void onPlayerJoin( PlayerJoinEvent event){
 		Player player = event.getPlayer();
-		if (settings.autoVanishUse){
-			if (Utils.hasPermission(player, settings.autoVanishPerm)) addVanishedName(player.getName());
+		String playerName = player.getName();
+		VanishConfig cfg = getVanishConfig(playerName);
+		boolean auto = false;
+		if (cfg.auto == null){
+			if (settings.autoVanishUse) auto = true;
+		} 
+		else if (cfg.auto) auto = true;
+		if (auto){
+			if (Utils.hasPermission(player, settings.autoVanishPerm)) addVanishedName(playerName);
 		}
 		updateVanishState(event.getPlayer());
-		if ( settings.suppressJoinMessage && vanished.contains(player.getName().toLowerCase())){
+		if ( settings.suppressJoinMessage && isVanished(playerName)){
 			event.setJoinMessage(null);
 		}
 	}
@@ -92,7 +97,8 @@ public class SimplyVanishCore implements Listener{
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter( new FileWriter(file));
-			for (String n : vanished){
+			for (String n : vanished.keySet()){
+				VanishConfig
 				writer.write(n+"\n");
 			}
 			for ( String n : nosee){
@@ -109,6 +115,15 @@ public class SimplyVanishCore implements Listener{
 				} catch (IOException e) {
 				}
 		}
+	}
+	
+	/**
+	 * Write
+	 * @param map
+	 * @param writer
+	 */
+	void writeMap(Map<String, VanishConfig> map, BufferedWriter writer, boolean ){
+		
 	}
 	
 	/**
@@ -589,13 +604,14 @@ public class SimplyVanishCore implements Listener{
 	}
 
 	public String getVanishedMessage() {
-		List<String> vanished = getSortedVanished();
+		List<String> sorted = getSortedVanished();
 		StringBuilder builder = new StringBuilder();
 		builder.append(ChatColor.GOLD+"[VANISHED]");
 		Server server = Bukkit.getServer();
-		for ( String n : vanished){
+		for ( String n : sorted){
 			Player player = server.getPlayerExact(n);
-			boolean isNosee = nosee.contains(n); // is lower case
+			VanishConfig cfg = vanished.get(n);
+			boolean isNosee = cfg.nosee; // is lower case
 			if ( player == null ){
 				builder.append(" "+ChatColor.GRAY+"("+n+")");
 				if (isNosee) builder.append(ChatColor.DARK_RED+"[NOSEE]");
@@ -608,6 +624,64 @@ public class SimplyVanishCore implements Listener{
 		}
 		if (vanished.isEmpty()) builder.append(" "+ChatColor.DARK_GRAY+"<none>");
 		return builder.toString();
+	}
+	
+	/**
+	 * Get a VanishConfig, create it if necessary.<br>
+	 * (Might be from vanished, parked, or new thus put to parked).
+	 * @param playerName
+	 * @return
+	 */
+	public VanishConfig getVanishConfig(String playerName){
+		playerName = playerName.toLowerCase();
+		VanishConfig cfg = vanished.get(playerName);
+		if (cfg != null) return cfg;
+		cfg = parked.get(playerName);
+		if (cfg != null) return cfg;
+		cfg = new VanishConfig();
+		parked.put(playerName, cfg);
+		return cfg;
+	}
+
+	public boolean isVanished(String playerName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void setVanished(String playerName, boolean vanished) {
+		Player player = Bukkit.getServer().getPlayerExact(playerName);
+		if (player != null){
+			// The simple part.
+			onVanish(player, vanished);
+			return;
+		}
+		// The less simple part.
+		if (vanished) addVanishedName(playerName);
+		else if (removeVanishedName(playerName)) return;
+		else{
+			// Expensive part:
+			String match = null;
+			for (String n : vanishConfigs.keySet()){
+				if ( n.equalsIgnoreCase(playerName)){
+					match = n;
+					break;
+				}
+			}
+			if ( match != null) removeVanishedName(match);
+		}
+	}
+
+	/**
+	 * Lower case names.<br>
+	 * Currently iterates over all VanishConfig entries.
+	 * @return
+	 */
+	public Set<String> getVanishedPlayers() {
+		Set<String> out = new HashSet<String>();
+		for (Entry<String, VanishConfig> entry : vanishConfigs.entrySet()){
+			if (entry.getValue().vanished) out.add(entry.getKey());
+		}
+		return out;
 	}
 
 
