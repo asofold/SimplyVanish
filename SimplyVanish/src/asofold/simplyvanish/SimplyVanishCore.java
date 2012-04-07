@@ -407,8 +407,11 @@ public class SimplyVanishCore implements Listener{
 	 * @return
 	 */
 	public  boolean shouldSeeVanished(Player player) {
-		if (nosee.contains(player.getName().toLowerCase())) return false;
-		else return Utils.hasPermission(player, "simplyvanish.see-all"); 
+		VanishConfig cfg = vanishConfigs.get(player.getName().toLowerCase());
+		if(cfg!=null){
+			if (!cfg.see) return false;
+		}
+		return Utils.hasPermission(player, "simplyvanish.see-all"); 
 	}
 
 	/**
