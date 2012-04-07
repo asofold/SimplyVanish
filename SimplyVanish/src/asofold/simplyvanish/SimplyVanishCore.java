@@ -21,6 +21,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.LivingEntity;
@@ -725,12 +726,12 @@ public class SimplyVanishCore implements Listener{
 		cfg.readFromArray(args, i, false);
 	}
 
-	public void onShowFlags(Player player, String name) {
-		if ( name == null) name = player.getName();
+	public void onShowFlags(CommandSender sender, String name) {
+		if ( name == null) name = sender.getName();
 		name = name.toLowerCase();
 		VanishConfig cfg = vanishConfigs.get(name);
 		if (cfg==null) return;
-		player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Special flags("+name+"): "+cfg.toLine());
+		sender.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Special flags("+name+"): "+cfg.toLine());
 	}
 
 

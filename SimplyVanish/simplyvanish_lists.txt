@@ -38,7 +38,7 @@
 - (add) /simplyvanish allows to show own or other players flags.
 - (add) Flag support for most commands to set flags for VanishConfigs. [One permission for that, yet.]
 - (add) Use VanishConfig for internals, everywhere ! [prepares internal for flags.]
-- (internals) Add VanishConfig for storing customized data per player. 
+- (internals) Add VanishConfig for storing individual data per player. 
 
 (0.4.0-DEV-3)
 - (add) no-abort flag for configuration (on player inconsistency it will still be attempted to show or hide).

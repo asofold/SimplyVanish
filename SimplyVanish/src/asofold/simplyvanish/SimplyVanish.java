@@ -196,8 +196,7 @@ public class SimplyVanish extends JavaPlugin {
 				return true;
 			} 
 			else if (len==1){
-				if (!Utils.checkPlayer(sender)) return true;
-				if (Utils.hasPermission(sender, "simplyvanish.flags.display.other")) core.onShowFlags((Player) sender, args[0]);
+				if (Utils.hasPermission(sender, "simplyvanish.flags.display.other")) core.onShowFlags(sender, args[0]);
 				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to display flags of others.");
 				return true;
 			}
