@@ -97,12 +97,13 @@ public class SimplyVanishCore implements Listener{
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter( new FileWriter(file));
-			for (String n : vanished.keySet()){
-				VanishConfig
-				writer.write(n+"\n");
-			}
-			for ( String n : nosee){
-				writer.write("nosee:"+n+"\n");
+			for (String n : vanishConfigs.keySet()){
+				VanishConfig cfg = getVanishConfig(n);
+				if (cfg.needsSave()){
+					writer.write(n);
+					writer.write(cfg.toLine());
+					writer.write(n+"\n");
+				}
 			}
 		} 
 		catch (IOException e) {
