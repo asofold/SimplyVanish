@@ -119,15 +119,6 @@ public class SimplyVanishCore implements Listener{
 	}
 	
 	/**
-	 * Write
-	 * @param map
-	 * @param writer
-	 */
-	void writeMap(Map<String, VanishConfig> map, BufferedWriter writer, boolean ){
-		
-	}
-	
-	/**
 	 * Load vanished names from file.<br>
 	 *  This does not update vanished states!
 	 */
