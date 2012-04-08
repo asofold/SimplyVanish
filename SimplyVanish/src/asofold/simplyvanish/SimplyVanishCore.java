@@ -728,7 +728,7 @@ public class SimplyVanishCore implements Listener{
 		if (!settings.pingEnabled) return;
 		for ( final Entry<String, VanishConfig> entry : vanishConfigs.entrySet()){
 			final Player player = Bukkit.getPlayerExact(entry.getKey());
-			if (player==null) return;
+			if (player==null) continue;
 			final VanishConfig cfg = entry.getValue();
 			if (!cfg.vanished) continue;
 			if (!cfg.ping) continue;
