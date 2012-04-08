@@ -32,6 +32,8 @@
 
 - ?(bugfix) Too many players get vanished seemingly randomized?  [Orebfuscator / CraftBukkit]
 
+? (add) API / Hooks for players (other plugins, whatever): onVanish, onReappear, toLine, boolean parse
+
 (0.4.0-DEV-X)
 - ! add per flag permissions
 - ! make saving consistent with changing flags.
