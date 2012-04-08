@@ -40,6 +40,11 @@
 - !(bugfix) reappear other does simply not work when they are online (did not). [test,,,]
 - !(bugfix) updatevanishstate: some issues with wanting to see / not ? - can still see vanished [might be resolved]
 
+? language update
+
+(0.4.0-DEV-7)
+- (bugfix) Updates vanish/see state now after setting flags.
+
 (0.4.0-DEV-6)
 - (add) New flag: *clear to reset flags to orgiginal state, can be put anywhere next to other flags.
 - (bugfix) Message on reappear.
