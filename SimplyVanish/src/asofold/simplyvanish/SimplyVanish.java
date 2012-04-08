@@ -14,6 +14,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import asofold.simplyvanish.config.Settings;
 
@@ -75,6 +76,8 @@ public class SimplyVanish extends JavaPlugin {
 	 * Force reloading the config.
 	 */
 	public void loadSettings() {
+		BukkitScheduler sched = getServer().getScheduler();
+		sched.cancelTasks(this);
 		reloadConfig();
 		Configuration config = getConfig();
 		Utils.forceDefaults(defaults, config);
@@ -84,6 +87,15 @@ public class SimplyVanish extends JavaPlugin {
 		registerCommandAliases(config);
 		saveConfig(); // TODO: maybe check for changes, somehow ?
 		if (settings.saveVanished) core.loadVanished();
+		if (settings.pingEnabled){
+			long period = Math.max(settings.pingPeriod/50, 200);
+			sched.scheduleSyncRepeatingTask(this, new Runnable(){
+				@Override
+				public void run() {
+					core.onNotifyPing();
+				}
+			}, period, period);
+		}
 	}
 	
 	@Override
