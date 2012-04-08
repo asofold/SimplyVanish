@@ -696,11 +696,24 @@ public class SimplyVanishCore implements Listener{
 	 * Only set the flags, no save.
 	 * @param name
 	 * @param args
-	 * @param i
+	 * @param startIndex
 	 */
-	public void setFlags(String name, String[] args, int i) {
+	public void setFlags(String name, String[] args, int startIndex) {
 		VanishConfig cfg = getVanishConfig(name);
-		cfg.readFromArray(args, i, false);
+		boolean hasClearFlag = false;
+		for ( int i = startIndex; i<args.length; i++){
+			if ( args[i].trim().toLowerCase().equals("*clear")){
+				hasClearFlag = true;
+				break; // currently break.
+			}
+		}
+		if (hasClearFlag){
+			final VanishConfig ncfg = new VanishConfig();
+			ncfg.vanished = cfg.vanished;
+			vanishConfigs.put(name.trim().toLowerCase(), ncfg);
+			cfg = ncfg;
+		}
+		cfg.readFromArray(args, startIndex, false);
 	}
 
 	public void onShowFlags(CommandSender sender, String name) {
