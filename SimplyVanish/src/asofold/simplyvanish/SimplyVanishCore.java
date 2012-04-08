@@ -583,12 +583,14 @@ public class SimplyVanishCore implements Listener{
 
 	public boolean addVanishedName(String name) {
 		VanishConfig cfg = getVanishConfig(name);
+		boolean res = false;
 		if (!cfg.vanished){
 			cfg.vanished = true;
-			if (settings.saveVanishedAlways) saveVanished();
-			return true;
+			cfg.changed = true;
+			res = true;
 		}
-		else return false;
+		if (cfg.changed && settings.saveVanishedAlways) saveVanished();
+		return res;
 	}
 
 	/**
@@ -599,13 +601,15 @@ public class SimplyVanishCore implements Listener{
 	public boolean removeVanishedName(String name) {
 		VanishConfig cfg = vanishConfigs.get(name.toLowerCase());
 		if (cfg==null) return false;
+		boolean res = false;
 		if (cfg.vanished){
 			cfg.vanished = false;
 			if (!cfg.needsSave()) vanishConfigs.remove(name.toLowerCase());
-			if (settings.saveVanishedAlways) saveVanished();
-			return true;
+			cfg.changed = true;
+			res = true;
 		}
-		else return false;
+		if (cfg.changed && settings.saveVanishedAlways) saveVanished();
+		return res;
 	}
 
 	public String getVanishedMessage() {
@@ -696,13 +700,22 @@ public class SimplyVanishCore implements Listener{
 	 * Only set the flags, no save.
 	 * @param name
 	 * @param args
-	 * @param startIndex
+	 * @param startIndex Start parsing flags from that index on.
+	 * @param sender For performing permission checks.
+	 * @param hasPerm Has some bypass permission (results in no checks)
+	 * @param other If is sender is other than name
+	 * @param save If to save state.
 	 */
-	public void setFlags(String name, String[] args, int startIndex) {
+	public void setFlags(String name, String[] args, int startIndex, CommandSender sender, boolean hasPerm, boolean other, boolean save) {
 		VanishConfig cfg = getVanishConfig(name);
 		boolean hasClearFlag = false;
+		List<String> flags = new LinkedList<String>(); // Flags with permission checked.
+		List<String> missing = new LinkedList<String>(); // missing permission for these flags.
 		for ( int i = startIndex; i<args.length; i++){
-			if ( args[i].trim().toLowerCase().equals("*clear")){
+			String flag = VanishConfig.getMappedFlag(args[i]);
+			if (flag == null) continue;
+			// TODO: 
+			if ( flag.equals("*clear")){
 				hasClearFlag = true;
 				break; // currently break.
 			}
@@ -710,9 +723,13 @@ public class SimplyVanishCore implements Listener{
 		if (hasClearFlag){
 			final VanishConfig ncfg = new VanishConfig();
 			ncfg.vanished = cfg.vanished;
+			if (!hasPerm){
+				// TODO: 
+			}
 			vanishConfigs.put(name.trim().toLowerCase(), ncfg);
 			cfg = ncfg;
 		}
+		// TODO: create array, message if empty etc.
 		cfg.readFromArray(args, startIndex, false);
 		Player player = Bukkit.getServer().getPlayer(name);
 		if (player != null) updateVanishState(player, false);
