@@ -659,7 +659,8 @@ public class SimplyVanishCore implements Listener{
 		Player player = Bukkit.getServer().getPlayerExact(playerName);
 		if (player != null){
 			// The simple part.
-			onVanish(player, vanished);
+			if ( vanished) onVanish(player, true);
+			else onReappear(player);
 			return;
 		}
 		// The less simple part.
