@@ -732,6 +732,7 @@ public class SimplyVanishCore implements Listener{
 		// TODO: create array, message if empty etc.
 		cfg.readFromArray(args, startIndex, false);
 		Player player = Bukkit.getServer().getPlayer(name);
+		if (cfg.changed && settings.saveVanishedAlways && save) saveVanished();
 		if (player != null) updateVanishState(player, false);
 	}
 
