@@ -52,13 +52,23 @@ public class Settings {
 	
 	public boolean saveVanished = true;
 	public boolean saveVanishedAlways = true;
+	/**
+	 * Stored in milliseconds, read from config in minutes.
+	 */
+	public long saveVanishedInterval = 0; 
+	
 	public boolean autoVanishUse = false;
 	public String autoVanishPerm = "simplyvanish.auto-vanish";
 	
 	public boolean noAbort = false;
 	
 	public boolean pingEnabled = false;
+	/**
+	 * Stored in milliseconds, read from config as seconds.
+	 */
 	public long pingPeriod = 60000; 
+	
+	
 	
 	/**
 	 * Adjust internal settings to the given configuration.
@@ -89,6 +99,8 @@ public class Settings {
 		// command aliases: see SimplyVanish plugin.
 		saveVanished = config.getBoolean("save-vanished");
 		saveVanishedAlways = config.getBoolean("save-vanished-always");
+		saveVanishedInterval = config.getInt("save-vanished-interval", 0)*60000;
+		
 		autoVanishUse = config.getBoolean("auto-vanish.use");
 		autoVanishPerm = config.getString("auto-vanish.permission");
 		
@@ -124,7 +136,7 @@ public class Settings {
 		defaults.set("messages.notify.state.enabled", ref.notifyState);
 		defaults.set("messages.notify.state.permission", ref.notifyStatePerm);
 		defaults.set("messages.notify.ping.enabled", ref.pingEnabled);
-		defaults.set("messages.notify.ping.period", ref.pingPeriod/1000);
+		defaults.set("messages.notify.ping.period", ref.pingPeriod/1000); // seconds
 //		// commands:
 //		for ( String cmd : SimplyVanish.baseLabels){
 //			defaults.set("commands."+cmd+".aliases", new LinkedList<String>());
@@ -132,6 +144,8 @@ public class Settings {
 //		defaults.set("server-ping.subtract-vanished", false); // TODO: Feature request pending ...
 		defaults.set("save-vanished", ref.saveVanished); // TODO: load/save vanished players.
 		defaults.set("save-vanished-always", ref.saveVanishedAlways); // TODO: load/save vanished players.
+		defaults.set("save-vanished-interval", ref.saveVanishedInterval/60000); // minutes
+		
 		defaults.set("auto-vanish.use", ref.autoVanishUse);
 		defaults.set("auto-vanish.permission", ref.autoVanishPerm);
 		defaults.set("no-abort", ref.noAbort);
