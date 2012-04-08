@@ -728,5 +728,17 @@ public class SimplyVanishCore implements Listener{
 		sender.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Special flags("+name+"): "+cfg.toLine());
 	}
 
+	public void onNotifyPing() {
+		if (!settings.pingEnabled) return;
+		for ( final Entry<String, VanishConfig> entry : vanishConfigs.entrySet()){
+			final Player player = Bukkit.getPlayerExact(entry.getKey());
+			if (player==null) return;
+			final VanishConfig cfg = entry.getValue();
+			if (!cfg.vanished) continue;
+			if (!cfg.ping) continue;
+			player.sendMessage(SimplyVanish.notifyPingMessage);
+		}
+	}
+
 
 }
