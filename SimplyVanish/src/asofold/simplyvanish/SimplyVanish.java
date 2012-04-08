@@ -29,6 +29,7 @@ public class SimplyVanish extends JavaPlugin {
 	static final SimplyVanishCore core = new SimplyVanishCore();
 
 	public static final String msgLabel = ChatColor.GOLD+"[SimplyVanish] ";
+	public static final String notifyPingMessage =  SimplyVanish.msgLabel+ChatColor.GRAY+"You are "+ChatColor.GREEN+"vanished"+ChatColor.GRAY+", currently.";
 	
 	public static final String[] baseLabels = new String[]{
 		"vanish", "reappear", "tvanish", "simplyvanish","vanished",
@@ -80,12 +81,12 @@ public class SimplyVanish extends JavaPlugin {
 		sched.cancelTasks(this);
 		reloadConfig();
 		Configuration config = getConfig();
-		Utils.forceDefaults(defaults, config);
+		boolean changed = Utils.forceDefaults(defaults, config);
 		Settings settings = new Settings();
 		settings.applyConfig(config);
 		core.setSettings(settings);
 		registerCommandAliases(config);
-		saveConfig(); // TODO: maybe check for changes, somehow ?
+		if (changed) saveConfig(); // TODO: maybe check for changes, somehow ?
 		if (settings.saveVanished) core.loadVanished();
 		if (settings.pingEnabled){
 			long period = Math.max(settings.pingPeriod/50, 200);
