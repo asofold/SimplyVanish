@@ -714,6 +714,8 @@ public class SimplyVanishCore implements Listener{
 			cfg = ncfg;
 		}
 		cfg.readFromArray(args, startIndex, false);
+		Player player = Bukkit.getServer().getPlayer(name);
+		if (player != null) updateVanishState(player, false);
 	}
 
 	public void onShowFlags(CommandSender sender, String name) {
