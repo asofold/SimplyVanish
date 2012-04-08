@@ -99,6 +99,15 @@ public class SimplyVanish extends JavaPlugin {
 				}
 			}, period, period);
 		}
+		if (settings.saveVanishedInterval > 0){
+			final long period = settings.saveVanishedInterval/50;
+			sched.scheduleSyncRepeatingTask(this, new Runnable(){
+				@Override
+				public void run() {
+					core.saveVanished();
+				}
+			}, period, period);
+		}
 	}
 	
 	@Override
