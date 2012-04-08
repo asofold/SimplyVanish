@@ -9,6 +9,8 @@ package asofold.simplyvanish;
  * 
  * TODO: use PriorityValue for this.
  * 
+ * to add (4 places) : member, readFromArray, toLone, needsSave.
+ * 
  * @author mc_dev
  *
  */
@@ -49,6 +51,11 @@ public class VanishConfig {
 	 * Player wants auto-vanish to be set. If set to null, default configuration behavior is used.
 	 */
 	public Boolean auto = null;
+
+	/**
+	 * Notify ping.
+	 */
+	public boolean ping = true;
 	
 	/**
 	 * Read flags from an array from start index on.
@@ -79,6 +86,7 @@ public class VanishConfig {
 			else if (s.equals("drop")) drop = state;
 			else if (s.equals("damage") || s.equals("dam") || s.equals("dmg")) damage = state; 
 			else if (s.equals("target")) target = state;
+			else if (s.equals("ping")) ping = state;
 			else if (s.equals("auto")) auto = state;
 		}
 	}
@@ -97,6 +105,7 @@ public class VanishConfig {
 		if (damage) out.append(" +damage");
 		if (target) out.append(" +target");
 		if (auto != null) out.append(" "+(auto?"+":"-")+"auto");
+		if (!ping) out.append(" -ping");
 		return out.toString();
 	}
 	
@@ -105,7 +114,7 @@ public class VanishConfig {
 	 * @return
 	 */
 	public boolean needsSave(){
-		return vanished || !see  || pickup || drop || damage || target || auto!=null;
+		return vanished || !see  || pickup || drop || damage || target || !ping || auto!=null;
 	}
 	
 }
