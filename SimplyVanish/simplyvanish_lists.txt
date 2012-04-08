@@ -40,6 +40,7 @@
 - !(bugfix) updatevanishstae: some issues with wanting to see / not ? - can still see vanished 
 
 (0.4.0-DEV-5)
+- (add) /vanflag command for flags.
 - (add) ping support (You are vanished.)
 - (bugfix) Restructured updateVanishState, fixed small issue, ensure who sees whom. [Actually might have fixed some other issue(s), that probably existed in previous DEV-4.]
 - (adjust) Only save back configuration, if changes have been maded at all (defaults). 

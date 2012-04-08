@@ -177,22 +177,29 @@ public class SimplyVanish extends JavaPlugin {
 			Utils.send(sender, core.getVanishedMessage());
 			return true;
 		} 
-		else if ( label.equals("simplyvanish")){
-			if (len==1 && args[0].equalsIgnoreCase("reload")){
-				if ( !Utils.checkPerm(sender, "simplyvanish.reload")) return true;
-				loadSettings();
-				Utils.send(sender, msgLabel + "Settings reloaded.");
-				return true;
+		else if ( label.equals("simplyvanish") || label.equals("vanflag")){
+			
+			if (label.equals("simplyvanish")){
+				if (!hasFlags && len==1 && args[0].equalsIgnoreCase("reload")){
+					if ( !Utils.checkPerm(sender, "simplyvanish.reload")) return true;
+					loadSettings();
+					Utils.send(sender, msgLabel + "Settings reloaded.");
+					return true;
+				}
+				else if (!hasFlags && len==1 && args[0].equalsIgnoreCase("drop")){
+					if ( !Utils.checkPerm(sender, "simplyvanish.cmd.drop")) return true;
+					if (!Utils.checkPlayer(sender)) return true;
+					Utils.dropItemInHand((Player) sender);
+					return true;
+				}
 			}
-			else if (len==1 && args[0].equalsIgnoreCase("drop")){
-				if ( !Utils.checkPerm(sender, "simplyvanish.cmd.drop")) return true;
+			
+			if (hasFlags && len == 0){
 				if (!Utils.checkPlayer(sender)) return true;
-				Utils.dropItemInHand((Player) sender);
-				return true;
-			}
-			else if (hasFlags && len == 0){
-				if (!Utils.checkPlayer(sender)) return true;
-				if (Utils.hasPermission(sender, "simplyvanish.flags.set.self")) core.setFlags(((Player)sender).getName(), args, len);
+				if (Utils.hasPermission(sender, "simplyvanish.flags.set.self")){
+					core.setFlags(((Player)sender).getName(), args, len);
+					if (Utils.hasPermission(sender, "simplyvanish.flags.display.self")) core.onShowFlags((Player) sender, null);
+				}
 				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags.");
 				return true;
 			} 
@@ -202,6 +209,14 @@ public class SimplyVanish extends JavaPlugin {
 				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to display flags.");
 				return true;
 			} 
+			else if (hasFlags && len==1){
+				if (Utils.hasPermission(sender, "simplyvanish.flags.set.other")){
+					core.setFlags(args[0], args, len);
+					if (Utils.hasPermission(sender, "simplyvanish.flags.display.other")) core.onShowFlags(sender, args[0]);
+				}
+				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to set flags for others.");
+				return true;
+			}
 			else if (len==1){
 				if (Utils.hasPermission(sender, "simplyvanish.flags.display.other")) core.onShowFlags(sender, args[0]);
 				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to display flags of others.");

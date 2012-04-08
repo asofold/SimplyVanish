@@ -24,3 +24,7 @@ commands:
      description: 'For reloading the configuration: /simplyvanish reload'
      aliases:
      - simvan
+  vanflag:
+     description: 'For setting flags for yourself or others.'
+     aliases:
+     - flagvan
