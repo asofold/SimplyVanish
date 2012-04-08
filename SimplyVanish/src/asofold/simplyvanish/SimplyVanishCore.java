@@ -725,7 +725,7 @@ public class SimplyVanishCore implements Listener{
 		name = name.toLowerCase();
 		VanishConfig cfg = vanishConfigs.get(name);
 		if (cfg==null) return;
-		sender.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Special flags("+name+"): "+cfg.toLine());
+		sender.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Flags("+name+"): "+cfg.toLine());
 	}
 
 	public void onNotifyPing() {
