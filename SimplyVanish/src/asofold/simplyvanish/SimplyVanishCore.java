@@ -41,6 +41,8 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
 
 import asofold.simplyvanish.config.Settings;
+import asofold.simplyvanish.config.VanishConfig;
+import asofold.simplyvanish.util.Utils;
 
 /**
  * Core methods for vanish/reappear.
@@ -100,13 +102,15 @@ public class SimplyVanishCore implements Listener{
 		try {
 			writer = new BufferedWriter( new FileWriter(file));
 			writer.write("\n"); // to write something at least.
-			for (String n : vanishConfigs.keySet()){
-				VanishConfig cfg = getVanishConfig(n);
+			for (Entry<String, VanishConfig> entry : vanishConfigs.entrySet()){
+				String n = entry.getKey();
+				VanishConfig cfg = entry.getValue();
 				if (cfg.needsSave()){
 					writer.write(n);
 					writer.write(cfg.toLine());
 					writer.write("\n");
 				}
+				cfg.changed = false;
 			}
 		} 
 		catch (IOException e) {
@@ -709,8 +713,15 @@ public class SimplyVanishCore implements Listener{
 	public void setFlags(String name, String[] args, int startIndex, CommandSender sender, boolean hasPerm, boolean other, boolean save) {
 		VanishConfig cfg = getVanishConfig(name);
 		boolean hasClearFlag = false;
+		final String permBase =  "simplyvanish.flags.set."+(other?"other":"self"); // bypass permission always checked.
+		if (!hasPerm) hasPerm = Utils.hasPermission(sender, permBase);
+		
+		
 		List<String> flags = new LinkedList<String>(); // Flags with permission checked.
 		List<String> missing = new LinkedList<String>(); // missing permission for these flags.
+		
+		
+		
 		for ( int i = startIndex; i<args.length; i++){
 			String flag = VanishConfig.getMappedFlag(args[i]);
 			if (flag == null) continue;
@@ -724,7 +735,8 @@ public class SimplyVanishCore implements Listener{
 			final VanishConfig ncfg = new VanishConfig();
 			ncfg.vanished = cfg.vanished;
 			if (!hasPerm){
-				// TODO: 
+				List<String> changes = VanishConfig.getChanges(cfg, ncfg); // from ... to
+				// TODO: needs checking of every single change (!)
 			}
 			vanishConfigs.put(name.trim().toLowerCase(), ncfg);
 			cfg = ncfg;
@@ -732,7 +744,7 @@ public class SimplyVanishCore implements Listener{
 		// TODO: create array, message if empty etc.
 		cfg.readFromArray(args, startIndex, false);
 		Player player = Bukkit.getServer().getPlayer(name);
-		if (cfg.changed && settings.saveVanishedAlways && save) saveVanished();
+		if ( save && cfg.changed && settings.saveVanishedAlways) saveVanished();
 		if (player != null) updateVanishState(player, false);
 	}
 
