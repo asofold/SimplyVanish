@@ -56,11 +56,16 @@ public class Utils {
 		return false;
 	}
 	
-	public static void forceDefaults(Configuration defaults, Configuration config){
+	public static boolean forceDefaults(Configuration defaults, Configuration config){
 		Map<String ,Object> all = defaults.getValues(true);
+		boolean changed = false;
 		for ( String path : all.keySet()){
-			if ( !config.contains(path)) config.set(path, defaults.get(path));
+			if ( !config.contains(path)){
+				config.set(path, defaults.get(path));
+				changed = true;
+			}
 		}
+		return changed;
 	}
 	
 	/**
