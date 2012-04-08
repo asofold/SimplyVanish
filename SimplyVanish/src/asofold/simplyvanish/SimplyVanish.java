@@ -89,7 +89,7 @@ public class SimplyVanish extends JavaPlugin {
 		if (changed) saveConfig(); // TODO: maybe check for changes, somehow ?
 		if (settings.saveVanished) core.loadVanished();
 		if (settings.pingEnabled){
-			long period = Math.max(settings.pingPeriod/50, 200);
+			final long period = Math.max(settings.pingPeriod/50, 200);
 			sched.scheduleSyncRepeatingTask(this, new Runnable(){
 				@Override
 				public void run() {
