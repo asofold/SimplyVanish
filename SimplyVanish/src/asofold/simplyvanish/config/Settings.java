@@ -84,7 +84,7 @@ public class Settings {
 		notifyStatePerm = config.getString("messages.notify.state.permission");
 		// notify ping
 		pingEnabled = config.getBoolean("messages.notify.ping.enabled");
-		pingPeriod = config.getLong("messages.notify.ping.enabled", 0) * 1000; // in seconds
+		pingPeriod = config.getLong("messages.notify.ping.period", 0) * 1000; // in seconds
 		if (pingPeriod<=0) pingEnabled = false;
 		// command aliases: see SimplyVanish plugin.
 		saveVanished = config.getBoolean("save-vanished");
