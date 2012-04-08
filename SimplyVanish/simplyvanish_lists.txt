@@ -37,9 +37,8 @@
 (0.4.0-DEV-X)
 - ! add per flag permissions
 - ! make saving consistent with changing flags.
-- !(bugfix) reappear other does simply not work when they are online (did not).
-- !(bugfix) flags dont work for others  /simvan other .... 
-- !(bugfix) updatevanishstae: some issues with wanting to see / not ? - can still see vanished 
+- !(bugfix) reappear other does simply not work when they are online (did not). [test,,,]
+- !(bugfix) updatevanishstate: some issues with wanting to see / not ? - can still see vanished [might be resolved]
 
 (0.4.0-DEV-5)
 - (add) /vanflag command for flags.
