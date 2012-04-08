@@ -57,6 +57,9 @@ public class Settings {
 	
 	public boolean noAbort = false;
 	
+	public boolean pingEnabled = false;
+	public long pingPeriod = 60000; 
+	
 	/**
 	 * Adjust internal settings to the given configuration.
 	 * TODO: put this to plugin / some settings helper
@@ -79,6 +82,10 @@ public class Settings {
 		// notify changing vanish stats
 		notifyState = config.getBoolean("messages.notify.state.enabled");
 		notifyStatePerm = config.getString("messages.notify.state.permission");
+		// notify ping
+		pingEnabled = config.getBoolean("messages.notify.ping.enabled");
+		pingPeriod = config.getLong("messages.notify.ping.enabled", 0) * 1000; // in seconds
+		if (pingPeriod<=0) pingEnabled = false;
 		// command aliases: see SimplyVanish plugin.
 		saveVanished = config.getBoolean("save-vanished");
 		saveVanishedAlways = config.getBoolean("save-vanished-always");
@@ -116,6 +123,8 @@ public class Settings {
 		defaults.set("messages.fake.quit", ref.fakeQuitMessage);
 		defaults.set("messages.notify.state.enabled", ref.notifyState);
 		defaults.set("messages.notify.state.permission", ref.notifyStatePerm);
+		defaults.set("messages.notify.ping.enabled", ref.pingEnabled);
+		defaults.set("messages.notify.ping.period", ref.pingPeriod/1000);
 //		// commands:
 //		for ( String cmd : SimplyVanish.baseLabels){
 //			defaults.set("commands."+cmd+".aliases", new LinkedList<String>());
