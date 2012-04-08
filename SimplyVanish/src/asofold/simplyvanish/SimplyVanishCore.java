@@ -442,7 +442,7 @@ public class SimplyVanishCore implements Listener{
 				other.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+name+ChatColor.GRAY+" reappeared.");
 			}
 		}
-		player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You are "+(was?"still":"now")+" "+ChatColor.RED+"visible"+ChatColor.GRAY+" to everyone!");
+		player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You are "+(was?"now":"still")+" "+ChatColor.RED+"visible"+ChatColor.GRAY+" to everyone!");
 	}
 	
 	/**
