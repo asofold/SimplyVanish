@@ -108,7 +108,7 @@ public class SimplyVanish extends JavaPlugin {
 		int len = args.length;
 		boolean hasFlags = false;
 		for ( int i=args.length-1; i>=0; i--){
-			if (args[i].startsWith("+") || args[i].startsWith("-")){
+			if (args[i].startsWith("+") || args[i].startsWith("-") || args [i].startsWith("*")){
 				len --;
 				hasFlags = true;
 			} 
