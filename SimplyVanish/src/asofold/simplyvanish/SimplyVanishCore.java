@@ -399,7 +399,7 @@ public class SimplyVanishCore implements Listener{
 				if (message) other.sendMessage(SimplyVanish.msgLabel+ChatColor.GREEN+name+ChatColor.GRAY+" vanished.");
 			}
 		}
-		if (message) player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You are "+(was?"still":"now")+" "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players!");
+		if (message) player.sendMessage(was?SimplyVanish.msgStillInvisible:SimplyVanish.msgNowInvisible);
 	}
 
 	/**
@@ -608,24 +608,6 @@ public class SimplyVanishCore implements Listener{
 		else return false;
 	}
 
-	/**
-	 * Toggle nosee state
-	 * @param sender
-	 */
-	public void onToggleNosee(Player player) {
-		VanishConfig cfg = getVanishConfig(player.getName());
-		cfg.see = !cfg.see;
-		if (cfg.see){
-			player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You now "+ChatColor.GREEN+"see "+ChatColor.GRAY+"other vanished players.");
-			if (!cfg.needsSave()) vanishConfigs.remove(player.getName().toLowerCase());
-		}
-		else{
-			player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You now "+ChatColor.RED+"can not see "+ChatColor.GRAY+"other vanished players.");
-		}
-		updateVanishState(player, false);
-		if (settings.saveVanished && settings.saveVanishedAlways) saveVanished();
-	}
-
 	public String getVanishedMessage() {
 		List<String> sorted = getSortedVanished();
 		StringBuilder builder = new StringBuilder();
@@ -736,7 +718,7 @@ public class SimplyVanishCore implements Listener{
 			final VanishConfig cfg = entry.getValue();
 			if (!cfg.vanished) continue;
 			if (!cfg.ping) continue;
-			player.sendMessage(SimplyVanish.notifyPingMessage);
+			player.sendMessage(SimplyVanish.msgNotifyPing);
 		}
 	}
 

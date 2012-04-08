@@ -20,10 +20,6 @@ commands:
      description: 'Show a list of vanished players.'
      aliases:
      - vand
-  nosee:
-     description: 'Toggle if you want to see other vanished players.'
-     aliases:
-     - tnosee
   simplyvanish:
      description: 'For reloading the configuration: /simplyvanish reload'
      aliases:

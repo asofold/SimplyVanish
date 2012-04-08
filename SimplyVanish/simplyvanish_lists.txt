@@ -32,13 +32,18 @@
 
 - ?(bugfix) Too many players get vanished seemingly randomized?  [Orebfuscator / CraftBukkit]
 
-(0.4.0-DEV-5)
+(0.4.0-DEV-X)
 - ! add per flag permissions
 - ! make saving consistent with changing flags.
-- !(bugfix) reappear other does simply not work.
+- !(bugfix) reappear other does simply not work when they are online (did not).
 - !(bugfix) flags dont work for others  /simvan other .... 
 - !(bugfix) updatevanishstae: some issues with wanting to see / not ? - can still see vanished 
-- (bugfix) Restructured updateVanishState, fixed small issue, ensure who sees whom.
+
+(0.4.0-DEV-5)
+- (add) ping support (You are vanished.)
+- (bugfix) Restructured updateVanishState, fixed small issue, ensure who sees whom. [Actually might have fixed some other issue(s), that probably existed in previous DEV-4.]
+- (adjust) Only save back configuration, if changes have been maded at all (defaults). 
+- (remove) /nosee command (now needs: simplyvanish.flags.set.self|other and setting -see|+see as additional argument)
 
 (0.4.0-DEV-4)
 - (add) /simplyvanish allows to show own or other players flags.

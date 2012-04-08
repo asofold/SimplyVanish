@@ -30,6 +30,8 @@ public class SimplyVanish extends JavaPlugin {
 
 	public static final String msgLabel = ChatColor.GOLD+"[SimplyVanish] ";
 	public static final String msgStillInvisible =  SimplyVanish.msgLabel+ChatColor.GRAY+"You are still "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players.";
+	public static final String msgNowInvisible = SimplyVanish.msgLabel+ChatColor.GRAY+"You are now "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players.";
+	public static final String msgNotifyPing = SimplyVanish.msgLabel+ChatColor.GRAY+"You are "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+", right now.";
 	
 	public static final String[] baseLabels = new String[]{
 		"vanish", "reappear", "tvanish", "simplyvanish","vanished",
@@ -113,15 +115,7 @@ public class SimplyVanish extends JavaPlugin {
 			else break;
 		}
 		
-		if (label.equals("nosee") && len==0){
-			// TODO: EXPERIMENTAL ADDITION
-			// toggle for oneself.
-			if ( !Utils.checkPlayer(sender)) return true;
-			if ( !Utils.checkPerm(sender, "simplyvanish.see-all")) return true;
-			core.onToggleNosee((Player) sender);
-			return true;
-		}
-		else if ( label.equals("vanish") && len==0 ){
+		if ( label.equals("vanish") && len==0 ){
 			if ( !Utils.checkPlayer(sender)) return true;
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
 			// Make sure the player is vanished...
