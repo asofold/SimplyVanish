@@ -40,6 +40,12 @@
 - !(bugfix) reappear other does simply not work when they are online (did not). [test,,,]
 - !(bugfix) updatevanishstate: some issues with wanting to see / not ? - can still see vanished [might be resolved]
 
+(0.4.0-DEV-6)
+- (add) New flag: *clear to reset flags to orgiginal state, can be put anywhere next to other flags.
+- (bugfix) Message on reappear.
+- (bugfix) Notify ping: should work as expected now.
+- (bugfix) Toggle did not work when vanished. 
+
 (0.4.0-DEV-5)
 - (add) /vanflag command for flags.
 - (add) ping support (You are vanished.)
