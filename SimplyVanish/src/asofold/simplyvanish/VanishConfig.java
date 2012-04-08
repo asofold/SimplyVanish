@@ -17,6 +17,12 @@ package asofold.simplyvanish;
 public class VanishConfig {
 	
 	/**
+	 * Flag for indicating that this might get saved.<br>
+	 * Handled not too strictly (use: setFlags, then vanish, vanish checks this flag).
+	 */
+	public boolean changed = false;
+	
+	/**
 	 * Player is vanished.
 	 */
 	public boolean vanished = false;
@@ -119,6 +125,16 @@ public class VanishConfig {
 	 */
 	public boolean needsSave(){
 		return vanished || !see  || pickup || drop || damage || target || !ping || auto!=null;
+	}
+
+	/**
+	 * Return standard flag with +,- as first character and standard name.
+	 * @param input
+	 * @return
+	 */
+	public static String getMappedFlag(String input) {
+		// TODO Auto-generated method stub
+		throw new RuntimeException("Not implemented.");
 	}
 	
 }
