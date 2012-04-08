@@ -29,7 +29,7 @@ public class SimplyVanish extends JavaPlugin {
 	static final SimplyVanishCore core = new SimplyVanishCore();
 
 	public static final String msgLabel = ChatColor.GOLD+"[SimplyVanish] ";
-	public static final String notifyPingMessage =  SimplyVanish.msgLabel+ChatColor.GRAY+"You are "+ChatColor.GREEN+"vanished"+ChatColor.GRAY+", currently.";
+	public static final String msgStillInvisible =  SimplyVanish.msgLabel+ChatColor.GRAY+"You are still "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players.";
 	
 	public static final String[] baseLabels = new String[]{
 		"vanish", "reappear", "tvanish", "simplyvanish","vanished",
