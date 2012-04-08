@@ -77,6 +77,10 @@ public class VanishConfig {
 				state = false;
 				s = s.substring(1);
 			}
+			else if (s.startsWith("*")){
+				// (ignore these)
+				continue;
+			}
 			else state = true;
 			if ( s.equals("vanish") || s.equals("vanished")){
 				if (allowVanish) vanished = state;
