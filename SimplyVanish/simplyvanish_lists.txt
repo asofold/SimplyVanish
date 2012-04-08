@@ -30,9 +30,15 @@
 - ?(add) allow-players list
 - !(add) Digest warning messages where possible (show one instead of two).
 
+- ?(bugfix) Too many players get vanished seemingly randomized?  [Orebfuscator / CraftBukkit]
+
 (0.4.0-DEV-5)
 - ! add per flag permissions
 - ! make saving consistent with changing flags.
+- !(bugfix) reappear other does simply not work.
+- !(bugfix) flags dont work for others  /simvan other .... 
+- !(bugfix) updatevanishstae: some issues with wanting to see / not ? - can still see vanished 
+- (bugfix) Restructured updateVanishState, fixed small issue, ensure who sees whom.
 
 (0.4.0-DEV-4)
 - (add) /simplyvanish allows to show own or other players flags.
