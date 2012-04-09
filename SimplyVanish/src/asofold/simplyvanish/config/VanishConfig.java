@@ -238,4 +238,14 @@ public class VanishConfig {
 		return flags.containsKey(name);
 	}
 	
+	/**
+	 * Clones but sets changed to true.
+	 */
+	public VanishConfig clone(){
+		VanishConfig cfg = new VanishConfig();
+		cfg.setAll(this);
+		cfg.changed =  true;
+		return cfg;
+	}
+	
 }
