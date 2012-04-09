@@ -178,4 +178,8 @@ public class LightCommands implements Listener {
 		}
 		return true;
 	}
+
+	public void clear() {
+		commandMap.clear();
+	}
 }

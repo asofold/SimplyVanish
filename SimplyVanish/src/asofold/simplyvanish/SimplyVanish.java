@@ -308,6 +308,7 @@ public class SimplyVanish extends JavaPlugin {
 	void registerCommandAliases(Configuration config) {
 		aliasManager.cmdNoOp =  SimplyVanish.cmdNoOp; //  hack :)
 		// Register aliases from configuration ("fake"). 
+		aliasManager.clear();
 		for ( String cmd : SimplyVanish.baseLabels){
 			// TODO: only register the needed aliases.
 			cmd = cmd.trim().toLowerCase();

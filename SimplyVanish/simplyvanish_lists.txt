@@ -34,28 +34,47 @@ PLANNED FEATURES AND QUESTIONS
 *** LANGUAGE
 ? language update
 
+*** PERMISSIONS
+- ?(add) allow-players list
+
 
 STACK
 ---------------------------------------------
 
-(0.4.0)
-- ?(add) API: add methods for some of the new stuff (getFlags canSeeVanished etc
-- !refactor: use getVanishConfig(name, create) everywhere !
-- !(add) op-permissions flag
-- ?(add) allow-players list
-- !(add) Digest warning messages where possible (show one instead of two).
-- !(add) Permission/some setup what flags to set automtically (default flags)? Or sets with a defined permission.
-- !(add) Configuration flag to deactivate special command aliases.
+*** (0.4.0) [RELEASE]
 
-(0.4.0-DEV-X)
+*** API
+- ?(add) API: add methods for some of the new stuff (getFlags canSeeVanished etc
+
+*** USABILITY
 ? some way to ... show info about all available flags / help
 - !(add) Define flag sets with a special leading character like '#' + name. instead of a player name (for definition).
+- !(add) op-permissions flag
+- !(add) Digest warning messages where possible (show one instead of two).
+- !(add) Permission/some setup what flags to set automtically (default flags)? Or sets with a defined permission.
 
-(0.4.0-DEV-10)
-- !(add) Stats
+*** [CORE FEATURES]
+
+*** CONSISTENCY
+- !refactor/ensure: use getVanishConfig(name, create) everywhere !
+
+
+
+- !(add) Configuration flag to deactivate all special command aliases (Not register at all?).
+
+(0.4.0-DEV-X)
+
+
+
+*** (0.4.0-DEV-10)
+- !(bugfix) Reset aliases on reloading !
+- !(add) Stats: command to check/reset for: updateVanishState, setFlags, login, logout, ...
 
 CHANGELOG 
 ---------------------------------------------
+
+(0.4.0-DEV-10)
+- (bugfix) Remove log message for handled aliases defined in the configuration.
 
 (0.4.0-DEV-9)
 - (add) Command alias feature: define aliases in the config.
