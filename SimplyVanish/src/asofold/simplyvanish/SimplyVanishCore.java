@@ -744,8 +744,10 @@ public class SimplyVanishCore implements Listener{
 		Set<String> missing = null;
 		if (!hasBypass){
 			missing = new HashSet<String>();
-			for ( String name : changes){
-				if (!Utils.hasPermission(sender, permBase+".name")) missing.add(name);
+			for ( String fn : changes){
+				String name = fn.substring(1);
+				System.out.println(name);
+				if (!Utils.hasPermission(sender, permBase+"."+name)) missing.add(name);
 				else{
 					hasSomePerm = true;
 					cfg.set(name, newCfg.get(name));
