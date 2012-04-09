@@ -34,6 +34,8 @@
 
 ? (add) API / Hooks for players (other plugins, whatever): onVanish, onReappear, toLine, boolean parse
 
+- !(add) Permission/some setup what flags to set automtically (default flags)? Or sets with a defined permission.
+
 (0.4.0-DEV-X)
 - ! add per flag permissions
 - ! make saving consistent with changing flags.
@@ -41,6 +43,16 @@
 - !(bugfix) updatevanishstate: some issues with wanting to see / not ? - can still see vanished [might be resolved]
 
 ? language update
+
+(0.4.0-DEV-8)
+- !(add) permission to reappear (as alternative to vanish).
+- (add) save-vanished-interval in minutes as an alternative to save always.  
+- (add) specific permissions for setting flags [needs: map alternative names to standard name + check permissions inside of setFlags] ?simplyvanish.flags.set.self|other.<flagname>
+- (change) auto vanish will now only work, if enabled in the configuration, setting the flag will not override it.
+- (refactor) Use new flag system internally to increase reliability for future additions. 
+- (add) Use VanishConfig.changed on some occasions.
+- (refactor) Changed package structure slightly.
+
 
 (0.4.0-DEV-7)
 - (bugfix) Updates vanish/see state now after setting flags.
