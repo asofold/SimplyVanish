@@ -170,6 +170,9 @@ public class VanishConfig {
 	 * @return
 	 */
 	public static String getMappedFlagName(String input) {
+		if (input.isEmpty()) return input;
+		char c = input.charAt(0);
+		if ( input.length()>1 && (c == '+' || c == '-' || c == '*')) input = input.substring(1);
 		String mapped = mappedFlags.get(input);
 		if (mapped == null) return input;
 		else return mapped;
@@ -207,6 +210,22 @@ public class VanishConfig {
 	 */
 	public List<String> getChanges(VanishConfig possiblyChanged){
 		return getChanges(this, possiblyChanged);
+	}
+	
+	public boolean get(String name){
+		return flags.get(name).state;
+	}
+	
+	public void set(String name, boolean state){
+		Flag flag = flags.get(name);
+		if (flag.state != state){
+			flag.state = state;
+			changed = true;
+		}
+	}
+	
+	public boolean has(String name){
+		return flags.containsKey(name);
 	}
 	
 }
