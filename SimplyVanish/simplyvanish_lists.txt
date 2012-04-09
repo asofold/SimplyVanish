@@ -45,14 +45,14 @@ STACK
 - ?(add) allow-players list
 - !(add) Digest warning messages where possible (show one instead of two).
 - !(add) Permission/some setup what flags to set automtically (default flags)? Or sets with a defined permission.
+- !(add) Configuration flag to deactivate special command aliases.
 
 (0.4.0-DEV-X)
-? add stats ?
 ? some way to ... show info about all available flags / help
 - !(add) Define flag sets with a special leading character like '#' + name. instead of a player name (for definition).
 
 (0.4.0-DEV-10)
-
+- !(add) Stats
 
 CHANGELOG 
 ---------------------------------------------
