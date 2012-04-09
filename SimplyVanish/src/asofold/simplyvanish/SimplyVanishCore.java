@@ -704,47 +704,65 @@ public class SimplyVanishCore implements Listener{
 
 	/**
 	 * Only set the flags, no save.
+	 * TODO: probably needs a basic mix-in permission to avoid abuse (though that would need command spam).
 	 * @param playerName
 	 * @param args
 	 * @param startIndex Start parsing flags from that index on.
 	 * @param sender For performing permission checks.
-	 * @param hasPerm Has some bypass permission (results in no checks)
+	 * @param hasBypass Has some bypass permission (results in no checks)
 	 * @param other If is sender is other than name
 	 * @param save If to save state.
 	 */
-	public void setFlags(String playerName, String[] args, int startIndex, CommandSender sender, boolean hasPerm, boolean other, boolean save) {
-		VanishConfig cfg = getVanishConfig(playerName);
+	public void setFlags(String playerName, String[] args, int startIndex, CommandSender sender, boolean hasBypass, boolean other, boolean save) {
+		playerName = playerName.trim().toLowerCase();
+		if (playerName.isEmpty()) return;
+		final String permBase =  "simplyvanish.flags.set."+(other?"other":"self"); // bypass permission
+		if (!hasBypass) hasBypass = Utils.hasPermission(sender, permBase);
+		VanishConfig cfg = vanishConfigs.get(playerName);
+		boolean hasSomePerm = hasBypass; // indicates that the player has any permission at all.
+		if (cfg == null) cfg = new VanishConfig();
 		boolean hasClearFlag = false;
-		final String permBase =  "simplyvanish.flags.set."+(other?"other":"self"); // bypass permission always checked.
-		if (!hasPerm) hasPerm = Utils.hasPermission(sender, permBase);
-		Set<String> flags = new HashSet<String>(); // Flags with permission checked.
-		Set<String> missing = new HashSet<String>(); // missing permission for these flags.
 		for ( int i = startIndex; i<args.length; i++){
 			String name = VanishConfig.getMappedFlagName(args[i].trim().toLowerCase());
 			if ( name.equals("clear")){
 				hasClearFlag = true;
+				break;
 			} 
-			else if (!Utils.hasPermission(sender, permBase+"."+name)) missing.add(name);
-			else flags.add(args[i].trim().toLowerCase()); 
 		}
+		VanishConfig newCfg;
 		if (hasClearFlag){
-			final VanishConfig ncfg = new VanishConfig();
-			ncfg.vanished.state = cfg.vanished.state;
-			if (!hasPerm){
-				List<String> changes = VanishConfig.getChanges(cfg, ncfg); // from ... to
-				for ( String flag : changes){
-					String name = flag.substring(1);
-					if (!Utils.hasPermission(sender, permBase+"."+name)) missing.add(flag);
-					else flags.add(flag); 
+			newCfg = new VanishConfig();
+			newCfg.set("vanished", cfg.get("vanished"));
+		}
+		else newCfg = cfg.clone();
+		
+		newCfg.readFromArray(args, startIndex, false);
+		
+		List<String> changes = cfg.getChanges(newCfg);
+		
+		// Determine permissions and apply valid changes:
+		Set<String> missing = null;
+		if (!hasBypass){
+			missing = new HashSet<String>();
+			for ( String name : changes){
+				if (!Utils.hasPermission(sender, permBase+".name")) missing.add(name);
+				else{
+					hasSomePerm = true;
+					cfg.set(name, newCfg.get(name));
 				}
 			}
-			vanishConfigs.put(playerName.trim().toLowerCase(), ncfg);
-			cfg = ncfg;
 		}
-		// TODO: create array, message if empty etc.
-		cfg.readFromArray(args, startIndex, false);
-		Player player = Bukkit.getServer().getPlayer(playerName);
+		if (!missing.isEmpty()) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Missing permission for flags: "+Utils.join(missing, ", "));
+		if (!hasBypass && !hasSomePerm){
+			// Difficult: might be a player without ANY permission.
+			// TODO: maybe check permissions for all flags
+			Utils.send(sender, SimplyVanish.msgLabel+ChatColor.DARK_RED+"You can not set these flags.");
+			return;
+		}
+		// if pass:
+		vanishConfigs.put(playerName, cfg); // just to ensure it is there.
 		if ( save && cfg.changed && settings.saveVanishedAlways) saveVanished();
+		Player player = Bukkit.getServer().getPlayer(playerName);
 		if (player != null) updateVanishState(player, false);
 	}
 
