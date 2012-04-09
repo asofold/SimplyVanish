@@ -58,13 +58,12 @@ STACK
 *** CONSISTENCY
 - !refactor/ensure: use getVanishConfig(name, create) everywhere !
 
-*** (0.4.0-PRE-1)
-- !(add) Stats: command to check/reset for: updateVanishState, setFlags, login, logout, ...
 
 CHANGELOG 
 ---------------------------------------------
 
 (0.4.0-PRE-1)
+- (add) Stats for updateVanishState, vanish, reappear, setFlags + command to show and to reset. 
 - (bugfix) Reset aliases on reloading !
 - (bugfix) Remove log message for handled aliases defined in the configuration.
 
