@@ -40,13 +40,13 @@ public class SimplyVanish extends JavaPlugin {
 	private static final String cmdNoOpArg = "??NOOP??";
 	private static final String cmdNoOp = "simplyvanish "+cmdNoOpArg;
 	
-	public static final String msgLabel = ChatColor.GOLD+"[SimplyVanish] ";
+	public static final String msgLabel = ChatColor.GOLD+"[SimplyVanish]"+ChatColor.GRAY+" ";
 	public static final String msgStillInvisible =  SimplyVanish.msgLabel+ChatColor.GRAY+"You are still "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players.";
 	public static final String msgNowInvisible = SimplyVanish.msgLabel+ChatColor.GRAY+"You are now "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players.";
 	public static final String msgNotifyPing = SimplyVanish.msgLabel+ChatColor.GRAY+"You are "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+", right now.";
 	public static final String msgNoFlags = SimplyVanish.msgLabel+ChatColor.GRAY+"Flags are at default values.";
 
-	public static final Stats stats = new Stats("[SimplyVanish][Stats]");
+	public static final Stats stats = new Stats(msgLabel.trim()+"[STATS]");
 	public static final Integer statsUpdateVanishState = stats.getNewId("UpdateVanishState");
 	
 	static{
@@ -213,6 +213,16 @@ public class SimplyVanish extends JavaPlugin {
 					return true;
 				}
 				else if (len==1 && args[0].equals(SimplyVanish.cmdNoOpArg)) return true;
+				else if (len==1 && args[0].equalsIgnoreCase("stats")){
+					if ( !Utils.checkPerm(sender, "simplyvanish.stats.display")) return true;
+					Utils.send(sender, stats.getStatsStr(true));
+					return true;
+				} else if (len==2 && args[0].equalsIgnoreCase("stats") && args[1].equalsIgnoreCase("reset")){
+					if ( !Utils.checkPerm(sender, "simplyvanish.stats.reset")) return true;
+					stats.clear();
+					Utils.send(sender, msgLabel+"Stats reset.");
+					return true;
+				}
 			}
 			
 			if (hasFlags && len == 0){
