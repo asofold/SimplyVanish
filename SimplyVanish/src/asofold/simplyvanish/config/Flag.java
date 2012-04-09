@@ -27,4 +27,10 @@ public class Flag {
 	public static String fs(boolean state){
 		return state?"+":"-";
 	}
+	
+	public Flag clone(){
+		Flag flag = new Flag(name, preset);
+		flag.state = state;
+		return flag;
+	}
 }
