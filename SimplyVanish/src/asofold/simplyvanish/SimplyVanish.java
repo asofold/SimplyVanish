@@ -17,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import asofold.simplyvanish.config.Settings;
+import asofold.simplyvanish.util.Utils;
 
 /**
  * Example plugin for the vanish API as of CB 1914 !
