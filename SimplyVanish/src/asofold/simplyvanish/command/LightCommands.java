@@ -176,7 +176,6 @@ public class LightCommands implements Listener {
 				}
 			}
 		}
-		System.out.println("handled: "+label);
 		return true;
 	}
 }
