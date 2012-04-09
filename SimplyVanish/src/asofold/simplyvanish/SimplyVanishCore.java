@@ -381,6 +381,7 @@ public class SimplyVanishCore implements Listener{
 	 * @param message If to message players.
 	 */
 	public void onVanish(Player player, boolean message) {
+		long ns = System.nanoTime();
 		String name = player.getName();
 		boolean was = !addVanishedName(name);
 		String msg = null;
@@ -406,6 +407,7 @@ public class SimplyVanishCore implements Listener{
 			}
 		}
 		if (message) player.sendMessage(was?SimplyVanish.msgStillInvisible:SimplyVanish.msgNowInvisible);
+		SimplyVanish.stats.addStats(SimplyVanish.statsVanish, System.nanoTime()-ns);
 	}
 
 	/**
@@ -426,6 +428,7 @@ public class SimplyVanishCore implements Listener{
 	 * @param player
 	 */
 	public void onReappear(Player player) {
+		long ns = System.nanoTime();
 		String name = player.getName();
 		boolean was = removeVanishedName(name);
 		String msg = null;
@@ -449,6 +452,7 @@ public class SimplyVanishCore implements Listener{
 			}
 		}
 		player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You are "+(was?"now":"still")+" "+ChatColor.RED+"visible"+ChatColor.GRAY+" to everyone!");
+		SimplyVanish.stats.addStats(SimplyVanish.statsReappear, System.nanoTime()-ns);
 	}
 	
 	/**
@@ -716,6 +720,7 @@ public class SimplyVanishCore implements Listener{
 	 * @param save If to save state.
 	 */
 	public void setFlags(String playerName, String[] args, int startIndex, CommandSender sender, boolean hasBypass, boolean other, boolean save) {
+		long ns = System.nanoTime();
 		playerName = playerName.trim().toLowerCase();
 		if (playerName.isEmpty()) return;
 		final String permBase =  "simplyvanish.flags.set."+(other?"other":"self"); // bypass permission
@@ -759,6 +764,7 @@ public class SimplyVanishCore implements Listener{
 			// Difficult: might be a player without ANY permission.
 			// TODO: maybe check permissions for all flags
 			Utils.send(sender, SimplyVanish.msgLabel+ChatColor.DARK_RED+"You can not set these flags.");
+			SimplyVanish.stats.addStats(SimplyVanish.statsSetFlags, System.nanoTime()-ns);
 			return;
 		}
 		// if pass:
@@ -766,6 +772,7 @@ public class SimplyVanishCore implements Listener{
 		if ( save && cfg.changed && settings.saveVanishedAlways) saveVanished();
 		Player player = Bukkit.getServer().getPlayerExact(playerName);
 		if (player != null) updateVanishState(player, false);
+		SimplyVanish.stats.addStats(SimplyVanish.statsSetFlags, System.nanoTime()-ns);
 	}
 
 	public void onShowFlags(CommandSender sender, String name) {
