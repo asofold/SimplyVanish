@@ -465,6 +465,7 @@ public class SimplyVanishCore implements Listener{
 	 * @param message If to message the player.
 	 */
 	public void updateVanishState(Player player, boolean message){
+		long ns = System.nanoTime();
 		String playerName = player.getName();
 		String lcName = playerName.toLowerCase();
 		Server server = Bukkit.getServer();
@@ -480,7 +481,8 @@ public class SimplyVanishCore implements Listener{
 			if (!was && !other.canSee(player)) showPlayer(player, other);   
 			
 		}
-		if (was) onVanish(player, message); // remove: a) do not save 2x b) people will get notified.		
+		if (was) onVanish(player, message); // remove: a) do not save 2x b) people will get notified.	
+		SimplyVanish.stats.addStats(SimplyVanish.statsUpdateVanishState, System.nanoTime()-ns);
 	}
 	
 	/**
