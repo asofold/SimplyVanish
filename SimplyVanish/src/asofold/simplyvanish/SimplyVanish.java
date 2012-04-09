@@ -149,14 +149,14 @@ public class SimplyVanish extends JavaPlugin {
 		} 
 		else if (label.equals("reappear") && len==0 ){
 			if ( !Utils.checkPlayer(sender)) return true;
-			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
+			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self") && !Utils.checkPerm(sender, "simplyvanish.reappear.self")) return true;
 			// Let the player be seen...
 			if (hasFlags) core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
 			core.onReappear((Player) sender);
 			return true;
 		} 
 		else if ( label.equals("reappear") && len==1 ){
-			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.other")) return true;
+			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.other") && !Utils.checkPerm(sender, "simplyvanish.reappear.other")) return true;
 			// Make sure the other player is shown...
 			String name = args[0].trim();
 			if (hasFlags) core.setFlags(name, args, len, sender, false, true, false);
