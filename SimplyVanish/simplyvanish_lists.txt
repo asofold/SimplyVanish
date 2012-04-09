@@ -26,7 +26,7 @@ PLANNED FEATURES AND QUESTIONS
 ? dynamic command registration (also for vanishcfgs) -> lightweight command aliases (check preprocess, if not exists -> use)
 - ?(add) Configurable: command aliases for standard commands (read from config, applied directly)
 ?(add) '/simplyvanish clear' command to let all players be seen again.
-
+- !(add) Configuration flag to deactivate all special command aliases (Not register at all?).
 
 *** COMPATIBILITY / HOOKS
 ? (add) API / Hooks for players (other plugins, whatever): onVanish, onReappear, toLine, boolean parse
@@ -58,22 +58,14 @@ STACK
 *** CONSISTENCY
 - !refactor/ensure: use getVanishConfig(name, create) everywhere !
 
-
-
-- !(add) Configuration flag to deactivate all special command aliases (Not register at all?).
-
-(0.4.0-DEV-X)
-
-
-
-*** (0.4.0-DEV-10)
-- !(bugfix) Reset aliases on reloading !
+*** (0.4.0-PRE-1)
 - !(add) Stats: command to check/reset for: updateVanishState, setFlags, login, logout, ...
 
 CHANGELOG 
 ---------------------------------------------
 
-(0.4.0-DEV-10)
+(0.4.0-PRE-1)
+- (bugfix) Reset aliases on reloading !
 - (bugfix) Remove log message for handled aliases defined in the configuration.
 
 (0.4.0-DEV-9)

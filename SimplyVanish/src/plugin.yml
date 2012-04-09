@@ -1,6 +1,6 @@
 name: SimplyVanish
 main: asofold.simplyvanish.SimplyVanish
-version: 0.4.0-DEV-10
+version: 0.4.0-PRE-1
 commands:
   vanish: 
      description: 'Ensure you or another player is vanished (then: /vanish <player>).'
