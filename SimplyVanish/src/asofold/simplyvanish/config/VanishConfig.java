@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * As it seems this is needed :)
@@ -221,6 +222,15 @@ public class VanishConfig {
 		if (flag.state != state){
 			flag.state = state;
 			changed = true;
+		}
+	}
+	
+	public void setAll(VanishConfig other){
+		for (Entry<String, Flag> entry : other.flags.entrySet()){
+			String n = entry.getKey();
+			Flag flag = entry.getValue();
+			if (has(n)) set(n, flag.state);
+			else flags.put(n, flag.clone());
 		}
 	}
 	
