@@ -741,22 +741,19 @@ public class SimplyVanishCore implements Listener{
 		List<String> changes = cfg.getChanges(newCfg);
 		
 		// Determine permissions and apply valid changes:
-		Set<String> missing = null;
-		if (!hasBypass){
-			missing = new HashSet<String>();
-			for ( String fn : changes){
-				String name = fn.substring(1);
-				System.out.println(name);
-				if (!Utils.hasPermission(sender, permBase+"."+name)) missing.add(name);
-				else{
-					hasSomePerm = true;
-					cfg.set(name, newCfg.get(name));
-				}
+		Set<String> missing = new HashSet<String>();
+			
+		for ( String fn : changes){
+			String name = fn.substring(1);
+			if (!hasBypass && !Utils.hasPermission(sender, permBase+"."+name)) missing.add(name);
+			else{
+				hasSomePerm = true;
+				cfg.set(name, newCfg.get(name));
 			}
 		}
 		
-		if (missing != null && !missing.isEmpty()) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Missing permission for flags: "+Utils.join(missing, ", "));
-		if (!hasBypass && !hasSomePerm){
+		if (!missing.isEmpty()) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Missing permission for flags: "+Utils.join(missing, ", "));
+		if (!hasSomePerm){
 			// Difficult: might be a player without ANY permission.
 			// TODO: maybe check permissions for all flags
 			Utils.send(sender, SimplyVanish.msgLabel+ChatColor.DARK_RED+"You can not set these flags.");
