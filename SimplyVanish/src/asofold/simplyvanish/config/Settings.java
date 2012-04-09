@@ -1,8 +1,11 @@
 package asofold.simplyvanish.config;
 
+import java.util.LinkedList;
+
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.MemoryConfiguration;
 
+import asofold.simplyvanish.SimplyVanish;
 import asofold.simplyvanish.util.Utils;
 
 
@@ -137,10 +140,10 @@ public class Settings {
 		defaults.set("messages.notify.state.permission", ref.notifyStatePerm);
 		defaults.set("messages.notify.ping.enabled", ref.pingEnabled);
 		defaults.set("messages.notify.ping.period", ref.pingPeriod/1000); // seconds
-//		// commands:
-//		for ( String cmd : SimplyVanish.baseLabels){
-//			defaults.set("commands."+cmd+".aliases", new LinkedList<String>());
-//		}
+		// commands:
+		for ( String cmd : SimplyVanish.baseLabels){
+			defaults.set("commands."+cmd+".aliases", new LinkedList<String>());
+		}
 //		defaults.set("server-ping.subtract-vanished", false); // TODO: Feature request pending ...
 		defaults.set("save-vanished", ref.saveVanished); // TODO: load/save vanished players.
 		defaults.set("save-vanished-always", ref.saveVanishedAlways); // TODO: load/save vanished players.

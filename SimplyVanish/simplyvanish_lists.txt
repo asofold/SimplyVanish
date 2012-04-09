@@ -1,48 +1,62 @@
+SimplyVanish lists
+-------------------------------------------
 
-*** CONCEPT (CHECK/DIGETS):
+
+PLANNED FEATURES AND QUESTIONS
+------------------------------------
+
+*** OBFUSCATION OF PRESENCE
 - !(add) Configurable: fake a lower number of players on list-ping [WAITING FOR FEATURE REQUEST]
 ? add configurability and on demand event registrations (by config !)
-? add cancelling of more interaction !
+- !(adjust) Better xp orb handling !
+
+*** PERFORMANCE
 ? use entity ids for fastest checking ?
-?extenda
-? vanish configs (determine what is vanished and what not what damage/interaction)
-? vanishcfg: certian perm to see a player.
-? check update for efficiency
+? check update for efficiency (uh uh)
+? Faster exclusion cheecks (mix-in permission?) for setFlags
+? test performance :)
+
+*** LESS INTERACTION
 ? camera vanish
-? dynamic command registration (also for vanishcfgs)
-- ?(add) Configurable: command aliases for standard commands (read from config, applied directly)
-* what with list ?
+? add canceling of more interaction !
 - ?(add) prevent chat toggle 
-?(add) '/simplyvanish clear' command to let all players be seen again.
 ?(add) Prevent commands feature ? 
 
+**** COMMANDS
+? dynamic command registration (also for vanishcfgs) -> lightweight command aliases (check preprocess, if not exists -> use)
+- ?(add) Configurable: command aliases for standard commands (read from config, applied directly)
+?(add) '/simplyvanish clear' command to let all players be seen again.
+
+
+*** COMPATIBILITY / HOOKS
+? (add) API / Hooks for players (other plugins, whatever): onVanish, onReappear, toLine, boolean parse
+
+*** LANGUAGE
+? language update
+
+
+STACK
+---------------------------------------------
+
 (0.4.0)
-- !(add) Configuration flag for abort-on-inconsistency or similar ()
-*** [FEATURE REQUEST]
-*** Consistent messages for nosee !
-! ENSURE: The command for nosee should be possible for the case: a player can see all but not vanish.
-- !(add) add nosee to vanished output ?
-- ?(add) API: canNowSeeVanished(Player player) 
-- !(add) A way to set/toggle nosee - either a flag for vanish or an extra command.
-- !(add) Central access points methods for: adding and removing players to the vanished set + for messaging players (ensure).
+- ?(add) API: add methods for some of the new stuff (getFlags canSeeVanished etc
 - !refactor: use getVanishConfig(name, create) everywhere !
 - !(add) op-permissions flag
 - ?(add) allow-players list
 - !(add) Digest warning messages where possible (show one instead of two).
-
-- ?(bugfix) Too many players get vanished seemingly randomized?  [Orebfuscator / CraftBukkit]
-
-? (add) API / Hooks for players (other plugins, whatever): onVanish, onReappear, toLine, boolean parse
-
 - !(add) Permission/some setup what flags to set automtically (default flags)? Or sets with a defined permission.
 
 (0.4.0-DEV-X)
-- ! add per flag permissions
-- ! make saving consistent with changing flags.
-- !(bugfix) reappear other does simply not work when they are online (did not). [test,,,]
-- !(bugfix) updatevanishstate: some issues with wanting to see / not ? - can still see vanished [might be resolved]
+? add stats ?
+? some way to ... show info about all available flags / help
+- !(add) Define flag sets with a special leading character like '#' + name. instead of a player name (for definition).
 
-? language update
+CHANGELOG 
+---------------------------------------------
+
+(0.4.0-DEV-9)
+- (add) Command alias feature: define aliases in the config.
+- (bugfix) Add alias recognition for vanflag command. 
 
 (0.4.0-DEV-8)
 - (add) permission to reappear (as an alternative to vanish, to only allow a player to reappear).
@@ -52,7 +66,6 @@
 - (refactor) Use new flag system internally to increase reliability for future additions. 
 - (add) Use VanishConfig.changed on some occasions.
 - (refactor) Changed package structure slightly.
-
 
 (0.4.0-DEV-7)
 - (bugfix) Updates vanish/see state now after setting flags.
