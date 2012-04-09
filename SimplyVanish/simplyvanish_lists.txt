@@ -51,6 +51,9 @@ STACK
 ? some way to ... show info about all available flags / help
 - !(add) Define flag sets with a special leading character like '#' + name. instead of a player name (for definition).
 
+(0.4.0-DEV-10)
+
+
 CHANGELOG 
 ---------------------------------------------
 
@@ -61,7 +64,7 @@ CHANGELOG
 (0.4.0-DEV-8)
 - (add) permission to reappear (as an alternative to vanish, to only allow a player to reappear).
 - (add) save-vanished-interval in minutes as an alternative to save always.  
-- (add) specific permissions for setting flags [needs: map alternative names to standard name + check permissions inside of setFlags] ?simplyvanish.flags.set.self|other.<flagname>
+- (add) specific permissions for setting flags
 - (change) auto vanish will now only work, if enabled in the configuration, setting the flag will not override it.
 - (refactor) Use new flag system internally to increase reliability for future additions. 
 - (add) Use VanishConfig.changed on some occasions.
