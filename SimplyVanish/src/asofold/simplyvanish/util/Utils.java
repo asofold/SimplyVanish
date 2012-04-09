@@ -1,5 +1,6 @@
 package asofold.simplyvanish.util;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -155,5 +156,23 @@ public class Utils {
 	public static void send(CommandSender sender, String message) {
 		if (sender instanceof Player) sender.sendMessage(message);
 		else sender.sendMessage(ChatColor.stripColor(message));
+	}
+	
+	/**
+	 * 
+	 * @param parts
+	 * @param link can be null
+	 * @return
+	 */
+	public static final String join(Collection<String> parts, String link){
+		StringBuilder builder = new StringBuilder();
+		int i = 0;
+		int max = parts.size();
+		for ( String part : parts){
+			builder.append(part);
+			i++;
+			if ( i<max && link!=null ) builder.append(link);
+		}
+		return builder.toString();
 	}
 }
