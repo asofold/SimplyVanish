@@ -763,7 +763,7 @@ public class SimplyVanishCore implements Listener{
 		// if pass:
 		vanishConfigs.put(playerName, cfg); // just to ensure it is there.
 		if ( save && cfg.changed && settings.saveVanishedAlways) saveVanished();
-		Player player = Bukkit.getServer().getPlayer(playerName);
+		Player player = Bukkit.getServer().getPlayerExact(playerName);
 		if (player != null) updateVanishState(player, false);
 	}
 
