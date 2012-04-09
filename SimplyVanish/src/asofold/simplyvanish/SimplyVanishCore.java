@@ -752,7 +752,8 @@ public class SimplyVanishCore implements Listener{
 				}
 			}
 		}
-		if (!missing.isEmpty()) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Missing permission for flags: "+Utils.join(missing, ", "));
+		
+		if (missing != null && !missing.isEmpty()) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Missing permission for flags: "+Utils.join(missing, ", "));
 		if (!hasBypass && !hasSomePerm){
 			// Difficult: might be a player without ANY permission.
 			// TODO: maybe check permissions for all flags
