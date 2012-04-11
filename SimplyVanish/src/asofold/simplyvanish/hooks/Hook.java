@@ -2,8 +2,6 @@ package asofold.simplyvanish.hooks;
 
 import java.util.Collection;
 
-import org.bukkit.event.Listener;
-
 /**
  * For hooks to add for vanish.<br>
  * Players might not be online or even might not exist at all.

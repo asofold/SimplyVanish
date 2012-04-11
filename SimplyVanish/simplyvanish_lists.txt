@@ -53,14 +53,28 @@ STACK
 - !(add) Digest warning messages where possible (show one instead of two).
 - !(add) Permission/some setup what flags to set automtically (default flags)? Or sets with a defined permission.
 
+*** [HOOKS]
+- !(add) DisguisCraft hook: on vanish and reappear: reappear if disguised + listen to disguise events(reappear if is disguise, vanish if auto-vanish is set).
+
 *** [CORE FEATURES]
 
 *** CONSISTENCY
 - !refactor/ensure: use getVanishConfig(name, create) everywhere !
 
+(0.4.0-PRE-2)
+- !(add) ?? forgot
+- !(add) save-delay (minimum delay for saving)
+- !(add) stats for saving 
+- !(add) clean up internal API use ! (vanish, reappear)
+
+- !(bugfix) updateVanishState: Avoid creating VanishConfigs if unnecessary.
 
 CHANGELOG 
 ---------------------------------------------
+
+(0.4.0-PRE-2)
+- (bugfix) Avoid creating VanishConfigs for every player on join, if unnecessary.
+- (add) Shaped some basic experimental hooks API
 
 (0.4.0-PRE-1)
 - (add) Stats for updateVanishState, vanish, reappear, setFlags + command to show and to reset. 
