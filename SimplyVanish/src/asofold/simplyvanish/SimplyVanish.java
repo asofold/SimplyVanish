@@ -89,6 +89,7 @@ public class SimplyVanish extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		core.setVanishedFile(new File(getDataFolder(), "vanished.dat"));
+		removeAllHooks();
 		// load settings
 		loadSettings(); // will also load vanished players
 		// just in case quadratic time checking:
@@ -158,7 +159,7 @@ public class SimplyVanish extends JavaPlugin {
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
 			// Make sure the player is vanished...
 			if (hasFlags) core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
-			core.onVanish((Player) sender);
+			setVanished((Player) sender, true);
 			return true;
 		} 
 		else if ( label.equals("vanish") && len==1 ){
@@ -175,7 +176,7 @@ public class SimplyVanish extends JavaPlugin {
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self") && !Utils.checkPerm(sender, "simplyvanish.reappear.self")) return true;
 			// Let the player be seen...
 			if (hasFlags) core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
-			core.onReappear((Player) sender);
+			setVanished((Player) sender, false);
 			return true;
 		} 
 		else if ( label.equals("reappear") && len==1 ){
@@ -407,6 +408,13 @@ public class SimplyVanish extends JavaPlugin {
 	 */
 	public boolean removeHook(String hookName){
 		return core.removeHook(hookName);
+	}
+	
+	/**
+	 * 
+	 */
+	public void removeAllHooks(){
+		core.removeAllHooks();
 	}
 	
 	
