@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import asofold.simplyvanish.command.LightCommands;
 import asofold.simplyvanish.config.Settings;
+import asofold.simplyvanish.hooks.Hook;
 import asofold.simplyvanish.stats.Stats;
 import asofold.simplyvanish.util.Utils;
 
@@ -380,5 +381,34 @@ public class SimplyVanish extends JavaPlugin {
 		if (mapped == null) return label;
 		else return mapped;
 	}
+	
+	/**
+	 * 
+	 * @param hook
+	 * @return If one was already present.
+	 */
+	public boolean addHook(Hook hook){
+		return core.addHook(hook);
+	}
+	
+	/**
+	 * 
+	 * @param hook
+	 * @return If one was already present.
+	 */
+	public boolean removeHook(Hook hook){
+		return core.removeHook(hook);
+	}
+	
+	/**
+	 * 
+	 * @param hookName
+	 * @return If one was already present.
+	 */
+	public boolean removeHook(String hookName){
+		return core.removeHook(hookName);
+	}
+	
+	
 
 }

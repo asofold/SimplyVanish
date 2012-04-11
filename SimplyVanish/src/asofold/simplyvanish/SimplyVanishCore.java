@@ -38,10 +38,14 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.Vector;
 
 import asofold.simplyvanish.config.Settings;
 import asofold.simplyvanish.config.VanishConfig;
+import asofold.simplyvanish.hooks.Hook;
+import asofold.simplyvanish.hooks.HookListener;
+import asofold.simplyvanish.hooks.HookSupport;
 import asofold.simplyvanish.util.Utils;
 
 /**
@@ -67,7 +71,20 @@ public class SimplyVanishCore implements Listener{
 	 * File to save vanished players to.
 	 */
 	private File vanishedFile = null;
-
+	
+	/**
+	 * Hooks by purpose.
+	 */
+	private final Map<HookSupport, List<Hook>> usedHooks = new HashMap<HookSupport, List<Hook>>();
+	
+	private final Map<String, HookListener> usedHookListeners = new HashMap<String, HookListener>();
+	
+	/**
+	 * Registered hooks by name.
+	 */
+	private final Map<String, Hook> registeredHooks = new HashMap<String, Hook>();
+	
+	
 
 	@EventHandler(priority=EventPriority.HIGHEST)
 	void onPlayerJoin( PlayerJoinEvent event){
@@ -793,6 +810,75 @@ public class SimplyVanishCore implements Listener{
 			if (!cfg.ping.state) continue;
 			player.sendMessage(SimplyVanish.msgNotifyPing);
 		}
+	}
+
+	public boolean addHook(Hook hook) {
+		boolean existed = removeHook(hook);
+		try{
+			String hookName = hook.getHookName();
+			// add hook !
+			registeredHooks.put(hookName, hook);
+			HookSupport[] supported = hook.getSupportedMethods();
+			if (supported == null) supported = HookSupport.values();
+			boolean hasListener = false;
+			for (HookSupport sup : supported){
+				getUsedHooks(sup).add(hook);
+				if (sup == HookSupport.LISTENER) hasListener = true;
+			}
+			if (hasListener){
+				HookListener listener = hook.getListener();
+				if (listener != null){
+					PluginManager pm = Bukkit.getServer().getPluginManager();
+					pm.registerEvents(listener, pm.getPlugin("SimplyVanish"));
+					usedHookListeners.put(hookName, listener);
+				}
+			}
+		} catch (Throwable t){
+			Utils.warn("Disable hook ("+hook.getHookName()+") due to failure on registration: "+t.getMessage());
+			t.printStackTrace();
+			removeHook(hook);
+		}
+		return existed;
+	}
+
+	public boolean removeHook(Hook hook) {
+		// TODO maybe also check for the hook itself.
+		return removeHook(hook.getHookName());
+	}
+
+	public boolean removeHook(String hookName) {
+		Hook hook = registeredHooks.remove(hookName);
+		if (hook == null) return false;
+		HookListener listener = usedHookListeners.remove(hookName);
+		if (listener != null){
+			try{
+				if (!listener.unregisterEvents()) Utils.warn("HookListener ("+hookName+") returns failure on unregister.");
+			} catch (Throwable t){
+				Utils.warn("Failed to unregister HookListener ("+hookName+"): "+t.getMessage());
+				t.printStackTrace();
+			}
+		}
+		for (HookSupport sup : usedHooks.keySet()){
+			List<Hook> rem = new LinkedList<Hook>();
+			List<Hook> present = getUsedHooks(sup);
+			for (Hook ref : present){
+				if (ref==hook || ref.getHookName().equals(hookName)) rem.add(ref); // equals unnecessary ?
+			}
+			present.removeAll(rem);
+		}
+		return true;
+	}
+
+	/**
+	 * (Over cautious.)
+	 * @param purpose
+	 * @return
+	 */
+	public List<Hook> getUsedHooks(HookSupport purpose){
+		List<Hook> hooks = null;
+		if (purpose != null) hooks = usedHooks.get(purpose);
+		if (hooks == null) return new LinkedList<Hook>();
+		return hooks;
 	}
 
 
