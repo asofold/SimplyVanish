@@ -1,10 +1,12 @@
 package asofold.simplyvanish.hooks;
 
-import java.util.Collection;
+import asofold.simplyvanish.config.VanishConfig;
 
 /**
  * For hooks to add for vanish.<br>
- * Players might not be online or even might not exist at all.
+ * Players might not be online or even might not exist at all.<br>
+ * boolean results will lead to SimplyVanish not performing the action/change.<br>
+ * The listeners will be registered with SimplyVanish as plugin.
  * @author mc_dev
  *
  */
@@ -54,8 +56,20 @@ public interface Hook {
 	 */
 	public void afterReappear(String playerName);
 	
-	public boolean beforeSetFlags(String playerName, Collection<String> changes);
+	/**
+	 * 
+	 * @param playerName
+	 * @param oldCfg (clone)
+	 * @param newCfg (clone)
+	 * @return
+	 */
+	public boolean beforeSetFlags(String playerName, VanishConfig oldCfg, VanishConfig newCfg);
 	
+	/**
+	 * 
+	 * @param playerName
+	 * @return
+	 */
 	public boolean afterSetFlags(String playerName);
 	
 }

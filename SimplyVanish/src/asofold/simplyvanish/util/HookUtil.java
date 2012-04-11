@@ -8,6 +8,7 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
+import asofold.simplyvanish.config.VanishConfig;
 import asofold.simplyvanish.hooks.Hook;
 import asofold.simplyvanish.hooks.HookListener;
 import asofold.simplyvanish.hooks.HookSupport;
@@ -117,38 +118,6 @@ public class HookUtil {
 		if (hooks == null) return new LinkedList<Hook>();
 		return hooks;
 	}
-
-	public final void callAfterVanish(String playerName) {
-		HookSupport sup = HookSupport.AFTER_VANISH;
-		for (Hook hook : getUsedHooks(sup)){
-			try{
-				
-			} catch (Throwable t){
-				onHookCallError(sup, hook, playerName, t);
-			}
-		}
-	}
-
-	public boolean callBeforeVanish(String playerName) {
-		boolean res = true;
-		HookSupport sup = HookSupport.AFTER_VANISH;
-		for (Hook hook : getUsedHooks(sup)){
-			try{
-				if (!hook.beforeVanish(playerName)) res = false;
-			} catch (Throwable t){
-				onHookCallError(sup, hook, playerName, t);
-			}
-		}
-		return res;
-	}
-	
-	public void onHookCallError(HookSupport sup, Hook hook, String playerName, Throwable t) {
-		String msg;
-		if (t==null) msg = "<unknown>";
-		else msg = t.getMessage();
-		Utils.warn("Error on calling "+sup+" on hook("+hook.getHookName()+") for player "+playerName+": "+msg);
-		if (t!= null) t.printStackTrace();
-	}
 	
 	public void removeAllHooks(){
 		List<String> names = new LinkedList<String>();
@@ -163,4 +132,89 @@ public class HookUtil {
 		registeredHooks.clear();
 		init();
 	}
+	
+	
+	// CALL METHODS ----------------------------------------
+	
+	public void onHookCallError(HookSupport sup, Hook hook, String playerName, Throwable t) {
+		String msg;
+		if (t==null) msg = "<unknown>";
+		else msg = t.getMessage();
+		Utils.warn("Error on calling "+sup+" on hook("+hook.getHookName()+") for player "+playerName+": "+msg);
+		if (t!= null) t.printStackTrace();
+	}
+	
+	public boolean callBeforeVanish(String playerName) {
+		boolean res = true;
+		HookSupport sup = HookSupport.AFTER_VANISH;
+		for (Hook hook : getUsedHooks(sup)){
+			try{
+				if (!hook.beforeVanish(playerName)) res = false;
+			} catch (Throwable t){
+				onHookCallError(sup, hook, playerName, t);
+			}
+		}
+		return res;
+	}
+	
+	public final void callAfterVanish(String playerName) {
+		HookSupport sup = HookSupport.AFTER_VANISH;
+		for (Hook hook : getUsedHooks(sup)){
+			try{
+				
+			} catch (Throwable t){
+				onHookCallError(sup, hook, playerName, t);
+			}
+		}
+	}
+
+	public boolean callBeforeSetFlags(String playerName, VanishConfig oldCfg, VanishConfig newCfg) {
+		boolean res = true;
+		HookSupport sup = HookSupport.BEFORE_SETFLAGS;
+		for (Hook hook : getUsedHooks(sup)){
+			try{
+				if (!hook.beforeSetFlags(playerName, oldCfg, newCfg)) res = false;
+			} catch (Throwable t){
+				onHookCallError(sup, hook, playerName, t);
+			}
+		}
+		return res;
+	}
+
+	public void callAfterSetFlags(String playerName) {
+		HookSupport sup = HookSupport.AFTER_SETFLAGS;
+		for (Hook hook : getUsedHooks(sup)){
+			try{
+				hook.afterSetFlags(playerName);
+			} catch (Throwable t){
+				onHookCallError(sup, hook, playerName, t);
+			}
+		}
+	}
+
+	public boolean callBeforeReappear(String playerName) {
+		boolean res = true;
+		HookSupport sup = HookSupport.BEFORE_REAPPEAR;
+		for (Hook hook : getUsedHooks(sup)){
+			try{
+				if (!hook.beforeReappear(playerName)) res = false;
+			} catch (Throwable t){
+				onHookCallError(sup, hook, playerName, t);
+			}
+		}
+		return res;
+	}
+
+	public void callAfterReappear(String playerName) {
+		HookSupport sup = HookSupport.AFTER_REAPPEAR;
+		for (Hook hook : getUsedHooks(sup)){
+			try{
+				hook.afterSetFlags(playerName);
+			} catch (Throwable t){
+				onHookCallError(sup, hook, playerName, t);
+			}
+		}
+	}
+
+
 }

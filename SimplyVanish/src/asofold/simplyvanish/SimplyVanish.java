@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import asofold.simplyvanish.command.LightCommands;
 import asofold.simplyvanish.config.Settings;
+import asofold.simplyvanish.config.VanishConfig;
 import asofold.simplyvanish.hooks.Hook;
 import asofold.simplyvanish.stats.Stats;
 import asofold.simplyvanish.util.Utils;
@@ -140,6 +141,65 @@ public class SimplyVanish extends JavaPlugin {
 		}
 	}
 	
+	void registerCommandAliases(Configuration config) {
+		aliasManager.cmdNoOp =  SimplyVanish.cmdNoOp; //  hack :)
+		// Register aliases from configuration ("fake"). 
+		aliasManager.clear();
+		for ( String cmd : SimplyVanish.baseLabels){
+			// TODO: only register the needed aliases.
+			cmd = cmd.trim().toLowerCase();
+			List<String> mapped = config.getStringList("commands."+cmd+".aliases");
+			if ( mapped == null || mapped.isEmpty()) continue;
+			List<String> needed = new LinkedList<String>(); // those that need to be registered.
+			for (String alias : mapped){
+				Command ref = getCommand(alias);
+				if (ref==null){
+					needed.add(alias);
+				}
+				else if (ref.getLabel().equalsIgnoreCase(cmd)){
+					// already mapped to that command.
+					continue;
+				}
+				else needed.add(alias);
+			}
+			if (needed.isEmpty()) continue;
+			// register with wrong(!) label:
+			if (!aliasManager.registerCommand(cmd, needed, this)){
+				// TODO: log maybe
+			}
+			if (getCommand(cmd) != null) aliasManager.removeAlias(cmd); // the command is registered already.
+			for ( String alias: needed){
+				alias = alias.trim().toLowerCase();
+				commandAliases.put(alias, cmd);
+			}
+		
+		}
+		
+		// Register aliases for commands from plugin.yml:
+		for ( String cmd : SimplyVanish.baseLabels){
+			cmd = cmd.trim().toLowerCase();
+			PluginCommand command = getCommand(cmd);
+			if (command == null) continue;
+			List<String> aliases = command.getAliases();
+			if ( aliases == null) continue;
+			for ( String alias: aliases){
+				commandAliases.put(alias.trim().toLowerCase(), cmd);
+			}
+		}
+	}
+	
+	/**
+	 * Get standardized lower-case label, possibly mapped from an alias.
+	 * @param label
+	 * @return
+	 */
+	String getMappedCommandLabel(String label){
+		label = label.toLowerCase();
+		String mapped = commandAliases.get(label);
+		if (mapped == null) return label;
+		else return mapped;
+	}
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
@@ -159,7 +219,7 @@ public class SimplyVanish extends JavaPlugin {
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
 			// Make sure the player is vanished...
 			if (hasFlags) core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
-			setVanished((Player) sender, true);
+			if (!setVanished((Player) sender, true)) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
 			return true;
 		} 
 		else if ( label.equals("vanish") && len==1 ){
@@ -167,8 +227,8 @@ public class SimplyVanish extends JavaPlugin {
 			// Make sure the other player is vanished...
 			String name = args[0].trim();
 			if (hasFlags) core.setFlags(name, args, len, sender, false, true, false);
-			setVanished(name, true);
-			Utils.send(sender, msgLabel + "Vanish player: "+name);
+			if (setVanished(name, true)) Utils.send(sender, msgLabel + "Vanish player: "+name);
+			else Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
 			return true;
 		} 
 		else if (label.equals("reappear") && len==0 ){
@@ -176,7 +236,7 @@ public class SimplyVanish extends JavaPlugin {
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self") && !Utils.checkPerm(sender, "simplyvanish.reappear.self")) return true;
 			// Let the player be seen...
 			if (hasFlags) core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
-			setVanished((Player) sender, false);
+			if (!setVanished((Player) sender, false)) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
 			return true;
 		} 
 		else if ( label.equals("reappear") && len==1 ){
@@ -184,8 +244,8 @@ public class SimplyVanish extends JavaPlugin {
 			// Make sure the other player is shown...
 			String name = args[0].trim();
 			if (hasFlags) core.setFlags(name, args, len, sender, false, true, false);
-			setVanished(name, false);
-			Utils.send(sender, msgLabel + "Show player: "+name);
+			if (setVanished(name, false)) Utils.send(sender, msgLabel + "Show player: "+name);
+			else Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
 			return true;
 		} 
 		else if ( label.equals("tvanish") && len==0 ){
@@ -193,7 +253,7 @@ public class SimplyVanish extends JavaPlugin {
 			Player player = (Player) sender;
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
 			if (hasFlags) core.setFlags(player.getName(), args, len, sender, false, false, false);
-			setVanished(player, !isVanished(player));
+			if (!setVanished(player, !isVanished(player))) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
 			return true;
 		}
 		else if (label.equals("vanished")){
@@ -257,29 +317,13 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	/**
-	 * @deprecated Use setVanished(player, true)
-	 * @param player
-	 */
-	public void vanish(Player player){
-		setVanished(player, true);
-	}
-	
-	/**
-	 * @deprecated Use setVanished(player, false)
-	 * @param player
-	 */
-	public void reappear(Player player){
-		setVanished(player, false);
-	}
-	
-	/**
 	 * API
 	 * @param player
 	 * @param vanished true=vanish, false=reappear
 	 */
-	public static void setVanished(Player player, boolean vanished){
-		if (!core.isEnabled()) return;
-		core.setVanished(player.getName(), vanished);
+	public static boolean setVanished(Player player, boolean vanished){
+		if (!core.isEnabled()) return false;
+		return core.setVanished(player.getName(), vanished);
 	}
 	
 	/**
@@ -287,9 +331,9 @@ public class SimplyVanish extends JavaPlugin {
 	 * @param playerName
 	 * @param vanished
 	 */
-	public static void setVanished(String playerName, boolean vanished){
-		if (!core.isEnabled()) return;
-		core.setVanished(playerName, vanished);
+	public static boolean  setVanished(String playerName, boolean vanished){
+		if (!core.isEnabled()) return false;
+		return  core.setVanished(playerName, vanished);
 	}
 	
 	/**
@@ -324,67 +368,60 @@ public class SimplyVanish extends JavaPlugin {
 		else return core.getVanishedPlayers();
 	}
 	
-	void registerCommandAliases(Configuration config) {
-		aliasManager.cmdNoOp =  SimplyVanish.cmdNoOp; //  hack :)
-		// Register aliases from configuration ("fake"). 
-		aliasManager.clear();
-		for ( String cmd : SimplyVanish.baseLabels){
-			// TODO: only register the needed aliases.
-			cmd = cmd.trim().toLowerCase();
-			List<String> mapped = config.getStringList("commands."+cmd+".aliases");
-			if ( mapped == null || mapped.isEmpty()) continue;
-			List<String> needed = new LinkedList<String>(); // those that need to be registered.
-			for (String alias : mapped){
-				Command ref = getCommand(alias);
-				if (ref==null){
-					needed.add(alias);
-				}
-				else if (ref.getLabel().equalsIgnoreCase(cmd)){
-					// already mapped to that command.
-					continue;
-				}
-				else needed.add(alias);
-			}
-			if (needed.isEmpty()) continue;
-			// register with wrong(!) label:
-			if (!aliasManager.registerCommand(cmd, needed, this)){
-				// TODO: log maybe
-			}
-			if (getCommand(cmd) != null) aliasManager.removeAlias(cmd); // the command is registered already.
-			for ( String alias: needed){
-				alias = alias.trim().toLowerCase();
-				commandAliases.put(alias, cmd);
-			}
-		
-		}
-		
-		// Register aliases for commands from plugin.yml:
-		for ( String cmd : SimplyVanish.baseLabels){
-			cmd = cmd.trim().toLowerCase();
-			PluginCommand command = getCommand(cmd);
-			if (command == null) continue;
-			List<String> aliases = command.getAliases();
-			if ( aliases == null) continue;
-			for ( String alias: aliases){
-				commandAliases.put(alias.trim().toLowerCase(), cmd);
-			}
-		}
-	}
-	
 	/**
-	 * Get standardized lower-case label, possibly mapped from an alias.
-	 * @param label
-	 * @return
+	 * API
+	 * @param playerName
+	 * @param create
+	 * @return A clone of the VanishConfig.
 	 */
-	String getMappedCommandLabel(String label){
-		label = label.toLowerCase();
-		String mapped = commandAliases.get(label);
-		if (mapped == null) return label;
-		else return mapped;
+	public VanishConfig getVanishConfig(String playerName, boolean create){
+		VanishConfig cfg = core.getVanishConfig(playerName, create);
+		if (cfg == null) return null;
+		else return cfg.clone();
 	}
 	
 	/**
-	 * 
+	 * Set the VanishConfig for the player, silently (no notifications).<br>
+	 * This actually will create a new config and apply changes from the given one.
+	 * @param playerName
+	 * @param cfg
+	 * @param update
+	 */
+	public void setVanishConfig(String playerName, VanishConfig cfg, boolean update){
+		core.setVanishedConfig(playerName, cfg, update, false);
+	}
+	
+	/**
+	 * Set the VanishConfig for the player, with optional notifications, if the player is online.<br>
+	 * This actually will create a new config and apply changes from the given one.
+	 * @param playerName
+	 * @param cfg
+	 * @param update
+	 * @param message
+	 */
+	public void setVanishConfig(String playerName, VanishConfig cfg, boolean update, boolean message){
+		core.setVanishedConfig(playerName, cfg, update, message);
+	}
+	
+	/**
+	 * Force an update of who sees who for this player, without notification.
+	 * @param player
+	 */
+	public void updateVanishState(Player player){
+		core.updateVanishState(player, false); // Mind the difference of flag to core.updateVanishState(Player).
+	}
+	
+	/**
+	 * Force an update of who sees who for this player, with optional notification messages.
+	 * @param player
+	 * @param message If to send notifications and state messages.
+	 */
+	public void updateVanishState(Player player, boolean message){
+		core.updateVanishState(player, message);
+	}
+	
+	/**
+	 * API
 	 * @param hook
 	 * @return If one was already present.
 	 */
@@ -393,7 +430,7 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	/**
-	 * 
+	 * API
 	 * @param hook
 	 * @return If one was already present.
 	 */
@@ -402,7 +439,7 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	/**
-	 * 
+	 * API
 	 * @param hookName
 	 * @return If one was already present.
 	 */
@@ -411,12 +448,10 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	/**
-	 * 
+	 * API
 	 */
 	public void removeAllHooks(){
 		core.removeAllHooks();
 	}
-	
-	
 
 }
