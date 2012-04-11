@@ -91,10 +91,10 @@ public class SimplyVanishCore implements Listener{
 			}
 		}
 		
-		boolean was = false;
+		boolean doVanish = false;
 		if (cfg != null){
-			was = cfg.vanished.state;
-			if (was){
+			doVanish = cfg.vanished.state;
+			if (doVanish){
 				if (hookUtil.callBeforeVanish(playerName)){
 					cfg.vanished.state = false;
 					cfg.changed = true;
@@ -103,7 +103,7 @@ public class SimplyVanishCore implements Listener{
 			}
 		}
 		updateVanishState(event.getPlayer()); // called in any case
-		if (was) hookUtil.callAfterVanish(playerName);	
+		if (doVanish) hookUtil.callAfterVanish(playerName);	
 		
 		if ( settings.suppressJoinMessage && cfg!=null && cfg.vanished.state){
 			event.setJoinMessage(null);
