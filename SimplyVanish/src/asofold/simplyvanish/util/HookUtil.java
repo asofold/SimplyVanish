@@ -30,7 +30,23 @@ public class HookUtil {
 	 */
 	private final Map<String, Hook> registeredHooks = new HashMap<String, Hook>();
 	
+	/**
+	 * 
+	 */
+	public HookUtil(){
+		init();
+	}
 	
+	/**
+	 * Ensures that a list for every use is in usedHooks.<br>
+	 * NOTE: The LISTENER entry is in it too, though unused.
+	 */
+	private void init() {
+		for (HookSupport sup : HookSupport.values()){
+			usedHooks.put(sup, new LinkedList<Hook>());
+		}
+	}
+
 	public boolean addHook(Hook hook) {
 		boolean existed = removeHook(hook);
 		try{
@@ -145,5 +161,6 @@ public class HookUtil {
 		usedHookListeners.clear();
 		usedHooks.clear();
 		registeredHooks.clear();
+		init();
 	}
 }
