@@ -52,7 +52,8 @@ public class SimplyVanish extends JavaPlugin {
 	public static final Integer statsUpdateVanishState = stats.getNewId("UpdateVanishState");
 	public static final Integer statsVanish= stats.getNewId("Vanish");
 	public static final Integer statsReappear= stats.getNewId("Reappear");
-	public static final Integer statsSetFlags = stats.getNewId("SetFlags");;
+	public static final Integer statsSetFlags = stats.getNewId("SetFlags");
+	public static final Integer statsSave = stats.getNewId("SaveData");;
 	static{
 		stats.setLogStats(false);
 	}

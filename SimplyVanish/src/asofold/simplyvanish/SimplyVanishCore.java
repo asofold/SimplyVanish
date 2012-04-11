@@ -115,6 +115,7 @@ public class SimplyVanishCore implements Listener{
 	 * Save vanished names to file, does NOT update states (!).
 	 */
 	public void saveVanished(){
+		long ns = System.nanoTime();
 		File file = getVanishedFile();
 		if ( file==null){
 			Utils.warn("Can not save vanished players: File is not set.");
@@ -146,6 +147,7 @@ public class SimplyVanishCore implements Listener{
 				} catch (IOException e) {
 				}
 		}
+		SimplyVanish.stats.addStats(SimplyVanish.statsSave, System.nanoTime()-ns);
 	}
 	
 	/**

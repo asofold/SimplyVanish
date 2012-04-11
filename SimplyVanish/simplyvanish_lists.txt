@@ -72,8 +72,6 @@ STACK
 - !(add) ?? forgot
 - !(add) save-delay (minimum delay for saving)
 - !(add) stats for saving 
-- !(add) clean up internal API use ! (vanish, reappear)
-- !(add) API updateVanishState(Player) , getVanishConfig(String), setVanishConfig(String, String);
 - !(check) no removing + re-adding (Vcfg) ! check for vanishConfigs.remove
 - !(add) EVENTS
 
@@ -83,6 +81,7 @@ CHANGELOG
 
 (0.4.0-PRE-2)
 - (add) Shaped some basic hooks API.
+- (add) Stats for saving vanish sonfigs.
 - (remove) Deprecated API.
 - (adjust) Some minor code cleanups, simplifications.
 - (adjust) Some consistency checks added.
