@@ -93,7 +93,7 @@ public class SimplyVanishCore implements Listener{
 		if (cfg != null){
 			doVanish = cfg.vanished.state;
 			if (doVanish){
-				if (hookUtil.callBeforeVanish(playerName)){
+				if (!hookUtil.callBeforeVanish(playerName)){
 					cfg.vanished.state = false;
 					cfg.changed = true;
 				}
