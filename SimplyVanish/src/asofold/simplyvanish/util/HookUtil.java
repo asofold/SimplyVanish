@@ -110,9 +110,7 @@ public class HookUtil {
 	 * @param purpose
 	 * @return
 	 */
-	public List<Hook> getUsedHooks(HookPurpose purpose){
-		
-		
+	public final List<Hook> getUsedHooks(final HookPurpose purpose){
 		List<Hook> hooks = null;
 		if (purpose != null) hooks = usedHooks.get(purpose);
 		if (hooks == null) return new LinkedList<Hook>();
@@ -144,46 +142,42 @@ public class HookUtil {
 		if (t!= null) t.printStackTrace();
 	}
 	
-	public boolean callBeforeVanish(String playerName) {
-		boolean res = true;
-		HookPurpose sup = HookPurpose.AFTER_VANISH;
-		for (Hook hook : getUsedHooks(sup)){
+	public final void callBeforeVanish(final String playerName) {
+		final HookPurpose sup = HookPurpose.AFTER_VANISH;
+		for (final Hook hook : getUsedHooks(sup)){
 			try{
-				if (!hook.beforeVanish(playerName)) res = false;
+				hook.beforeVanish(playerName);
 			} catch (Throwable t){
 				onHookCallError(sup, hook, playerName, t);
 			}
 		}
-		return res;
 	}
 	
-	public final void callAfterVanish(String playerName) {
-		HookPurpose sup = HookPurpose.AFTER_VANISH;
-		for (Hook hook : getUsedHooks(sup)){
+	public final void callAfterVanish(final String playerName) {
+		final HookPurpose sup = HookPurpose.AFTER_VANISH;
+		for (final Hook hook : getUsedHooks(sup)){
 			try{
-				
+				hook.afterVanish(playerName);
 			} catch (Throwable t){
 				onHookCallError(sup, hook, playerName, t);
 			}
 		}
 	}
 
-	public boolean callBeforeSetFlags(String playerName, VanishConfig oldCfg, VanishConfig newCfg) {
-		boolean res = true;
-		HookPurpose sup = HookPurpose.BEFORE_SETFLAGS;
-		for (Hook hook : getUsedHooks(sup)){
+	public final void callBeforeSetFlags(final String playerName, final VanishConfig oldCfg, final VanishConfig newCfg) {
+		final HookPurpose sup = HookPurpose.BEFORE_SETFLAGS;
+		for (final Hook hook : getUsedHooks(sup)){
 			try{
-				if (!hook.beforeSetFlags(playerName, oldCfg, newCfg)) res = false;
+				hook.beforeSetFlags(playerName, oldCfg, newCfg);
 			} catch (Throwable t){
 				onHookCallError(sup, hook, playerName, t);
 			}
 		}
-		return res;
 	}
 
-	public void callAfterSetFlags(String playerName) {
-		HookPurpose sup = HookPurpose.AFTER_SETFLAGS;
-		for (Hook hook : getUsedHooks(sup)){
+	public final void callAfterSetFlags(final String playerName) {
+		final HookPurpose sup = HookPurpose.AFTER_SETFLAGS;
+		for (final Hook hook : getUsedHooks(sup)){
 			try{
 				hook.afterSetFlags(playerName);
 			} catch (Throwable t){
@@ -192,22 +186,20 @@ public class HookUtil {
 		}
 	}
 
-	public boolean callBeforeReappear(String playerName) {
-		boolean res = true;
-		HookPurpose sup = HookPurpose.BEFORE_REAPPEAR;
-		for (Hook hook : getUsedHooks(sup)){
+	public final void callBeforeReappear(final String playerName) {
+		final HookPurpose sup = HookPurpose.BEFORE_REAPPEAR;
+		for (final Hook hook : getUsedHooks(sup)){
 			try{
-				if (!hook.beforeReappear(playerName)) res = false;
+				hook.beforeReappear(playerName);
 			} catch (Throwable t){
 				onHookCallError(sup, hook, playerName, t);
 			}
 		}
-		return res;
 	}
 
-	public void callAfterReappear(String playerName) {
-		HookPurpose sup = HookPurpose.AFTER_REAPPEAR;
-		for (Hook hook : getUsedHooks(sup)){
+	public final void callAfterReappear(final String playerName) {
+		final HookPurpose sup = HookPurpose.AFTER_REAPPEAR;
+		for (final Hook hook : getUsedHooks(sup)){
 			try{
 				hook.afterSetFlags(playerName);
 			} catch (Throwable t){
