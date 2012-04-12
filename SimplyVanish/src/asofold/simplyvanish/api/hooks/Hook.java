@@ -33,9 +33,8 @@ public interface Hook {
 	/**
 	 * Executed before any player vanishes or logs in vanished.
 	 * @param playerName
-	 * @return If to allow to vanish.
 	 */
-	public boolean beforeVanish(String playerName);
+	public void beforeVanish(String playerName);
 	
 	/**
 	 * Executed after a player vanishes or logs in vanished.
@@ -46,9 +45,8 @@ public interface Hook {
 	/**
 	 * Executed before a player reappears.
 	 * @param playerName
-	 * @return If to reappear.
 	 */
-	public boolean beforeReappear(String playerName);
+	public void beforeReappear(String playerName);
 	
 	/**
 	 * Executed after a player reappears.
@@ -61,9 +59,8 @@ public interface Hook {
 	 * @param playerName
 	 * @param oldCfg (clone)
 	 * @param newCfg (clone)
-	 * @return
 	 */
-	public boolean beforeSetFlags(String playerName, VanishConfig oldCfg, VanishConfig newCfg);
+	public void beforeSetFlags(String playerName, VanishConfig oldCfg, VanishConfig newCfg);
 	
 	/**
 	 * 
