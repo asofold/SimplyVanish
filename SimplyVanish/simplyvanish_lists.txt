@@ -70,10 +70,13 @@ STACK
 *** BUGS
 ? API error: getVanishedPlayers (maybe CustomPlg error) 
 
-login bug 
 
 CHANGELOG 
 ---------------------------------------------
+
+(0.4.0-PRE-3)
+- (bugfix) PlayerJoin: suppress message only if really vanished.
+- (bugfix) Further code cleanups and simplifications.
 
 (0.4.0-PRE-2)
 - (add) DisguiseCraft hook.
