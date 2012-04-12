@@ -108,5 +108,9 @@ public class DisguiseCraftHook  extends AbstractHook {
 	public HookListener getListener() {
 		return listener;
 	}
+	
+	public DisguiseCraftHook(){
+		DisguiseCraft.getAPI(); // to fail in case.
+	}
 
 }
