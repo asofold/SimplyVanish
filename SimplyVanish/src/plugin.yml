@@ -7,7 +7,7 @@ commands:
      aliases:
      - van
   reappear:
-     description:'Ensure you or another player is visible (then: /vanish <player>).'
+     description: 'Ensure you or another player is visible (then: /vanish <player>).'
      aliases:
      - rea
   tvanish: 
