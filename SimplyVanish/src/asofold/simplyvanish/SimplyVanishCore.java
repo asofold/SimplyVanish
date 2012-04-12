@@ -102,11 +102,12 @@ public class SimplyVanishCore implements Listener{
 		}
 		updateVanishState(event.getPlayer()); // called in any case
 		if (doVanish) hookUtil.callAfterVanish(playerName);	
-		
-		if ( settings.suppressJoinMessage && cfg!=null && cfg.vanished.state){
-			event.setJoinMessage(null);
+		if (cfg!=null){
+			if ( settings.suppressJoinMessage && cfg.vanished.state){
+				event.setJoinMessage(null);
+			}
+			else if (!cfg.needsSave()) removeVanishedName(playerName);
 		}
-		else if (!cfg.needsSave()) removeVanishedName(playerName);
 	}
 
 	/**
