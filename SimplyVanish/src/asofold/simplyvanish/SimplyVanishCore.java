@@ -225,33 +225,31 @@ public class SimplyVanishCore implements Listener{
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
 	void onPlayerQuit(PlayerQuitEvent event){
-		Player player = event.getPlayer();
-		String name = player.getName();
-		if ( settings.suppressQuitMessage && isVanished(name)){
-			event.setQuitMessage(null);
-			if (settings.notifyState){
-				String msg = SimplyVanish.msgLabel+ChatColor.GREEN+name+ChatColor.GRAY+" quit.";
-				for (Player other : Bukkit.getServer().getOnlinePlayers()){
-					if ( Utils.hasPermission(other, settings.notifyStatePerm)) other.sendMessage(msg);
-				}
-			}
-		}
+		if (onLeave(event.getPlayer().getName(), false, " quit.")) event.setQuitMessage(null);
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
 	void onPlayerKick(PlayerKickEvent event){
-		// (still set if cancelled)
-		Player player = event.getPlayer();
-		String name = player.getName();
-		if ( settings.suppressQuitMessage && isVanished(name)){
-			event.setLeaveMessage(null);
-			if (settings.notifyState && !event.isCancelled()){
-				String msg = SimplyVanish.msgLabel+ChatColor.GREEN+name+ChatColor.GRAY+" was kicked.";
+		if (onLeave(event.getPlayer().getName(), event.isCancelled(), " was kicked.")) event.setLeaveMessage(null);
+	}
+	
+	/**
+	 * For Quit / kick.
+	 * @param name
+	 * @param cancelled if event was cancelled
+	 * @return If to clear the leave message.
+	 */
+	boolean  onLeave(String name, boolean cancelled, String action){
+		if (settings.suppressQuitMessage && isVanished(name)){
+			if (settings.notifyState && !cancelled){
+				String msg = SimplyVanish.msgLabel+ChatColor.GREEN+name+ChatColor.GRAY+action;
 				for (Player other : Bukkit.getServer().getOnlinePlayers()){
 					if ( Utils.hasPermission(other, settings.notifyStatePerm)) other.sendMessage(msg);
 				}
 			}
+			return true; // suppress in any case if vanished.
 		}
+		else return false;
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
