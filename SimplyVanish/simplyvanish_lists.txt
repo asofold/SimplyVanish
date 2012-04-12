@@ -68,11 +68,16 @@ STACK
 - !refactor/ensure: use getVanishConfig(name, create) everywhere !
 
 *** BUGS
+- /simvan without arguments: print something useful.
 ? API error: getVanishedPlayers (maybe CustomPlg error) 
 
 
 CHANGELOG 
 ---------------------------------------------
+
+(0.4.0-PRE-4)
+
+- (refactor) Reduce some code cloning, move stuff, get rid of some delegation.
 
 (0.4.0-PRE-3)
 - (bugfix) PlayerJoin: suppress message only if really vanished.

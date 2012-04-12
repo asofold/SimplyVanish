@@ -47,6 +47,7 @@ import asofold.simplyvanish.api.hooks.impl.DisguiseCraftHook;
 import asofold.simplyvanish.config.Settings;
 import asofold.simplyvanish.config.VanishConfig;
 import asofold.simplyvanish.util.HookUtil;
+import asofold.simplyvanish.util.Panic;
 import asofold.simplyvanish.util.Utils;
 
 /**
@@ -61,7 +62,7 @@ public class SimplyVanishCore implements Listener{
 	 */
 	private final Map<String, VanishConfig> vanishConfigs = new HashMap<String, VanishConfig>();
 	
-	private final HookUtil hookUtil = new HookUtil();
+	final HookUtil hookUtil = new HookUtil();
 	
 	/**
 	 * Flag for if the plugin is enabled.
@@ -239,12 +240,12 @@ public class SimplyVanishCore implements Listener{
 	 * @param cancelled if event was cancelled
 	 * @return If to clear the leave message.
 	 */
-	boolean  onLeave(String name, boolean cancelled, String action){
+	boolean onLeave(String name, boolean cancelled, String action){
 		if (settings.suppressQuitMessage && isVanished(name)){
 			if (settings.notifyState && !cancelled){
 				String msg = SimplyVanish.msgLabel+ChatColor.GREEN+name+ChatColor.GRAY+action;
 				for (Player other : Bukkit.getServer().getOnlinePlayers()){
-					if ( Utils.hasPermission(other, settings.notifyStatePerm)) other.sendMessage(msg);
+					if (Utils.hasPermission(other, settings.notifyStatePerm)) other.sendMessage(msg);
 				}
 			}
 			return true; // suppress in any case if vanished.
@@ -448,19 +449,6 @@ public class SimplyVanishCore implements Listener{
 	}
 
 	/**
-	 * Central access point for checking if player has permission and wants to see vanished players.
-	 * @param player
-	 * @return
-	 */
-	public final boolean shouldSeeVanished(final Player player) {
-		final VanishConfig cfg = vanishConfigs.get(player.getName().toLowerCase());
-		if(cfg!=null){
-			if (!cfg.see.state) return false;
-		}
-		return Utils.hasPermission(player, "simplyvanish.see-all"); 
-	}
-
-	/**
 	 * Adjust state of player to not vanished.
 	 * @param player
 	 *  @param message If to send messages.
@@ -497,184 +485,6 @@ public class SimplyVanishCore implements Listener{
 		SimplyVanish.stats.addStats(SimplyVanish.statsReappear, System.nanoTime()-ns);
 	}
 	
-	/**
-	 * Heavy update for who can see this player and whom this player can see.<br>
-	 * This will send notification messages.
-	 * @param player
-	 */
-	public void updateVanishState(Player player){
-		updateVanishState(player, true);
-	}
-	
-	/**
-	 * Heavy update for who can see this player and whom this player can see and other way round.
-	 * @param player
-	 * @param message If to message the player.
-	 */
-	public void updateVanishState(Player player, boolean message){
-		long ns = System.nanoTime();
-		String playerName = player.getName();
-		Server server = Bukkit.getServer();
-		Player[] players = server.getOnlinePlayers();
-		boolean shouldSee = shouldSeeVanished(player);
-		boolean was = isVanished(playerName);
-		// Show or hide other players to player:
-		for (Player other : players){
-			if (shouldSee||!isVanished(other.getName())){
-				if (!player.canSee(other)) showPlayer(other, player);
-			} 
-			else if (player.canSee(other)) hidePlayer(other, player);
-			if (!was && !other.canSee(player)) showPlayer(player, other);   
-		}
-		if (was) doVanish(player, message); // remove: a) do not save 2x b) people will get notified.	
-		else removeVanishedName(playerName);
-		SimplyVanish.stats.addStats(SimplyVanish.statsUpdateVanishState, System.nanoTime()-ns);
-	}
-	
-	/**
-	 * Show player to canSee.
-	 * Delegating method, for the case of other things to be checked.
-	 * @param player The player to show.
-	 * @param canSee 
-	 */
-	void showPlayer(Player player, Player canSee){
-		if (!checkInvolved(player, canSee, "showPlayer")) return;
-		try{
-			canSee.showPlayer(player);
-		} catch(Throwable t){
-			Utils.severe("showPlayer failed (show "+player.getName()+" to "+canSee.getName()+"): "+t.getMessage());
-			t.printStackTrace();
-			onPanic(new Player[]{player, canSee});
-		}
-	}
-	
-	/**
-	 * Hide player from canNotSee.
-	 * Delegating method, for the case of other things to be checked.
-	 * @param player The player to hide.
-	 * @param canNotSee
-	 */
-	void hidePlayer(Player player, Player canNotSee){
-		if (!checkInvolved(player, canNotSee, "hidePlayer")) return;
-		try{
-			canNotSee.hidePlayer(player);
-		} catch ( Throwable t){
-			Utils.severe("hidePlayer failed (hide "+player.getName()+" from "+canNotSee.getName()+"): "+t.getMessage());
-			t.printStackTrace();
-			onPanic(new Player[]{player, canNotSee});
-		}
-	}
-	
-	/**
-	 * Do online checking and also check settings if to continue.
-	 * @param player1 The player to be shown or hidden.
-	 * @param player2
-	 * @param tag
-	 * @return true if to continue false if to abort.
-	 */
-	boolean checkInvolved(Player player1, Player player2, String tag){
-		boolean inconsistent = false;
-		if (!Utils.checkOnline(player1, tag)) inconsistent = true;
-		if (!Utils.checkOnline(player2, tag)) inconsistent = true;
-		if (settings.noAbort){
-			return true;
-		} else if (inconsistent){
-			try{
-				player1.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"Warning: Could not use "+tag+" to player: "+player2.getName());
-			} catch (Throwable t){	
-			}
-		}
-		return !inconsistent; // "true = continue = not inconsistent"
-	}
-	
-	void onPanic(Player[] involved){
-		Server server = Bukkit.getServer();
-		if ( settings.panicKickAll){
-			for ( Player player :  server.getOnlinePlayers()){
-				try{
-					player.kickPlayer(settings.panicKickMessage);
-				} catch (Throwable t){
-					// ignore
-				}
-			}
-		} 
-		else if (settings.panicKickInvolved){
-			for ( Player player : involved){
-				try{
-					player.kickPlayer(settings.panicKickMessage);
-				} catch (Throwable t){
-					// ignore
-				}
-			}
-		}
-		try{
-			Utils.sendToTargets(settings.panicMessage, settings.panicMessageTargets);
-		} catch ( Throwable t){
-			Utils.warn("[Panic] Failed to send to: "+settings.panicMessageTargets+" ("+t.getMessage()+")");
-			t.printStackTrace();
-		}
-		if (settings.panicRunCommand && !"".equals(settings.panicCommand)){
-			try{
-				server.dispatchCommand(server.getConsoleSender(), settings.panicCommand);
-			} catch (Throwable t){
-				Utils.warn("[Panic] Failed to dispathc command: "+settings.panicCommand+" ("+t.getMessage()+")");
-				t.printStackTrace();
-			}
-		}
-	}
-
-	public boolean addVanishedName(String name) {
-		VanishConfig cfg = getVanishConfig(name);
-		boolean res = false;
-		if (!cfg.vanished.state){
-			cfg.vanished.state = true;
-			cfg.changed = true;
-			res = true;
-		}
-		if (cfg.changed && settings.saveVanishedAlways) saveVanished();
-		return res;
-	}
-
-	/**
-	 * 
-	 * @param name
-	 * @return If the player was vanished.
-	 */
-	public boolean removeVanishedName(String name) {
-		VanishConfig cfg = vanishConfigs.get(name.toLowerCase());
-		if (cfg==null) return false;
-		boolean res = false;
-		if (cfg.vanished.state){
-			cfg.vanished.state = false;
-			if (!cfg.needsSave()) vanishConfigs.remove(name.toLowerCase());
-			cfg.changed = true;
-			res = true;
-		}
-		if (cfg.changed && settings.saveVanishedAlways) saveVanished();
-		return res;
-	}
-	
-	/**
-	 * Get a VanishConfig, create it if necessary.<br>
-	 * (Might be from vanished, parked, or new thus put to parked).
-	 * @param playerName
-	 * @return
-	 */
-	public final VanishConfig getVanishConfig(String playerName){
-		playerName = playerName.toLowerCase();
-		VanishConfig cfg = vanishConfigs.get(playerName);
-		if (cfg != null) return cfg;
-		cfg = new VanishConfig();
-		vanishConfigs.put(playerName, cfg);
-		return cfg;
-	}
-
-	public final boolean isVanished(final String playerName) {
-		final VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
-		if (cfg == null) return false;
-		else return cfg.vanished.state;
-	}
-
 	/**
 	 * Public access method for vanish/reappear.<br>
 	 * This will call hooks.<br>
@@ -717,58 +527,41 @@ public class SimplyVanishCore implements Listener{
 		else hookUtil.callAfterReappear(playerName);
 		return true;
 	}
-
+	
 	/**
-	 * Lower case names.<br>
-	 * Currently iterates over all VanishConfig entries.
-	 * @return
+	 * Heavy update for who can see this player and whom this player can see.<br>
+	 * This will send notification messages.
+	 * @param player
 	 */
-	public Set<String> getVanishedPlayers() {
-		Set<String> out = new HashSet<String>();
-		for (Entry<String, VanishConfig> entry : vanishConfigs.entrySet()){
-			if (entry.getValue().vanished.state) out.add(entry.getKey());
-		}
-		return out;
+	public void updateVanishState(Player player){
+		updateVanishState(player, true);
 	}
 	
-	public String getVanishedMessage() {
-		List<String> sorted = getSortedVanished();
-		StringBuilder builder = new StringBuilder();
-		builder.append(ChatColor.GOLD+"[VANISHED]");
+	/**
+	 * Heavy update for who can see this player and whom this player can see and other way round.
+	 * @param player
+	 * @param message If to message the player.
+	 */
+	public void updateVanishState(Player player, boolean message){
+		long ns = System.nanoTime();
+		String playerName = player.getName();
 		Server server = Bukkit.getServer();
-		boolean found = false;
-		for ( String n : sorted){
-			Player player = server.getPlayerExact(n);
-			VanishConfig cfg = vanishConfigs.get(n);
-			if (!cfg.vanished.state) continue;
-			found = true;
-			boolean isNosee = !cfg.see.state; // is lower case
-			if ( player == null ){
-				builder.append(" "+ChatColor.GRAY+"("+n+")");
-				if (isNosee) builder.append(ChatColor.DARK_RED+"[NOSEE]");
-			}
-			else{
-				builder.append(" "+ChatColor.GREEN+player.getName());
-				if (!Utils.hasPermission(player, "simplyvanish.see-all")) builder.append(ChatColor.DARK_RED+"[CANTSEE]");
-				else if (isNosee) builder.append(ChatColor.RED+"[NOSEE]");
-			}
+		Player[] players = server.getOnlinePlayers();
+		boolean shouldSee = shouldSeeVanished(player);
+		boolean was = isVanished(playerName);
+		// Show or hide other players to player:
+		for (Player other : players){
+			if (shouldSee||!isVanished(other.getName())){
+				if (!player.canSee(other)) showPlayer(other, player);
+			} 
+			else if (player.canSee(other)) hidePlayer(other, player);
+			if (!was && !other.canSee(player)) showPlayer(player, other);   
 		}
-		if (!found) builder.append(" "+ChatColor.DARK_GRAY+"<none>");
-		return builder.toString();
+		if (was) doVanish(player, message); // remove: a) do not save 2x b) people will get notified.	
+		else removeVanishedName(playerName);
+		SimplyVanish.stats.addStats(SimplyVanish.statsUpdateVanishState, System.nanoTime()-ns);
 	}
 	
-	/**
-	 * Unlikely that sorted is needed, but anyway.
-	 * @return
-	 */
-	public List<String> getSortedVanished(){
-		Collection<String> vanished = getVanishedPlayers();
-		List<String> sorted = new ArrayList<String>(vanished.size());
-		sorted.addAll(vanished);
-		Collections.sort(sorted);
-		return sorted;
-	}
-
 	/**
 	 * Only set the flags, no save.
 	 * TODO: probably needs a basic mix-in permission to avoid abuse (though that would need command spam).
@@ -846,6 +639,156 @@ public class SimplyVanishCore implements Listener{
 		hookUtil.callAfterSetFlags(playerName);
 		SimplyVanish.stats.addStats(SimplyVanish.statsSetFlags, System.nanoTime()-ns);
 	}
+	
+	/**
+	 * Show player to canSee.
+	 * Delegating method, for the case of other things to be checked.
+	 * @param player The player to show.
+	 * @param canSee 
+	 */
+	void showPlayer(Player player, Player canSee){
+		if (!Panic.checkInvolved(player, canSee, "showPlayer", settings.noAbort)) return;
+		try{
+			canSee.showPlayer(player);
+		} catch(Throwable t){
+			Utils.severe("showPlayer failed (show "+player.getName()+" to "+canSee.getName()+"): "+t.getMessage());
+			t.printStackTrace();
+			Panic.onPanic(settings, new Player[]{player, canSee});
+		}
+	}
+	
+	/**
+	 * Hide player from canNotSee.
+	 * Delegating method, for the case of other things to be checked.
+	 * @param player The player to hide.
+	 * @param canNotSee
+	 */
+	void hidePlayer(Player player, Player canNotSee){
+		if (!Panic.checkInvolved(player, canNotSee, "hidePlayer", settings.noAbort)) return;
+		try{
+			canNotSee.hidePlayer(player);
+		} catch ( Throwable t){
+			Utils.severe("hidePlayer failed (hide "+player.getName()+" from "+canNotSee.getName()+"): "+t.getMessage());
+			t.printStackTrace();
+			Panic.onPanic(settings, new Player[]{player, canNotSee});
+		}
+	}
+	
+	public boolean addVanishedName(String name) {
+		VanishConfig cfg = getVanishConfig(name);
+		boolean res = false;
+		if (!cfg.vanished.state){
+			cfg.vanished.state = true;
+			cfg.changed = true;
+			res = true;
+		}
+		if (cfg.changed && settings.saveVanishedAlways) saveVanished();
+		return res;
+	}
+
+	/**
+	 * 
+	 * @param name
+	 * @return If the player was vanished.
+	 */
+	public boolean removeVanishedName(String name) {
+		VanishConfig cfg = vanishConfigs.get(name.toLowerCase());
+		if (cfg==null) return false;
+		boolean res = false;
+		if (cfg.vanished.state){
+			cfg.vanished.state = false;
+			if (!cfg.needsSave()) vanishConfigs.remove(name.toLowerCase());
+			cfg.changed = true;
+			res = true;
+		}
+		if (cfg.changed && settings.saveVanishedAlways) saveVanished();
+		return res;
+	}
+	
+	/**
+	 * Get a VanishConfig, create it if necessary.<br>
+	 * (Might be from vanished, parked, or new thus put to parked).
+	 * @param playerName
+	 * @return
+	 */
+	public final VanishConfig getVanishConfig(String playerName){
+		playerName = playerName.toLowerCase();
+		VanishConfig cfg = vanishConfigs.get(playerName);
+		if (cfg != null) return cfg;
+		cfg = new VanishConfig();
+		vanishConfigs.put(playerName, cfg);
+		return cfg;
+	}
+	
+	/**
+	 * Central access point for checking if player has permission and wants to see vanished players.
+	 * @param player
+	 * @return
+	 */
+	public final boolean shouldSeeVanished(final Player player) {
+		final VanishConfig cfg = vanishConfigs.get(player.getName().toLowerCase());
+		if(cfg!=null){
+			if (!cfg.see.state) return false;
+		}
+		return Utils.hasPermission(player, "simplyvanish.see-all"); 
+	}
+
+	public final boolean isVanished(final String playerName) {
+		final VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
+		if (cfg == null) return false;
+		else return cfg.vanished.state;
+	}
+
+	/**
+	 * Lower case names.<br>
+	 * Currently iterates over all VanishConfig entries.
+	 * @return
+	 */
+	public Set<String> getVanishedPlayers() {
+		Set<String> out = new HashSet<String>();
+		for (Entry<String, VanishConfig> entry : vanishConfigs.entrySet()){
+			if (entry.getValue().vanished.state) out.add(entry.getKey());
+		}
+		return out;
+	}
+	
+	public String getVanishedMessage() {
+		List<String> sorted = getSortedVanished();
+		StringBuilder builder = new StringBuilder();
+		builder.append(ChatColor.GOLD+"[VANISHED]");
+		Server server = Bukkit.getServer();
+		boolean found = false;
+		for ( String n : sorted){
+			Player player = server.getPlayerExact(n);
+			VanishConfig cfg = vanishConfigs.get(n);
+			if (!cfg.vanished.state) continue;
+			found = true;
+			boolean isNosee = !cfg.see.state; // is lower case
+			if ( player == null ){
+				builder.append(" "+ChatColor.GRAY+"("+n+")");
+				if (isNosee) builder.append(ChatColor.DARK_RED+"[NOSEE]");
+			}
+			else{
+				builder.append(" "+ChatColor.GREEN+player.getName());
+				if (!Utils.hasPermission(player, "simplyvanish.see-all")) builder.append(ChatColor.DARK_RED+"[CANTSEE]");
+				else if (isNosee) builder.append(ChatColor.RED+"[NOSEE]");
+			}
+		}
+		if (!found) builder.append(" "+ChatColor.DARK_GRAY+"<none>");
+		return builder.toString();
+	}
+	
+	/**
+	 * Unlikely that sorted is needed, but anyway.
+	 * @return
+	 */
+	public List<String> getSortedVanished(){
+		Collection<String> vanished = getVanishedPlayers();
+		List<String> sorted = new ArrayList<String>(vanished.size());
+		sorted.addAll(vanished);
+		Collections.sort(sorted);
+		return sorted;
+	}
 
 	public void onShowFlags(CommandSender sender, String name) {
 		if ( name == null) name = sender.getName();
@@ -865,22 +808,6 @@ public class SimplyVanishCore implements Listener{
 			if (!cfg.ping.state) continue;
 			player.sendMessage(SimplyVanish.msgNotifyPing);
 		}
-	}
-
-	public boolean addHook(Hook hook) {
-		return hookUtil.addHook(hook);
-	}
-
-	public boolean removeHook(Hook hook) {
-		return hookUtil.removeHook(hook);
-	}
-
-	public boolean removeHook(String hookName) {
-		return hookUtil.removeHook(hookName);
-	}
-
-	public void removeAllHooks() {
-		hookUtil.removeAllHooks();
 	}
 
 	/**
@@ -910,7 +837,7 @@ public class SimplyVanishCore implements Listener{
 	void addStandardHooks(){
 		try{
 			Hook hook = new DisguiseCraftHook();
-			addHook(hook);
+			hookUtil.addHook(hook);
 			System.out.println("[SimplyVanish] Add hook: "+hook.getHookName());
 		} catch(Throwable t){
 		}
