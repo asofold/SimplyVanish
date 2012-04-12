@@ -70,6 +70,6 @@ public interface Hook {
 	 * @param playerName
 	 * @return
 	 */
-	public boolean afterSetFlags(String playerName);
+	public void afterSetFlags(String playerName);
 	
 }
