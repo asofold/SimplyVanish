@@ -54,34 +54,29 @@ STACK
 - !(add) Permission/some setup what flags to set automtically (default flags)? Or sets with a defined permission.
 
 *** [HOOKS]
-- !(add) DisguisCraft hook: on vanish and reappear: reappear if disguised + listen to disguise events(reappear if is disguise, vanish if auto-vanish is set).
+- ?hide / show player: collect Map<String, Set<String>> or similar then call hooks then hide/show cumulative
+- ?(add) boolean hooks for hide and show player. (though they get called many times)
+- !(add) getHook(String) + hasHook + prevent-hooks 
+- add convenience methods: getPlayer and hasPlayer to event(s)?
 
 *** [CORE FEATURES]
 - ?(add) god mode ?
 
 *** CONSISTENCY
+- !(add) save command
+- !(add) save-delay (minimum delay for saving)
 - !refactor/ensure: use getVanishConfig(name, create) everywhere !
-- ?hide / show player: collect Map<String, Set<String>> or similar then call hooks then hide/show cumulative
-- ?(add) hooks for hide and show player. (get called many times)
-
 
 *** BUGS
 ? API error: getVanishedPlayers (maybe CustomPlg error) 
-
-(0.4.0-PRE-2)
-- !(add) save command
-- !(add) ?? forgot
-- !(add) save-delay (minimum delay for saving)
-- !(add) stats for saving 
-- !(check) no removing + re-adding (Vcfg) ! check for vanishConfigs.remove
-- !(add) EVENTS
 
 
 CHANGELOG 
 ---------------------------------------------
 
 (0.4.0-PRE-2)
-- (add) Shaped some basic hooks API.
+- (add) DisguiseCraft hook.
+- (add) Shaped some basic hooks and events API.
 - (add) Stats for saving vanish configs.
 - (remove) Deprecated API.
 - (adjust) Some minor code cleanups, simplifications.
