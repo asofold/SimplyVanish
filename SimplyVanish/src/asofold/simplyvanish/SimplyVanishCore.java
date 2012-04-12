@@ -77,41 +77,32 @@ public class SimplyVanishCore implements Listener{
 	
 	private SimplyVanish plugin;
 	
+	/**
+	 * Only has relevance for static access by Plugin.
+	 * @param enabled
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+	
+	/**
+	 * Only for static access by plugin.
+	 * @return
+	 */
+	public boolean isEnabled(){
+		return enabled;
+	}
+	
+	public void setSettings(Settings settings){
+		this.settings = settings;
+	}
+	
+	public SimplyVanish getPlugin() {
+		return plugin;
+	}
 
-	@EventHandler(priority=EventPriority.HIGHEST)
-	void onPlayerJoin( PlayerJoinEvent event){
-		Player player = event.getPlayer();
-		String playerName = player.getName();
-		VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
-		boolean was = cfg != null && cfg.vanished.state;
-		boolean auto = false; // Indicate if the player should be vanished due to auto-vanish.
-		if ( settings.autoVanishUse && (cfg == null || cfg.auto.state) ) {
-			if (Utils.hasPermission(player, settings.autoVanishPerm)){
-				// permission given, do attempt to vanish
-				auto = true;
-				if (cfg == null) cfg = getVanishConfig(playerName);
-			}
-		}
-		boolean doVanish = auto || was;
-		if (doVanish){
-			SimplyVanishAtLoginEvent svEvent = new SimplyVanishAtLoginEvent(playerName, was, doVanish, auto);
-			Bukkit.getServer().getPluginManager().callEvent(svEvent);
-			if (svEvent.isCancelled()){
-				// no update
-				return;
-			}
-			doVanish = svEvent.getVisibleAfter();
-			cfg.set("vanished", doVanish);
-			if (doVanish) hookUtil.callBeforeVanish(playerName); // need to check again.
-		}
-		updateVanishState(event.getPlayer()); // called in any case
-		if (doVanish){
-			hookUtil.callAfterVanish(playerName);	
-			if ( settings.suppressJoinMessage && cfg.vanished.state){
-				event.setJoinMessage(null);
-			}
-			else if (!cfg.needsSave()) removeVanishedName(playerName);
-		}
+	public void setPlugin(SimplyVanish plugin) {
+		this.plugin = plugin;
 	}
 
 	/**
@@ -374,25 +365,41 @@ public class SimplyVanishCore implements Listener{
 		if (!cfg.vanished.state) return;
 		if (!cfg.drop.state) event.setCancelled(true);
 	}
-
-	/**
-	 * Only has relevance for static access by Plugin.
-	 * @param enabled
-	 */
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
 	
-	/**
-	 * Only for static access by plugin.
-	 * @return
-	 */
-	public boolean isEnabled(){
-		return enabled;
-	}
-	
-	public void setSettings(Settings settings){
-		this.settings = settings;
+	@EventHandler(priority=EventPriority.HIGHEST)
+	void onPlayerJoin( PlayerJoinEvent event){
+		Player player = event.getPlayer();
+		String playerName = player.getName();
+		VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
+		boolean was = cfg != null && cfg.vanished.state;
+		boolean auto = false; // Indicate if the player should be vanished due to auto-vanish.
+		if ( settings.autoVanishUse && (cfg == null || cfg.auto.state) ) {
+			if (Utils.hasPermission(player, settings.autoVanishPerm)){
+				// permission given, do attempt to vanish
+				auto = true;
+				if (cfg == null) cfg = getVanishConfig(playerName);
+			}
+		}
+		boolean doVanish = auto || was;
+		if (doVanish){
+			SimplyVanishAtLoginEvent svEvent = new SimplyVanishAtLoginEvent(playerName, was, doVanish, auto);
+			Bukkit.getServer().getPluginManager().callEvent(svEvent);
+			if (svEvent.isCancelled()){
+				// no update
+				return;
+			}
+			doVanish = svEvent.getVisibleAfter();
+			cfg.set("vanished", doVanish);
+			if (doVanish) hookUtil.callBeforeVanish(playerName); // need to check again.
+		}
+		updateVanishState(event.getPlayer()); // called in any case
+		if (doVanish){
+			hookUtil.callAfterVanish(playerName);	
+			if ( settings.suppressJoinMessage && cfg.vanished.state){
+				event.setJoinMessage(null);
+			}
+			else if (!cfg.needsSave()) removeVanishedName(playerName);
+		}
 	}
 	
 	/**
@@ -527,18 +534,6 @@ public class SimplyVanishCore implements Listener{
 	}
 	
 	/**
-	 * Unlikely that sorted is needed, but anyway.
-	 * @return
-	 */
-	public List<String> getSortedVanished(){
-		Collection<String> vanished = getVanishedPlayers();
-		List<String> sorted = new ArrayList<String>(vanished.size());
-		sorted.addAll(vanished);
-		Collections.sort(sorted);
-		return sorted;
-	}
-	
-	/**
 	 * Show player to canSee.
 	 * Delegating method, for the case of other things to be checked.
 	 * @param player The player to show.
@@ -660,32 +655,6 @@ public class SimplyVanishCore implements Listener{
 		if (cfg.changed && settings.saveVanishedAlways) saveVanished();
 		return res;
 	}
-
-	public String getVanishedMessage() {
-		List<String> sorted = getSortedVanished();
-		StringBuilder builder = new StringBuilder();
-		builder.append(ChatColor.GOLD+"[VANISHED]");
-		Server server = Bukkit.getServer();
-		boolean found = false;
-		for ( String n : sorted){
-			Player player = server.getPlayerExact(n);
-			VanishConfig cfg = vanishConfigs.get(n);
-			if (!cfg.vanished.state) continue;
-			found = true;
-			boolean isNosee = !cfg.see.state; // is lower case
-			if ( player == null ){
-				builder.append(" "+ChatColor.GRAY+"("+n+")");
-				if (isNosee) builder.append(ChatColor.DARK_RED+"[NOSEE]");
-			}
-			else{
-				builder.append(" "+ChatColor.GREEN+player.getName());
-				if (!Utils.hasPermission(player, "simplyvanish.see-all")) builder.append(ChatColor.DARK_RED+"[CANTSEE]");
-				else if (isNosee) builder.append(ChatColor.RED+"[NOSEE]");
-			}
-		}
-		if (!found) builder.append(" "+ChatColor.DARK_GRAY+"<none>");
-		return builder.toString();
-	}
 	
 	/**
 	 * Get a VanishConfig, create it if necessary.<br>
@@ -762,6 +731,44 @@ public class SimplyVanishCore implements Listener{
 			if (entry.getValue().vanished.state) out.add(entry.getKey());
 		}
 		return out;
+	}
+	
+	public String getVanishedMessage() {
+		List<String> sorted = getSortedVanished();
+		StringBuilder builder = new StringBuilder();
+		builder.append(ChatColor.GOLD+"[VANISHED]");
+		Server server = Bukkit.getServer();
+		boolean found = false;
+		for ( String n : sorted){
+			Player player = server.getPlayerExact(n);
+			VanishConfig cfg = vanishConfigs.get(n);
+			if (!cfg.vanished.state) continue;
+			found = true;
+			boolean isNosee = !cfg.see.state; // is lower case
+			if ( player == null ){
+				builder.append(" "+ChatColor.GRAY+"("+n+")");
+				if (isNosee) builder.append(ChatColor.DARK_RED+"[NOSEE]");
+			}
+			else{
+				builder.append(" "+ChatColor.GREEN+player.getName());
+				if (!Utils.hasPermission(player, "simplyvanish.see-all")) builder.append(ChatColor.DARK_RED+"[CANTSEE]");
+				else if (isNosee) builder.append(ChatColor.RED+"[NOSEE]");
+			}
+		}
+		if (!found) builder.append(" "+ChatColor.DARK_GRAY+"<none>");
+		return builder.toString();
+	}
+	
+	/**
+	 * Unlikely that sorted is needed, but anyway.
+	 * @return
+	 */
+	public List<String> getSortedVanished(){
+		Collection<String> vanished = getVanishedPlayers();
+		List<String> sorted = new ArrayList<String>(vanished.size());
+		sorted.addAll(vanished);
+		Collections.sort(sorted);
+		return sorted;
 	}
 
 	/**
@@ -911,11 +918,5 @@ public class SimplyVanishCore implements Listener{
 		}
 	}
 
-	public SimplyVanish getPlugin() {
-		return plugin;
-	}
 
-	public void setPlugin(SimplyVanish plugin) {
-		this.plugin = plugin;
-	}
 }
