@@ -3,7 +3,7 @@ package asofold.simplyvanish.api.hooks;
 import asofold.simplyvanish.config.VanishConfig;
 
 /**
- * Might be useful if you only want to override few methods, preset behavior is to allow everything.
+ * Might be useful if you only want to override few methods, does nothing by default.
  * @author mc_dev
  *
  */
@@ -21,8 +21,7 @@ public abstract class AbstractHook implements Hook {
 	}
 
 	@Override
-	public boolean beforeVanish(String playerName) {
-		return true;
+	public void beforeVanish(String playerName) {
 	}
 
 	@Override
@@ -30,8 +29,7 @@ public abstract class AbstractHook implements Hook {
 	}
 
 	@Override
-	public boolean beforeReappear(String playerName) {
-		return true;
+	public void beforeReappear(String playerName) {
 	}
 
 	@Override
@@ -39,9 +37,8 @@ public abstract class AbstractHook implements Hook {
 	}
 
 	@Override
-	public boolean beforeSetFlags(String playerName, VanishConfig oldCfg,
+	public void beforeSetFlags(String playerName, VanishConfig oldCfg,
 			VanishConfig newCfg) {
-		return true;
 	}
 
 	@Override
