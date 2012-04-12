@@ -493,7 +493,8 @@ public class SimplyVanishCore implements Listener{
 	}
 	
 	/**
-	 * Heavy update for who can see this player and whom this player can see.
+	 * Heavy update for who can see this player and whom this player can see.<br>
+	 * This will send notification messages.
 	 * @param player
 	 */
 	public void updateVanishState(Player player){
