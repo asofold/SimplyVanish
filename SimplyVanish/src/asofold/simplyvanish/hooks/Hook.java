@@ -68,7 +68,6 @@ public interface Hook {
 	/**
 	 * 
 	 * @param playerName
-	 * @return
 	 */
 	public void afterSetFlags(String playerName);
 	
