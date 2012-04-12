@@ -375,7 +375,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @param create
 	 * @return A clone of the VanishConfig.
 	 */
-	public VanishConfig getVanishConfig(String playerName, boolean create){
+	public static VanishConfig getVanishConfig(String playerName, boolean create){
 		VanishConfig cfg = core.getVanishConfig(playerName, create);
 		if (cfg == null) return null;
 		else return cfg.clone();
@@ -388,7 +388,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @param cfg
 	 * @param update
 	 */
-	public void setVanishConfig(String playerName, VanishConfig cfg, boolean update){
+	public static void setVanishConfig(String playerName, VanishConfig cfg, boolean update){
 		core.setVanishedConfig(playerName, cfg, update, false);
 	}
 	
@@ -400,7 +400,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @param update
 	 * @param message
 	 */
-	public void setVanishConfig(String playerName, VanishConfig cfg, boolean update, boolean message){
+	public static void setVanishConfig(String playerName, VanishConfig cfg, boolean update, boolean message){
 		core.setVanishedConfig(playerName, cfg, update, message);
 	}
 	
@@ -408,7 +408,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * Force an update of who sees who for this player, without notification.
 	 * @param player
 	 */
-	public void updateVanishState(Player player){
+	public static void updateVanishState(Player player){
 		core.updateVanishState(player, false); // Mind the difference of flag to core.updateVanishState(Player).
 	}
 	
@@ -417,7 +417,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @param player
 	 * @param message If to send notifications and state messages.
 	 */
-	public void updateVanishState(Player player, boolean message){
+	public static void updateVanishState(Player player, boolean message){
 		core.updateVanishState(player, message);
 	}
 	
@@ -426,7 +426,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @param hook
 	 * @return If one was already present.
 	 */
-	public boolean addHook(Hook hook){
+	public static boolean addHook(Hook hook){
 		return core.addHook(hook);
 	}
 	
@@ -435,7 +435,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @param hook
 	 * @return If one was already present.
 	 */
-	public boolean removeHook(Hook hook){
+	public static boolean removeHook(Hook hook){
 		return core.removeHook(hook);
 	}
 	
@@ -444,14 +444,14 @@ public class SimplyVanish extends JavaPlugin {
 	 * @param hookName
 	 * @return If one was already present.
 	 */
-	public boolean removeHook(String hookName){
+	public static boolean removeHook(String hookName){
 		return core.removeHook(hookName);
 	}
 	
 	/**
 	 * API
 	 */
-	public void removeAllHooks(){
+	public static void removeAllHooks(){
 		core.removeAllHooks();
 	}
 
