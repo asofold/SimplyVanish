@@ -86,7 +86,7 @@ public class SimplyVanishCore implements Listener{
 		boolean was = cfg != null && cfg.vanished.state;
 		boolean auto = false;
 		if ( settings.autoVanishUse && (cfg == null || cfg.auto.state) ) auto = true;
-		else  auto = false;
+		else auto = false;
 		if (auto){
 			if (Utils.hasPermission(player, settings.autoVanishPerm)){
 				if (cfg == null) cfg = getVanishConfig(playerName);
@@ -95,9 +95,9 @@ public class SimplyVanishCore implements Listener{
 			}
 		}
 		// If now auto is true = vanish player due to auto-vanish.
-		boolean doVanish = auto;
+		boolean doVanish = auto || was;
 		
-		if (doVanish || was){
+		if (doVanish){
 			SimplyVanishAtLoginEvent svEvent = new SimplyVanishAtLoginEvent(playerName, was, doVanish, auto);
 			Bukkit.getServer().getPluginManager().callEvent(svEvent);
 			if (svEvent.isCancelled()){
@@ -107,12 +107,10 @@ public class SimplyVanishCore implements Listener{
 			doVanish = svEvent.getVisibleAfter();
 			cfg.set("vanished", doVanish);
 		}
-		
 		if (cfg != null){
 			if (cfg.vanished.state) doVanish = true;
 			if (doVanish) hookUtil.callBeforeVanish(playerName);
 		}
-		
 		updateVanishState(event.getPlayer()); // called in any case
 		if (doVanish) hookUtil.callAfterVanish(playerName);	
 		if (cfg!=null){
