@@ -84,19 +84,15 @@ public class SimplyVanishCore implements Listener{
 		String playerName = player.getName();
 		VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
 		boolean was = cfg != null && cfg.vanished.state;
-		boolean auto = false;
-		if ( settings.autoVanishUse && (cfg == null || cfg.auto.state) ) auto = true;
-		else auto = false;
-		if (auto){
+		boolean auto = false; // Indicate if the player should be vanished due to auto-vanish.
+		if ( settings.autoVanishUse && (cfg == null || cfg.auto.state) ) {
 			if (Utils.hasPermission(player, settings.autoVanishPerm)){
+				// permission given, do attempt to vanish
+				auto = true;
 				if (cfg == null) cfg = getVanishConfig(playerName);
-			}{
-				auto = false;
 			}
 		}
-		// If now auto is true = vanish player due to auto-vanish.
 		boolean doVanish = auto || was;
-		
 		if (doVanish){
 			SimplyVanishAtLoginEvent svEvent = new SimplyVanishAtLoginEvent(playerName, was, doVanish, auto);
 			Bukkit.getServer().getPluginManager().callEvent(svEvent);
