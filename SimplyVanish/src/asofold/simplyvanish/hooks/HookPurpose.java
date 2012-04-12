@@ -5,7 +5,7 @@ package asofold.simplyvanish.hooks;
  * @author mc_dev
  *
  */
-public enum HookSupport {
+public enum HookPurpose {
 	BEFORE_VANISH,
 	AFTER_VANISH,
 	BEFORE_REAPPEAR,

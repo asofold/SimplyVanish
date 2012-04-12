@@ -22,7 +22,7 @@ public interface Hook {
 	 * 
 	 * @return null if all are supported.
 	 */
-	public HookSupport[] getSupportedMethods();
+	public HookPurpose[] getSupportedMethods();
 	/**
 	 * Get an event listener.
 	 * @return null if not desired.

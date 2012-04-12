@@ -57,6 +57,7 @@ STACK
 - !(add) DisguisCraft hook: on vanish and reappear: reappear if disguised + listen to disguise events(reappear if is disguise, vanish if auto-vanish is set).
 
 *** [CORE FEATURES]
+- ?(add) god mode ?
 
 *** CONSISTENCY
 - !refactor/ensure: use getVanishConfig(name, create) everywhere !
@@ -68,7 +69,7 @@ STACK
 ? API error: getVanishedPlayers (maybe CustomPlg error) 
 
 (0.4.0-PRE-2)
-
+- !(add) save command
 - !(add) ?? forgot
 - !(add) save-delay (minimum delay for saving)
 - !(add) stats for saving 
@@ -81,7 +82,7 @@ CHANGELOG
 
 (0.4.0-PRE-2)
 - (add) Shaped some basic hooks API.
-- (add) Stats for saving vanish sonfigs.
+- (add) Stats for saving vanish configs.
 - (remove) Deprecated API.
 - (adjust) Some minor code cleanups, simplifications.
 - (adjust) Some consistency checks added.

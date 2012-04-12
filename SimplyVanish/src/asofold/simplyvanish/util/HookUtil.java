@@ -11,7 +11,7 @@ import org.bukkit.plugin.PluginManager;
 import asofold.simplyvanish.config.VanishConfig;
 import asofold.simplyvanish.hooks.Hook;
 import asofold.simplyvanish.hooks.HookListener;
-import asofold.simplyvanish.hooks.HookSupport;
+import asofold.simplyvanish.hooks.HookPurpose;
 
 /**
  * Auxiliary methods for hooks.
@@ -22,7 +22,7 @@ public class HookUtil {
 	/**
 	 * Hooks by purpose.
 	 */
-	private final Map<HookSupport, List<Hook>> usedHooks = new HashMap<HookSupport, List<Hook>>();
+	private final Map<HookPurpose, List<Hook>> usedHooks = new HashMap<HookPurpose, List<Hook>>();
 	
 	private final Map<String, HookListener> usedHookListeners = new HashMap<String, HookListener>();
 	
@@ -43,7 +43,7 @@ public class HookUtil {
 	 * NOTE: The LISTENER entry is in it too, though unused.
 	 */
 	private void init() {
-		for (HookSupport sup : HookSupport.values()){
+		for (HookPurpose sup : HookPurpose.values()){
 			usedHooks.put(sup, new LinkedList<Hook>());
 		}
 	}
@@ -54,12 +54,12 @@ public class HookUtil {
 			String hookName = hook.getHookName();
 			// add hook !
 			registeredHooks.put(hookName, hook);
-			HookSupport[] supported = hook.getSupportedMethods();
-			if (supported == null) supported = HookSupport.values();
+			HookPurpose[] supported = hook.getSupportedMethods();
+			if (supported == null) supported = HookPurpose.values();
 			boolean hasListener = false;
-			for (HookSupport sup : supported){
+			for (HookPurpose sup : supported){
 				getUsedHooks(sup).add(hook);
-				if (sup == HookSupport.LISTENER) hasListener = true;
+				if (sup == HookPurpose.LISTENER) hasListener = true;
 			}
 			if (hasListener){
 				HookListener listener = hook.getListener();
@@ -94,7 +94,7 @@ public class HookUtil {
 				t.printStackTrace();
 			}
 		}
-		for (HookSupport sup : usedHooks.keySet()){
+		for (HookPurpose sup : usedHooks.keySet()){
 			List<Hook> rem = new LinkedList<Hook>();
 			List<Hook> present = getUsedHooks(sup);
 			for (Hook ref : present){
@@ -110,7 +110,7 @@ public class HookUtil {
 	 * @param purpose
 	 * @return
 	 */
-	public List<Hook> getUsedHooks(HookSupport purpose){
+	public List<Hook> getUsedHooks(HookPurpose purpose){
 		
 		
 		List<Hook> hooks = null;
@@ -136,7 +136,7 @@ public class HookUtil {
 	
 	// CALL METHODS ----------------------------------------
 	
-	public void onHookCallError(HookSupport sup, Hook hook, String playerName, Throwable t) {
+	public void onHookCallError(HookPurpose sup, Hook hook, String playerName, Throwable t) {
 		String msg;
 		if (t==null) msg = "<unknown>";
 		else msg = t.getMessage();
@@ -146,7 +146,7 @@ public class HookUtil {
 	
 	public boolean callBeforeVanish(String playerName) {
 		boolean res = true;
-		HookSupport sup = HookSupport.AFTER_VANISH;
+		HookPurpose sup = HookPurpose.AFTER_VANISH;
 		for (Hook hook : getUsedHooks(sup)){
 			try{
 				if (!hook.beforeVanish(playerName)) res = false;
@@ -158,7 +158,7 @@ public class HookUtil {
 	}
 	
 	public final void callAfterVanish(String playerName) {
-		HookSupport sup = HookSupport.AFTER_VANISH;
+		HookPurpose sup = HookPurpose.AFTER_VANISH;
 		for (Hook hook : getUsedHooks(sup)){
 			try{
 				
@@ -170,7 +170,7 @@ public class HookUtil {
 
 	public boolean callBeforeSetFlags(String playerName, VanishConfig oldCfg, VanishConfig newCfg) {
 		boolean res = true;
-		HookSupport sup = HookSupport.BEFORE_SETFLAGS;
+		HookPurpose sup = HookPurpose.BEFORE_SETFLAGS;
 		for (Hook hook : getUsedHooks(sup)){
 			try{
 				if (!hook.beforeSetFlags(playerName, oldCfg, newCfg)) res = false;
@@ -182,7 +182,7 @@ public class HookUtil {
 	}
 
 	public void callAfterSetFlags(String playerName) {
-		HookSupport sup = HookSupport.AFTER_SETFLAGS;
+		HookPurpose sup = HookPurpose.AFTER_SETFLAGS;
 		for (Hook hook : getUsedHooks(sup)){
 			try{
 				hook.afterSetFlags(playerName);
@@ -194,7 +194,7 @@ public class HookUtil {
 
 	public boolean callBeforeReappear(String playerName) {
 		boolean res = true;
-		HookSupport sup = HookSupport.BEFORE_REAPPEAR;
+		HookPurpose sup = HookPurpose.BEFORE_REAPPEAR;
 		for (Hook hook : getUsedHooks(sup)){
 			try{
 				if (!hook.beforeReappear(playerName)) res = false;
@@ -206,7 +206,7 @@ public class HookUtil {
 	}
 
 	public void callAfterReappear(String playerName) {
-		HookSupport sup = HookSupport.AFTER_REAPPEAR;
+		HookPurpose sup = HookPurpose.AFTER_REAPPEAR;
 		for (Hook hook : getUsedHooks(sup)){
 			try{
 				hook.afterSetFlags(playerName);
