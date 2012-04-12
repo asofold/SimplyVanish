@@ -8,10 +8,10 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
+import asofold.simplyvanish.api.hooks.Hook;
+import asofold.simplyvanish.api.hooks.HookListener;
+import asofold.simplyvanish.api.hooks.HookPurpose;
 import asofold.simplyvanish.config.VanishConfig;
-import asofold.simplyvanish.hooks.Hook;
-import asofold.simplyvanish.hooks.HookListener;
-import asofold.simplyvanish.hooks.HookPurpose;
 
 /**
  * Auxiliary methods for hooks.

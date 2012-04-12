@@ -18,10 +18,10 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import asofold.simplyvanish.api.hooks.Hook;
 import asofold.simplyvanish.command.LightCommands;
 import asofold.simplyvanish.config.Settings;
 import asofold.simplyvanish.config.VanishConfig;
-import asofold.simplyvanish.hooks.Hook;
 import asofold.simplyvanish.stats.Stats;
 import asofold.simplyvanish.util.Utils;
 

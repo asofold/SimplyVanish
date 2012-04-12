@@ -1,4 +1,4 @@
-package asofold.simplyvanish.hooks;
+package asofold.simplyvanish.api.hooks;
 
 /**
  * Supported hook methods.

@@ -40,9 +40,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
 
+import asofold.simplyvanish.api.hooks.Hook;
 import asofold.simplyvanish.config.Settings;
 import asofold.simplyvanish.config.VanishConfig;
-import asofold.simplyvanish.hooks.Hook;
 import asofold.simplyvanish.util.HookUtil;
 import asofold.simplyvanish.util.Utils;
 
