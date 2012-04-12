@@ -333,7 +333,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @param playerName
 	 * @param vanished
 	 */
-	public static boolean  setVanished(String playerName, boolean vanished){
+	public static boolean setVanished(String playerName, boolean vanished){
 		if (!core.isEnabled()) return false;
 		return  core.setVanished(playerName, vanished);
 	}
@@ -384,7 +384,8 @@ public class SimplyVanish extends JavaPlugin {
 	
 	/**
 	 * Set the VanishConfig for the player, silently (no notifications).<br>
-	 * This actually will create a new config and apply changes from the given one.
+	 * This actually will create a new config and apply changes from the given one.<br>
+	 * If update is true, this will bypass hooks and events.
 	 * @param playerName
 	 * @param cfg
 	 * @param update
@@ -395,7 +396,8 @@ public class SimplyVanish extends JavaPlugin {
 	
 	/**
 	 * Set the VanishConfig for the player, with optional notifications, if the player is online.<br>
-	 * This actually will create a new config and apply changes from the given one.
+	 * This actually will create a new config and apply changes from the given one.<br>
+	 * If update is true, this will bypass hooks and events.
 	 * @param playerName
 	 * @param cfg
 	 * @param update
@@ -406,7 +408,8 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	/**
-	 * Force an update of who sees who for this player, without notification.
+	 * Force an update of who sees who for this player, without notification.<br>
+	 * This bypasses hooks and events.
 	 * @param player
 	 */
 	public static void updateVanishState(Player player){
@@ -414,7 +417,8 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	/**
-	 * Force an update of who sees who for this player, with optional notification messages.
+	 * Force an update of who sees who for this player, with optional notification messages.<br>
+	 * This bypasses hooks and events.
 	 * @param player
 	 * @param message If to send notifications and state messages.
 	 */
@@ -432,6 +436,7 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	/**
+	 * Listeners can not be removed yet.
 	 * API
 	 * @param hook
 	 * @return If one was already present.
@@ -441,6 +446,7 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	/**
+	 * Listeners can not be removed yet.
 	 * API
 	 * @param hookName
 	 * @return If one was already present.
@@ -450,12 +456,17 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	/**
+	 * Listeners can not be removed yet.
 	 * API
 	 */
 	public static void removeAllHooks(){
 		core.removeAllHooks();
 	}
 	
+	/**
+	 * Convenience method used internally.
+	 * @return
+	 */
 	public static SimplyVanish getPluginInstance(){
 		return core.getPlugin();
 	}
