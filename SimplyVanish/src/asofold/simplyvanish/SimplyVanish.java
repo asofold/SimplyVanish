@@ -58,8 +58,6 @@ public class SimplyVanish extends JavaPlugin {
 		stats.setLogStats(false);
 	}
 	
-
-	
 	
 	Configuration defaults;
 	
@@ -84,12 +82,14 @@ public class SimplyVanish extends JavaPlugin {
 	public void onDisable() {
 		if (core.settings.saveVanished) core.saveVanished();
 		core.setEnabled(false);
+		core.setPlugin(null);
 		// TODO: maybe let all players see each other again?
 		System.out.println("[SimplyVanish] Disabled.");
 	}
 
 	@Override
 	public void onEnable() {
+		core.setPlugin(this);
 		core.setVanishedFile(new File(getDataFolder(), "vanished.dat"));
 		removeAllHooks();
 		// load settings
@@ -104,6 +104,7 @@ public class SimplyVanish extends JavaPlugin {
 		pm.registerEvents(aliasManager, this);
 		// finished enabling.
 		core.setEnabled(true);
+		core.addStandardHooks();
 		System.out.println("[SimplyVanish] Enabled");
 	}
 
@@ -454,5 +455,11 @@ public class SimplyVanish extends JavaPlugin {
 	public static void removeAllHooks(){
 		core.removeAllHooks();
 	}
+	
+	public static SimplyVanish getPluginInstance(){
+		return core.getPlugin();
+	}
+	
+	
 
 }

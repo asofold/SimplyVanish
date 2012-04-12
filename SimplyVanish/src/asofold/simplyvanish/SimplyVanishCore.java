@@ -40,7 +40,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
 
+import asofold.simplyvanish.api.events.SimplyVanishAtLoginEvent;
+import asofold.simplyvanish.api.events.SimplyVanishStateEvent;
 import asofold.simplyvanish.api.hooks.Hook;
+import asofold.simplyvanish.api.hooks.impl.DisguiseCraftHook;
 import asofold.simplyvanish.config.Settings;
 import asofold.simplyvanish.config.VanishConfig;
 import asofold.simplyvanish.util.HookUtil;
@@ -72,6 +75,7 @@ public class SimplyVanishCore implements Listener{
 	 */
 	private File vanishedFile = null;
 	
+	private SimplyVanish plugin;
 	
 
 	@EventHandler(priority=EventPriority.HIGHEST)
@@ -79,27 +83,36 @@ public class SimplyVanishCore implements Listener{
 		Player player = event.getPlayer();
 		String playerName = player.getName();
 		VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
+		boolean was = cfg != null && cfg.vanished.state;
 		boolean auto = false;
 		if ( settings.autoVanishUse && (cfg == null || cfg.auto.state) ) auto = true;
 		else  auto = false;
 		if (auto){
 			if (Utils.hasPermission(player, settings.autoVanishPerm)){
-				addVanishedName(playerName);
 				if (cfg == null) cfg = getVanishConfig(playerName);
+			}{
+				auto = false;
 			}
+		}
+		// If now auto is true = vanish player due to auto-vanish.
+		boolean doVanish = auto;
+		
+		if (doVanish || was){
+			SimplyVanishAtLoginEvent svEvent = new SimplyVanishAtLoginEvent(playerName, was, doVanish, auto);
+			Bukkit.getServer().getPluginManager().callEvent(svEvent);
+			if (svEvent.isCancelled()){
+				// no update
+				return;
+			}
+			doVanish = svEvent.getVisibleAfter();
+			cfg.set("vanished", doVanish);
 		}
 		
-		boolean doVanish = false;
 		if (cfg != null){
-			doVanish = cfg.vanished.state;
-			if (doVanish){
-				if (!hookUtil.callBeforeVanish(playerName)){
-					cfg.vanished.state = false;
-					cfg.changed = true;
-				}
-				
-			}
+			if (cfg.vanished.state) doVanish = true;
+			if (doVanish) hookUtil.callBeforeVanish(playerName);
 		}
+		
 		updateVanishState(event.getPlayer()); // called in any case
 		if (doVanish) hookUtil.callAfterVanish(playerName);	
 		if (cfg!=null){
@@ -515,9 +528,9 @@ public class SimplyVanishCore implements Listener{
 			} 
 			else if (player.canSee(other)) hidePlayer(other, player);
 			if (!was && !other.canSee(player)) showPlayer(player, other);   
-			
 		}
 		if (was) doVanish(player, message); // remove: a) do not save 2x b) people will get notified.	
+		else removeVanishedName(playerName);
 		SimplyVanish.stats.addStats(SimplyVanish.statsUpdateVanishState, System.nanoTime()-ns);
 	}
 	
@@ -714,11 +727,20 @@ public class SimplyVanishCore implements Listener{
 	 */
 	public boolean setVanished(String playerName, boolean vanished) {
 		playerName = playerName.toLowerCase();
-		// check hooks
-		boolean allow;
-		if (vanished) allow = hookUtil.callBeforeVanish(playerName);
-		else allow = hookUtil.callBeforeReappear(playerName);
-		if (!allow) return false;
+		boolean was = isVanished(playerName);
+		// call event:
+		SimplyVanishStateEvent svEvent = new SimplyVanishStateEvent(playerName, was, vanished);
+		Bukkit.getServer().getPluginManager().callEvent(svEvent);
+		if (svEvent.isCancelled()){
+			// no state update !
+			return false;
+		}
+		vanished = svEvent.getVisibleAfter();
+		// TODO
+		// call hooks
+		if (vanished) hookUtil.callBeforeVanish(playerName);
+		else hookUtil.callBeforeReappear(playerName);
+
 		// Do vanish or reappear:
 		Player player = Bukkit.getServer().getPlayerExact(playerName);
 		if (player != null){
@@ -812,11 +834,10 @@ public class SimplyVanishCore implements Listener{
 		}
 		// if pass:
 		vanishConfigs.put(playerName, cfg); // just to ensure it is there.
-		if (!hookUtil.callBeforeSetFlags(playerName, cfg.clone(), newCfg.clone() )){
-			if (!cfg.needsSave()) removeVanishedName(playerName);
-			Utils.send(sender, ChatColor.RED+"Action was prevented by hooks.");
-			return;
-		}
+		
+		// TODO: setflags event !
+		
+		hookUtil.callBeforeSetFlags(playerName, cfg.clone(), newCfg.clone());
 		// Now actually apply changes to he vcfg.
 		for (String name : ok){
 			cfg.set(name, newCfg.get(name));
@@ -887,5 +908,22 @@ public class SimplyVanishCore implements Listener{
 			Player player = Bukkit.getServer().getPlayerExact(playerName);
 			if (player != null) updateVanishState(player, message);
 		}
+	}
+	
+	void addStandardHooks(){
+		try{
+			Hook hook = new DisguiseCraftHook();
+			addHook(hook);
+			System.out.println("[SimplyVanish] Add hook: "+hook.getHookName());
+		} catch(Throwable t){
+		}
+	}
+
+	public SimplyVanish getPlugin() {
+		return plugin;
+	}
+
+	public void setPlugin(SimplyVanish plugin) {
+		this.plugin = plugin;
 	}
 }
