@@ -80,10 +80,8 @@ public class SimplyVanishCore implements Listener{
 		String playerName = player.getName();
 		VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
 		boolean auto = false;
-		if ( cfg == null || cfg.auto == null){
-			if (settings.autoVanishUse) auto = true;
-		} 
-		else if (cfg.auto.state) auto = true;
+		if ( settings.autoVanishUse && (cfg == null || cfg.auto.state) ) auto = true;
+		else  auto = false;
 		if (auto){
 			if (Utils.hasPermission(player, settings.autoVanishPerm)){
 				addVanishedName(playerName);
