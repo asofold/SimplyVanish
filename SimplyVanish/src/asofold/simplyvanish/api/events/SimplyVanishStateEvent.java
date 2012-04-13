@@ -4,9 +4,10 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * This event is called when setVanished is used (on commands and API usage),<br>
- * it is not called for updateVanishState (!).<br>
- * NOTE: This could also be a SimplyVanishAtLoginEvent . 
+ * This event is called when setVanished is used internally (on commands and API usage) or on player logins (see NOTE below), it is not called for updateVanishState, thus can be bypassed, also by API calls (!).<br>
+ * If this event is canceled, no state updating will be performed, to just prevent state changes use the setVisibleAfter method.<br>
+ * It is not sure that this event means a state change from visible to invisible or vice-versa, it could also be a forced state update.<br>
+ * NOTE: This could also be a SimplyVanishAtLoginEvent which extends SimnplyVanishStateEvent. 
  * @author mc_dev
  *
  */

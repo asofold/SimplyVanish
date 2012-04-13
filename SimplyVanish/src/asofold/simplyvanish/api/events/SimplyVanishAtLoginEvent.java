@@ -1,7 +1,9 @@
 package asofold.simplyvanish.api.events;
 
 /**
- * This event is only called when a player was vanished before or is intended to be vanished.
+ * This event is only called when a player was vanished before or is intended to be vanished.<br>
+ * For more details see:
+ * @see SimplyVanishStateEvent
  * @author mc_dev
  *
  */
