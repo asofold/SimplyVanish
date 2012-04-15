@@ -62,4 +62,11 @@ public interface CompatConfig {
 	 */
 	public Map<String, Object> getValuesDeep();
 	
+	/**
+	 * False if not supported.
+	 * @param sep
+	 * @return
+	 */
+	public boolean setPathSeparatorChar(char sep);
+	
 }

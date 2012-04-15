@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Map;
 
 import org.bukkit.configuration.MemoryConfiguration;
+import org.bukkit.configuration.MemoryConfigurationOptions;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -42,6 +43,14 @@ public class NewConfig extends AbstractNewConfig{
 	@Override
 	public Map<String, Object> getValuesDeep() {
 		return config.getValues(true);
+	}
+
+
+	@Override
+	public boolean setPathSeparatorChar(char sep) {
+		MemoryConfigurationOptions options = config.options();
+		options.pathSeparator(sep);
+		return true;
 	}
 	
 	

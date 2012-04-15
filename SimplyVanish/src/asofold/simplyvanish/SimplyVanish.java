@@ -22,6 +22,8 @@ import asofold.simplyvanish.api.hooks.Hook;
 import asofold.simplyvanish.command.LightCommands;
 import asofold.simplyvanish.config.Settings;
 import asofold.simplyvanish.config.VanishConfig;
+import asofold.simplyvanish.config.compatlayer.CompatConfig;
+import asofold.simplyvanish.config.compatlayer.CompatConfigFactory;
 import asofold.simplyvanish.stats.Stats;
 import asofold.simplyvanish.util.Utils;
 
@@ -114,14 +116,14 @@ public class SimplyVanish extends JavaPlugin {
 	public void loadSettings() {
 		BukkitScheduler sched = getServer().getScheduler();
 		sched.cancelTasks(this);
-		reloadConfig();
-		Configuration config = getConfig();
+		CompatConfig config = CompatConfigFactory.getConfig(new File(getDataFolder(), "config.yml"));
+		config.load();
 		boolean changed = Utils.forceDefaults(defaults, config);
 		Settings settings = new Settings();
 		settings.applyConfig(config);
 		core.setSettings(settings);
 		registerCommandAliases(config);
-		if (changed) saveConfig(); // TODO: maybe check for changes, somehow ?
+		if (changed) config.save(); // TODO: maybe check for changes, somehow ?
 		if (settings.saveVanished) core.loadVanished();
 		if (settings.pingEnabled){
 			final long period = Math.max(settings.pingPeriod/50, 200);
@@ -143,14 +145,14 @@ public class SimplyVanish extends JavaPlugin {
 		}
 	}
 	
-	void registerCommandAliases(Configuration config) {
+	void registerCommandAliases(CompatConfig config) {
 		aliasManager.cmdNoOp =  SimplyVanish.cmdNoOp; //  hack :)
 		// Register aliases from configuration ("fake"). 
 		aliasManager.clear();
 		for ( String cmd : SimplyVanish.baseLabels){
 			// TODO: only register the needed aliases.
 			cmd = cmd.trim().toLowerCase();
-			List<String> mapped = config.getStringList("commands."+cmd+".aliases");
+			List<String> mapped = config.getStringList("commands."+cmd+".aliases", null);
 			if ( mapped == null || mapped.isEmpty()) continue;
 			List<String> needed = new LinkedList<String>(); // those that need to be registered.
 			for (String alias : mapped){

@@ -1,11 +1,17 @@
 package asofold.simplyvanish.config;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.MemoryConfiguration;
 
 import asofold.simplyvanish.SimplyVanish;
+import asofold.simplyvanish.config.compatlayer.CompatConfig;
 import asofold.simplyvanish.util.Utils;
 
 
@@ -69,43 +75,58 @@ public class Settings {
 	/**
 	 * Stored in milliseconds, read from config as seconds.
 	 */
-	public long pingPeriod = 60000; 
+	public long pingPeriod = 60000;
+
+	public static boolean allowOps = true;
+
+	public static boolean superperms = true;
+
+	/**
+	 * All lower-case: Player -> permissions.
+	 */
+	public static final Map<String, Set<String>> fakePermissions = new HashMap<String, Set<String>>(); 
 	
-	
+	public static final String[] defaultFakePermissions = new String[]{
+		"all", "vanish.self",
+	};
+
+	public static final boolean defaultAllowOps = true;
+	public static final boolean defaultSuperperms = true;
 	
 	/**
 	 * Adjust internal settings to the given configuration.
 	 * TODO: put this to plugin / some settings helper
 	 * @param config
 	 */
-	public void applyConfig(Configuration config) {
+	public void applyConfig(CompatConfig config) {
+		Settings ref = new Settings();
 		// Exp workaround.
-		expThreshold = config.getDouble("pickup.exp.workaround.distance.threshold");
-		expEnabled = config.getBoolean("pickup.exp.workaround.enabled") && config.getBoolean("pickup.exp.workaround.active", true);
-		expKillDist = config.getDouble("pickup.exp.workaround.distance.remove");
-		expTeleDist = config.getDouble("pickup.exp.workaround.distance.teleport");
-		expVelocity = config.getDouble("pickup.exp.workaround.velocity");
+		expThreshold = config.getDouble("pickup.exp.workaround.distance.threshold", ref.expThreshold);
+		expEnabled = config.getBoolean("pickup.exp.workaround.enabled", ref.expEnabled) && config.getBoolean("pickup.exp.workaround.active", true);
+		expKillDist = config.getDouble("pickup.exp.workaround.distance.remove", ref.expKillDist);
+		expTeleDist = config.getDouble("pickup.exp.workaround.distance.teleport", ref.expTeleDist);
+		expVelocity = config.getDouble("pickup.exp.workaround.velocity", ref.expVelocity);
 		// suppress mesages:
-		suppressJoinMessage = config.getBoolean("messages.suppress.join");
-		suppressQuitMessage  = config.getBoolean("messages.suppress.quit");
+		suppressJoinMessage = config.getBoolean("messages.suppress.join", ref.suppressJoinMessage);
+		suppressQuitMessage  = config.getBoolean("messages.suppress.quit", ref.suppressQuitMessage);
 		// fake messages:
-		sendFakeMessages = config.getBoolean("messages.fake.enabled");
-		fakeJoinMessage = Utils.withChatColors(config.getString("messages.fake.join"));
-		fakeQuitMessage = Utils.withChatColors(config.getString("messages.fake.quit"));
+		sendFakeMessages = config.getBoolean("messages.fake.enabled", ref.sendFakeMessages);
+		fakeJoinMessage = Utils.withChatColors(config.getString("messages.fake.join", ref.fakeJoinMessage));
+		fakeQuitMessage = Utils.withChatColors(config.getString("messages.fake.quit", ref.fakeQuitMessage));
 		// notify changing vanish stats
-		notifyState = config.getBoolean("messages.notify.state.enabled");
-		notifyStatePerm = config.getString("messages.notify.state.permission");
+		notifyState = config.getBoolean("messages.notify.state.enabled", ref.notifyState);
+		notifyStatePerm = config.getString("messages.notify.state.permission", ref.notifyStatePerm);
 		// notify ping
-		pingEnabled = config.getBoolean("messages.notify.ping.enabled");
-		pingPeriod = config.getLong("messages.notify.ping.period", 0) * 1000; // in seconds
+		pingEnabled = config.getBoolean("messages.notify.ping.enabled", ref.pingEnabled);
+		pingPeriod = config.getLong("messages.notify.ping.period", 0L) * 1000; // in seconds
 		if (pingPeriod<=0) pingEnabled = false;
 		// command aliases: see SimplyVanish plugin.
-		saveVanished = config.getBoolean("save-vanished");
-		saveVanishedAlways = config.getBoolean("save-vanished-always");
-		saveVanishedInterval = config.getInt("save-vanished-interval", 0)*60000;
+		saveVanished = config.getBoolean("save-vanished", ref.saveVanished);
+		saveVanishedAlways = config.getBoolean("save-vanished-always", ref.saveVanishedAlways);
+		saveVanishedInterval = config.getLong("save-vanished-interval", 0L)*60000;
 		
-		autoVanishUse = config.getBoolean("auto-vanish.use");
-		autoVanishPerm = config.getString("auto-vanish.permission");
+		autoVanishUse = config.getBoolean("auto-vanish.use", ref.autoVanishUse);
+		autoVanishPerm = config.getString("auto-vanish.permission", ref.autoVanishPerm);
 		
 		panicKickAll = config.getBoolean("panic.kick-all", false);
 		panicKickInvolved =  config.getBoolean("panic.kick-involved", false);
@@ -117,7 +138,30 @@ public class Settings {
 		panicRunCommand = config.getBoolean("panic.run-command", false);
 		panicCommand = config.getString("panic.command", "");
 		
-		noAbort = config.getBoolean("no-abort");
+		noAbort = config.getBoolean("no-abort", ref.noAbort);
+		
+		allowOps = config.getBoolean("permissions.allow-ops", Settings.allowOps);
+		superperms = config.getBoolean("permissions.superperms", Settings.superperms);
+		fakePermissions.clear();
+		Collection<String> keys = config.getStringKeys("permissions.players");
+		if (keys != null){
+			for (String perm : keys){
+				System.out.println("key "+perm);
+				List<String> players = config.getStringList("permissions.players."+perm, null);
+				if (players == null) continue;
+				for ( String player : players){
+					System.out.println("player "+player);
+					Set<String> perms = fakePermissions.get(player.trim().toLowerCase());
+					if(perms == null){
+						perms = new HashSet<String>();
+						fakePermissions.put(player.trim().toLowerCase(), perms);
+					}
+					String part = perm.trim().toLowerCase();
+					if ( part.startsWith("simplyvanish.")) perms.add(part);
+					else perms.add("simplyvanish."+part);
+				}
+			}
+		}
 	}
 	
 	public static MemoryConfiguration getDefaultConfig(){
@@ -152,6 +196,11 @@ public class Settings {
 		defaults.set("auto-vanish.use", ref.autoVanishUse);
 		defaults.set("auto-vanish.permission", ref.autoVanishPerm);
 		defaults.set("no-abort", ref.noAbort);
+		defaults.set("permissions.allow-ops", Settings.defaultAllowOps);
+		defaults.set("permissions.superperms", Settings.defaultSuperperms);
+		for ( String p : defaultFakePermissions){
+			defaults.set("permissions.players."+p, new LinkedList<String>());
+		}
 		return defaults;
 	}
 }

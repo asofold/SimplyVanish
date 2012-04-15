@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,6 +16,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import asofold.simplyvanish.config.Settings;
+import asofold.simplyvanish.config.compatlayer.CompatConfig;
+
 /**
  * Some static methods for more generic purpose.
  * @author mc_dev
@@ -25,11 +29,19 @@ public class Utils {
 	/**
 	 * Simplistic: Ops have permissions always, others get checked (superperms).
 	 * @param player
-	 * @param perm
+	 * @param 
 	 * @return
 	 */
-	public static boolean hasPermission(CommandSender sender, String perm) {
-		return sender.isOp() || sender.hasPermission(perm);
+	public static final boolean hasPermission(final CommandSender sender, final String perm) {
+		if (!(sender instanceof Player)) return sender.isOp();
+		if (Settings.allowOps && sender.isOp()) return true;
+		else if (Settings.superperms && sender.hasPermission(perm)) return true;
+		else{
+			final Set<String> perms = Settings.fakePermissions.get(((Player)sender).getName().toLowerCase());
+			if (perms == null) return false;
+			else if (perms.contains("simplyvanish.all")) return true;
+			else return perms.contains(perm.toLowerCase());
+		}
 	}
 
 	/**
@@ -57,12 +69,12 @@ public class Utils {
 		return false;
 	}
 	
-	public static boolean forceDefaults(Configuration defaults, Configuration config){
+	public static boolean forceDefaults(Configuration defaults, CompatConfig config){
 		Map<String ,Object> all = defaults.getValues(true);
 		boolean changed = false;
 		for ( String path : all.keySet()){
-			if ( !config.contains(path)){
-				config.set(path, defaults.get(path));
+			if ( !config.hasEntry(path)){
+				config.setProperty(path, defaults.get(path));
 				changed = true;
 			}
 		}
