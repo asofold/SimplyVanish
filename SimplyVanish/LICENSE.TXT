@@ -1,3 +1,5 @@
-PUBLIC DOMAIN
-
-Whatever that is ...
+LICENSE [LICENSE PENDING]
+--------------------------
+Something minimal on top of what can be done with a Bukkit/CraftBukkit plugin.
+Supposedly this would range from public domain (probably not) to somewhere around MIT license.
+Actually it is safe to assume MIT license, but if the license can be "less", i will probably make it so.
