@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import asofold.simplyvanish.api.hooks.Hook;
 import asofold.simplyvanish.command.LightCommands;
+import asofold.simplyvanish.config.Path;
 import asofold.simplyvanish.config.Settings;
 import asofold.simplyvanish.config.VanishConfig;
 import asofold.simplyvanish.config.compatlayer.CompatConfig;
@@ -61,7 +62,7 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	
-	Configuration defaults;
+	Configuration defaults = null;
 	
 	/**
 	 * Map aliases to recognized labels.
@@ -77,7 +78,6 @@ public class SimplyVanish extends JavaPlugin {
 	 * Constructor: set some defualt configuration values.
 	 */
 	public SimplyVanish(){
-		defaults = Settings.getDefaultConfig();
 	}
 	
 	@Override
@@ -117,12 +117,16 @@ public class SimplyVanish extends JavaPlugin {
 		BukkitScheduler sched = getServer().getScheduler();
 		sched.cancelTasks(this);
 		CompatConfig config = CompatConfigFactory.getConfig(new File(getDataFolder(), "config.yml"));
+		final Path path;
+		if (config.setPathSeparatorChar('/')) path = new Path('/');
+		else path = new Path('.');
+		defaults = Settings.getDefaultConfig(path);
 		config.load();
 		boolean changed = Utils.forceDefaults(defaults, config);
 		Settings settings = new Settings();
-		settings.applyConfig(config);
+		settings.applyConfig(config, path);
 		core.setSettings(settings);
-		registerCommandAliases(config);
+		registerCommandAliases(config, path);
 		if (changed) config.save(); // TODO: maybe check for changes, somehow ?
 		if (settings.saveVanished) core.loadVanished();
 		if (settings.pingEnabled){
@@ -145,14 +149,14 @@ public class SimplyVanish extends JavaPlugin {
 		}
 	}
 	
-	void registerCommandAliases(CompatConfig config) {
+	void registerCommandAliases(CompatConfig config, Path path) {
 		aliasManager.cmdNoOp =  SimplyVanish.cmdNoOp; //  hack :)
 		// Register aliases from configuration ("fake"). 
 		aliasManager.clear();
 		for ( String cmd : SimplyVanish.baseLabels){
 			// TODO: only register the needed aliases.
 			cmd = cmd.trim().toLowerCase();
-			List<String> mapped = config.getStringList("commands."+cmd+".aliases", null);
+			List<String> mapped = config.getStringList("commands"+path.sep+cmd+path.sep+"aliases", null);
 			if ( mapped == null || mapped.isEmpty()) continue;
 			List<String> needed = new LinkedList<String>(); // those that need to be registered.
 			for (String alias : mapped){
