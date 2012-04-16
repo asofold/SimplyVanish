@@ -1,11 +1,9 @@
 package asofold.simplyvanish;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -19,6 +17,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import asofold.simplyvanish.api.hooks.Hook;
 import asofold.simplyvanish.command.LightCommands;
+import asofold.simplyvanish.command.SimplyVanishCommand;
 import asofold.simplyvanish.config.Path;
 import asofold.simplyvanish.config.Settings;
 import asofold.simplyvanish.config.VanishConfig;
@@ -41,7 +40,7 @@ public class SimplyVanish extends JavaPlugin {
 		"vanish", "reappear", "tvanish", "simplyvanish","vanished", "vanflag",
 	};
 	
-	private static final String cmdNoOpArg = "??NOOP??";
+	public static final String cmdNoOpArg = "??NOOP??";
 	private static final String cmdNoOp = "simplyvanish "+cmdNoOpArg;
 	
 	public static final String msgLabel = ChatColor.GOLD+"[SimplyVanish]"+ChatColor.GRAY+" ";
@@ -60,10 +59,7 @@ public class SimplyVanish extends JavaPlugin {
 		stats.setLogStats(false);
 	}
 	
-	/**
-	 * Map aliases to recognized labels.
-	 */
-	Map<String, String> commandAliases = new HashMap<String, String>();
+	SimplyVanishCommand cmdExe;
 	
 	/**
 	 *  Dynamic "fake" commands.
@@ -74,6 +70,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * Constructor: set some defualt configuration values.
 	 */
 	public SimplyVanish(){
+		cmdExe = new SimplyVanishCommand(core);
 	}
 	
 	@Override
@@ -183,7 +180,7 @@ public class SimplyVanish extends JavaPlugin {
 			if (getCommand(cmd) != null) aliasManager.removeAlias(cmd); // the command is registered already.
 			for ( String alias: needed){
 				alias = alias.trim().toLowerCase();
-				commandAliases.put(alias, cmd);
+				cmdExe.commandAliases.put(alias, cmd);
 			}
 		
 		}
@@ -196,138 +193,15 @@ public class SimplyVanish extends JavaPlugin {
 			List<String> aliases = command.getAliases();
 			if ( aliases == null) continue;
 			for ( String alias: aliases){
-				commandAliases.put(alias.trim().toLowerCase(), cmd);
+				cmdExe.commandAliases.put(alias.trim().toLowerCase(), cmd);
 			}
 		}
-	}
-	
-	/**
-	 * Get standardized lower-case label, possibly mapped from an alias.
-	 * @param label
-	 * @return
-	 */
-	String getMappedCommandLabel(String label){
-		label = label.toLowerCase();
-		String mapped = commandAliases.get(label);
-		if (mapped == null) return label;
-		else return mapped;
 	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
-		label = getMappedCommandLabel(label);
-		int len = args.length;
-		boolean hasFlags = false;
-		for ( int i=args.length-1; i>=0; i--){
-			if (args[i].startsWith("+") || args[i].startsWith("-") || args [i].startsWith("*")){
-				len --;
-				hasFlags = true;
-			} 
-			else break;
-		}
-		
-		if ( label.equals("vanish") && len==0 ){
-			if ( !Utils.checkPlayer(sender)) return true;
-			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
-			// Make sure the player is vanished...
-			if (hasFlags) core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
-			if (!setVanished((Player) sender, true)) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
-			return true;
-		} 
-		else if ( label.equals("vanish") && len==1 ){
-			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.other")) return true;
-			// Make sure the other player is vanished...
-			String name = args[0].trim();
-			if (hasFlags) core.setFlags(name, args, len, sender, false, true, false);
-			if (setVanished(name, true)) Utils.send(sender, msgLabel + "Vanish player: "+name);
-			else Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
-			return true;
-		} 
-		else if (label.equals("reappear") && len==0 ){
-			if ( !Utils.checkPlayer(sender)) return true;
-			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self") && !Utils.checkPerm(sender, "simplyvanish.reappear.self")) return true;
-			// Let the player be seen...
-			if (hasFlags) core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
-			if (!setVanished((Player) sender, false)) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
-			return true;
-		} 
-		else if ( label.equals("reappear") && len==1 ){
-			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.other") && !Utils.checkPerm(sender, "simplyvanish.reappear.other")) return true;
-			// Make sure the other player is shown...
-			String name = args[0].trim();
-			if (hasFlags) core.setFlags(name, args, len, sender, false, true, false);
-			if (setVanished(name, false)) Utils.send(sender, msgLabel + "Show player: "+name);
-			else Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
-			return true;
-		} 
-		else if ( label.equals("tvanish") && len==0 ){
-			if ( !Utils.checkPlayer(sender)) return true;
-			Player player = (Player) sender;
-			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
-			if (hasFlags) core.setFlags(player.getName(), args, len, sender, false, false, false);
-			if (!setVanished(player, !isVanished(player))) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
-			return true;
-		}
-		else if (label.equals("vanished")){
-			if ( !Utils.checkPerm(sender, "simplyvanish.vanished")) return true;
-			Utils.send(sender, core.getVanishedMessage());
-			return true;
-		} 
-		else if ( label.equals("simplyvanish") || label.equals("vanflag")){
-			
-			if (label.equals("simplyvanish")){
-				if (!hasFlags && len==1 && args[0].equalsIgnoreCase("reload")){
-					if ( !Utils.checkPerm(sender, "simplyvanish.reload")) return true;
-					loadSettings();
-					Utils.send(sender, msgLabel + ChatColor.YELLOW+"Settings reloaded.");
-					return true;
-				}
-				else if (!hasFlags && len==1 && args[0].equalsIgnoreCase("drop")){
-					if ( !Utils.checkPerm(sender, "simplyvanish.cmd.drop")) return true;
-					if (!Utils.checkPlayer(sender)) return true;
-					Utils.dropItemInHand((Player) sender);
-					return true;
-				}
-				else if (len==1 && args[0].equals(SimplyVanish.cmdNoOpArg)) return true;
-				else if (len==1 && args[0].equalsIgnoreCase("stats")){
-					if ( !Utils.checkPerm(sender, "simplyvanish.stats.display")) return true;
-					Utils.send(sender, stats.getStatsStr(true));
-					return true;
-				} 
-				else if (len==2 && args[0].equalsIgnoreCase("stats") && args[1].equalsIgnoreCase("reset")){
-					if ( !Utils.checkPerm(sender, "simplyvanish.stats.reset")) return true;
-					stats.clear();
-					Utils.send(sender, msgLabel+"Stats reset.");
-					return true;
-				}
-			}
-			
-			if (hasFlags && len == 0){
-				if (!Utils.checkPlayer(sender)) return true;
-				core.setFlags(((Player)sender).getName(), args, len, sender, false, false, true);
-				if (Utils.hasPermission(sender, "simplyvanish.flags.display.self")) core.onShowFlags((Player) sender, null);
-				return true;
-			} 
-			else if (len == 0){
-				if (!Utils.checkPlayer(sender)) return true;
-				if (Utils.hasPermission(sender, "simplyvanish.flags.display.self")) core.onShowFlags((Player) sender, null);
-				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to display flags.");
-				return true;
-			} 
-			else if (hasFlags && len==1){
-				core.setFlags(args[0], args, len, sender, false, true, true);
-				if (Utils.hasPermission(sender, "simplyvanish.flags.display.other")) core.onShowFlags(sender, args[0]);
-				return true;
-			}
-			else if (len==1){
-				if (Utils.hasPermission(sender, "simplyvanish.flags.display.other")) core.onShowFlags(sender, args[0]);
-				else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"You do not have permission to display flags of others.");
-				return true;
-			}
-		}
-		Utils.send(sender, msgLabel + ChatColor.DARK_RED+"Unrecognized command or number of arguments.");
-		return false;
+		return cmdExe.onCommand(sender, command, label, args);
 	}
 	
 	/**
