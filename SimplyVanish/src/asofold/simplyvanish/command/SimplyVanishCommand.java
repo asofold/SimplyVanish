@@ -1,23 +1,36 @@
 package asofold.simplyvanish.command;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
 import asofold.simplyvanish.SimplyVanish;
 import asofold.simplyvanish.SimplyVanishCore;
+import asofold.simplyvanish.config.Path;
+import asofold.simplyvanish.config.compatlayer.CompatConfig;
 import asofold.simplyvanish.util.Utils;
 
 public class SimplyVanishCommand{
+	
+	private SimplyVanishCore core;
+	
+	/**
+	 *  Dynamic "fake" commands.
+	 */
+	public LightCommands aliasManager = new LightCommands();
+	
 	/**
 	 * Map aliases to recognized labels.
 	 */
 	public Map<String, String> commandAliases = new HashMap<String, String>();
-	private SimplyVanishCore core;
+	
 	
 	public SimplyVanishCommand(SimplyVanishCore core) {
 		this.core = core;
@@ -150,6 +163,54 @@ public class SimplyVanishCommand{
 		}
 		Utils.send(sender, SimplyVanish.msgLabel + ChatColor.DARK_RED+"Unrecognized command or number of arguments.");
 		return false;
+	}
+	
+	public void registerCommandAliases(CompatConfig config, Path path) {
+		SimplyVanish plugin = core.getPlugin();
+		aliasManager.cmdNoOp =  SimplyVanish.cmdNoOp; //  hack :)
+		// Register aliases from configuration ("fake"). 
+		aliasManager.clear();
+		for ( String cmd : SimplyVanish.baseLabels){
+			// TODO: only register the needed aliases.
+			cmd = cmd.trim().toLowerCase();
+			List<String> mapped = config.getStringList("commands"+path.sep+cmd+path.sep+"aliases", null);
+			if ( mapped == null || mapped.isEmpty()) continue;
+			List<String> needed = new LinkedList<String>(); // those that need to be registered.
+			for (String alias : mapped){
+				Command ref = plugin.getCommand(alias);
+				if (ref==null){
+					needed.add(alias);
+				}
+				else if (ref.getLabel().equalsIgnoreCase(cmd)){
+					// already mapped to that command.
+					continue;
+				}
+				else needed.add(alias);
+			}
+			if (needed.isEmpty()) continue;
+			// register with wrong(!) label:
+			if (!aliasManager.registerCommand(cmd, needed, plugin)){
+				// TODO: log maybe
+			}
+			if (plugin.getCommand(cmd) != null) aliasManager.removeAlias(cmd); // the command is registered already.
+			for ( String alias: needed){
+				alias = alias.trim().toLowerCase();
+				commandAliases.put(alias, cmd);
+			}
+		
+		}
+		
+		// Register aliases for commands from plugin.yml:
+		for ( String cmd : SimplyVanish.baseLabels){
+			cmd = cmd.trim().toLowerCase();
+			PluginCommand command = plugin.getCommand(cmd);
+			if (command == null) continue;
+			List<String> aliases = command.getAliases();
+			if ( aliases == null) continue;
+			for ( String alias: aliases){
+				commandAliases.put(alias.trim().toLowerCase(), cmd);
+			}
+		}
 	}
 
 }

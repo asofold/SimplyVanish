@@ -2,21 +2,17 @@ package asofold.simplyvanish;
 
 import java.io.File;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import asofold.simplyvanish.api.hooks.Hook;
-import asofold.simplyvanish.command.LightCommands;
 import asofold.simplyvanish.command.SimplyVanishCommand;
 import asofold.simplyvanish.config.Path;
 import asofold.simplyvanish.config.Settings;
@@ -41,7 +37,7 @@ public class SimplyVanish extends JavaPlugin {
 	};
 	
 	public static final String cmdNoOpArg = "??NOOP??";
-	private static final String cmdNoOp = "simplyvanish "+cmdNoOpArg;
+	public static final String cmdNoOp = "simplyvanish "+cmdNoOpArg;
 	
 	public static final String msgLabel = ChatColor.GOLD+"[SimplyVanish]"+ChatColor.GRAY+" ";
 	public static final String msgStillInvisible =  SimplyVanish.msgLabel+ChatColor.GRAY+"You are still "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players.";
@@ -60,11 +56,6 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	SimplyVanishCommand cmdExe;
-	
-	/**
-	 *  Dynamic "fake" commands.
-	 */
-	LightCommands aliasManager = new LightCommands();
 	
 	/**
 	 * Constructor: set some defualt configuration values.
@@ -96,7 +87,7 @@ public class SimplyVanish extends JavaPlugin {
 		// register events:
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(core, this);
-		pm.registerEvents(aliasManager, this);
+		pm.registerEvents(cmdExe.aliasManager, this);
 		// finished enabling.
 		core.setEnabled(true);
 		core.addStandardHooks();
@@ -128,7 +119,7 @@ public class SimplyVanish extends JavaPlugin {
 			settings = new Settings();
 		}
 		core.setSettings(settings);
-		registerCommandAliases(config, path);
+		cmdExe.registerCommandAliases(config, path);
 		if (changed) config.save(); // TODO: maybe check for changes, somehow ?
 		if (settings.saveVanished) core.loadVanished();
 		if (settings.pingEnabled){
@@ -151,52 +142,7 @@ public class SimplyVanish extends JavaPlugin {
 		}
 	}
 	
-	void registerCommandAliases(CompatConfig config, Path path) {
-		aliasManager.cmdNoOp =  SimplyVanish.cmdNoOp; //  hack :)
-		// Register aliases from configuration ("fake"). 
-		aliasManager.clear();
-		for ( String cmd : SimplyVanish.baseLabels){
-			// TODO: only register the needed aliases.
-			cmd = cmd.trim().toLowerCase();
-			List<String> mapped = config.getStringList("commands"+path.sep+cmd+path.sep+"aliases", null);
-			if ( mapped == null || mapped.isEmpty()) continue;
-			List<String> needed = new LinkedList<String>(); // those that need to be registered.
-			for (String alias : mapped){
-				Command ref = getCommand(alias);
-				if (ref==null){
-					needed.add(alias);
-				}
-				else if (ref.getLabel().equalsIgnoreCase(cmd)){
-					// already mapped to that command.
-					continue;
-				}
-				else needed.add(alias);
-			}
-			if (needed.isEmpty()) continue;
-			// register with wrong(!) label:
-			if (!aliasManager.registerCommand(cmd, needed, this)){
-				// TODO: log maybe
-			}
-			if (getCommand(cmd) != null) aliasManager.removeAlias(cmd); // the command is registered already.
-			for ( String alias: needed){
-				alias = alias.trim().toLowerCase();
-				cmdExe.commandAliases.put(alias, cmd);
-			}
-		
-		}
-		
-		// Register aliases for commands from plugin.yml:
-		for ( String cmd : SimplyVanish.baseLabels){
-			cmd = cmd.trim().toLowerCase();
-			PluginCommand command = getCommand(cmd);
-			if (command == null) continue;
-			List<String> aliases = command.getAliases();
-			if ( aliases == null) continue;
-			for ( String alias: aliases){
-				cmdExe.commandAliases.put(alias.trim().toLowerCase(), cmd);
-			}
-		}
-	}
+
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
@@ -357,6 +303,4 @@ public class SimplyVanish extends JavaPlugin {
 		return core.getPlugin();
 	}
 	
-	
-
 }
