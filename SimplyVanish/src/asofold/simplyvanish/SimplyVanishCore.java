@@ -105,6 +105,13 @@ public class SimplyVanishCore implements Listener{
 	public void setPlugin(SimplyVanish plugin) {
 		this.plugin = plugin;
 	}
+	
+	public boolean shouldSave(){
+		for (VanishConfig cfg : vanishConfigs.values()){
+			if (cfg.changed) return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Save vanished names to file, does NOT update states (!).
