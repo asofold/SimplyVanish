@@ -149,8 +149,8 @@ public class Settings {
 		if (keys != null){
 			for (String setName : keys){
 				final String base = path.permSets + path.sep + setName + path.sep;
-				List<String> perms = config.getStringKeys(base + path.keyPerms);
-				List<String> players = config.getStringKeys(base + path.keyPlayers);
+				List<String> perms = config.getStringList(base + path.keyPerms);
+				List<String> players = config.getStringList(base + path.keyPlayers);
 				if (perms == null || players == null || perms.isEmpty()){
 					Utils.warn("Missing entries in fake permissions set: "+setName);
 					continue;
