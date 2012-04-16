@@ -217,6 +217,10 @@ public class VanishConfig {
 		return flags.get(name).state;
 	}
 	
+	public void set(Flag flag, boolean state){
+		set(flag.name, state);
+	}
+	
 	public void set(String name, boolean state){
 		Flag flag = flags.get(name);
 		if (flag.state != state){
