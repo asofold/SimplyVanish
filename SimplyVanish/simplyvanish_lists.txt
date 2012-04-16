@@ -35,6 +35,7 @@ PLANNED FEATURES AND QUESTIONS
 *** COMPATIBILITY / HOOKS
 - ?hide / show player: collect Map<String, Set<String>> or similar then call hooks then hide/show cumulative
 ? (add) API / Hooks for players (other plugins, whatever): onVanish, onReappear, toLine, boolean parse
+- ?(add) boolean hooks for hide and show player. (though they get called many times)
 
 *** LANGUAGE
 ? language update
@@ -59,13 +60,14 @@ STACK
 
 
 *** [HOOKS]
-- ?(add) boolean hooks for hide and show player. (though they get called many times)
 - !(add) getHook(String) + hasHook + prevent-hooks 
 - add convenience methods: getPlayer and hasPlayer to event(s)?
 
 *** [CORE FEATURES]
 - ?(add) god mode ? /simgod = all flags apply though not vanished ! + /simungod [aliases by LightCommands]
 - flag: ?cmd(only blocks cmds declared in the configuration.)
+- Add composite flags: attack (damage, potion), interact (any sort?+ block break, block place), ?chat (+tell)?, 
+? some help
 
 *** CONSISTENCY
 - !(add) save command
@@ -76,16 +78,19 @@ STACK
 - /simvan without arguments: print something useful.
 ? API error: getVanishedPlayers (maybe CustomPlg error) 
 
-***FLAGS
-- Add composite flags: attack (damage, potion), interact (any sort?+ block break, block place), ?chat (+tell)?, 
-? some way to ... show info about all available flags / help
 
-*** (0.4.0-PRE-4) [FEATURE FREEZE]
+*** SUGGESTED ITERATIONS:
+- API + COMMANDS + HOOKS
+- CORE FEATURES
+- INTERNALS
+- BUGS
 
-- !(bugfix) /rea -> 2x no permissions (flags ?) ?
+*** (0.4.0-PRE-5)
 
 CHANGELOG 
 ---------------------------------------------
+
+(0.4.0-PRE-5)
 
 (0.4.0-PRE-4)
 - (add) /simplyvanish flags command to show all flags with default value.
