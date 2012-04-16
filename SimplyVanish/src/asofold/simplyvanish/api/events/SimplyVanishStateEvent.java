@@ -1,5 +1,7 @@
 package asofold.simplyvanish.api.events;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -70,6 +72,14 @@ public class SimplyVanishStateEvent extends Event implements SimplyVanishEvent{
 	@Override
 	public void setCancelled(boolean cancel) {
 		cancelled = cancel;
+	}
+	
+	/**
+	 * Convenience method.
+	 * @return
+	 */
+	public Player getPlayer(){
+		return Bukkit.getServer().getPlayerExact(playerName);
 	}
 
 }
