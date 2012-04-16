@@ -78,11 +78,9 @@ STACK
 
 ***FLAGS
 - Add composite flags: attack (damage, potion), interact (any sort?+ block break, block place), ?chat (+tell)?, 
-
+? some way to ... show info about all available flags / help
 
 *** (0.4.0-PRE-4) [FEATURE FREEZE]
-? some way to ... show info about all available flags / help
-? permissions section in the config :  superperms, op-permissions, fake:
 
 - !(bugfix) /rea -> 2x no permissions (flags ?) ?
 
@@ -90,8 +88,10 @@ CHANGELOG
 ---------------------------------------------
 
 (0.4.0-PRE-4)
+- (add) /simplyvanish flags command to show all flags with default value.
 - (add) Flags to control ops and superperms.
 - (add) Fake permission sets to give players access to SimplyVanish based on configuration entries (adds a warning message, if in use).
+- (bugfix) Removed double no-permission-messages on reappear.
 - (refactor) Refactor configuration + permission handling (+compatlayer 0.5.0).
 - (refactor) Move some chunks of code away from the plugin class.
 - (refactor) Reduce some code cloning, move stuff, get rid of some delegation.
