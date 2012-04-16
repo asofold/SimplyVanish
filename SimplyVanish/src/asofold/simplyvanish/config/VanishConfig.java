@@ -247,5 +247,11 @@ public class VanishConfig {
 		cfg.changed =  true;
 		return cfg;
 	}
+
+	public List<Flag> getAllFlags() {
+		List<Flag> all = new LinkedList<Flag>();
+		all.addAll(flags.values());
+		return all;
+	}
 	
 }
