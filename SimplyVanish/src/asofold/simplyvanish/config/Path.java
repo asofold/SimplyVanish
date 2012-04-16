@@ -54,10 +54,13 @@ public class Path {
 	public final String  pingPeriod;
 
 	
-	public final String permissions;
+	public final String permRoot;
 	public final String  allowOps;
 	public final String superperms;
-	public final String fakePermissions;
+	public final String permSets;
+	
+	public final String keyPerms;
+	public final String keyPlayers;
 
 
 	
@@ -115,10 +118,12 @@ public class Path {
 		noAbort = "no-abort";
 		
 	
-		permissions = "permissions";
-		allowOps = permissions + sep + "allow-ops";
-		superperms = permissions + sep + "superperms";
-		fakePermissions = permissions + sep + "fake-permissions";
+		permRoot = "permissions";
+		allowOps = permRoot + sep + "allow-ops";
+		superperms = permRoot + sep + "superperms";
+		permSets = permRoot + sep + "fake-permissions";
 
+		keyPerms = "permissions";
+		keyPlayers = "players";
 	}
 }

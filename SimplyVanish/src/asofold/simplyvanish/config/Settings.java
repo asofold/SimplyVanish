@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.configuration.MemoryConfiguration;
-
 import asofold.simplyvanish.SimplyVanish;
 import asofold.simplyvanish.config.compatlayer.CompatConfig;
+import asofold.simplyvanish.config.compatlayer.CompatConfigFactory;
+import asofold.simplyvanish.config.compatlayer.ConfigUtil;
 import asofold.simplyvanish.util.Utils;
 
 
@@ -85,13 +85,14 @@ public class Settings {
 	 * All lower-case: Player -> permissions.
 	 */
 	public static final Map<String, Set<String>> fakePermissions = new HashMap<String, Set<String>>(); 
-	
-	public static final String[] defaultFakePermissions = new String[]{
-		"all", "vanish.self",
-	};
 
 	public static final boolean defaultAllowOps = true;
 	public static final boolean defaultSuperperms = true;
+	
+	public static final String[][] presetPermSets = new String[][]{
+		{"all"},
+		{"vanish.self", "flags.display.self", "flags.set.self.drop"},
+	};
 	
 	/**
 	 * Adjust internal settings to the given configuration.
@@ -144,29 +145,42 @@ public class Settings {
 		allowOps = config.getBoolean(path.allowOps, Settings.allowOps);
 		superperms = config.getBoolean(path.superperms, Settings.superperms);
 		fakePermissions.clear();
-		Collection<String> keys = config.getStringKeys("permissions"+path.sep+"players");
+		Collection<String> keys = config.getStringKeys(path.permSets);
 		if (keys != null){
-			for (String perm : keys){
-				System.out.println("key "+perm);
-				List<String> players = config.getStringList("permissions.players."+perm, null);
-				if (players == null) continue;
-				for ( String player : players){
-					System.out.println("player "+player);
-					Set<String> perms = fakePermissions.get(player.trim().toLowerCase());
+			for (String setName : keys){
+				final String base = path.permSets + path.sep + setName + path.sep;
+				List<String> perms = config.getStringKeys(base + path.keyPerms);
+				List<String> players = config.getStringKeys(base + path.keyPlayers);
+				if (perms == null || players == null || perms.isEmpty()){
+					Utils.warn("Missing entries in fake permissions set: "+setName);
+					continue;
+				}
+				if (players.isEmpty()) continue; // just skip;
+				for ( String n : players){
+					String lcn = n.trim().toLowerCase();
+					Set<String> permSet = fakePermissions.get(lcn);
 					if(perms == null){
-						perms = new HashSet<String>();
-						fakePermissions.put(player.trim().toLowerCase(), perms);
+						permSet = new HashSet<String>();
+						fakePermissions.put(lcn, permSet);
 					}
-					String part = perm.trim().toLowerCase();
-					if ( part.startsWith("simplyvanish.")) perms.add(part);
-					else perms.add("simplyvanish."+part);
+					for ( String p : perms){
+						String part = p.trim().toLowerCase();
+						if ( part.startsWith("simplyvanish.")) perms.add(part);
+						else perms.add("simplyvanish."+part);
+					}
 				}
 			}
 		}
 	}
 	
-	public static MemoryConfiguration getDefaultConfig(Path path){
-		MemoryConfiguration defaults = new MemoryConfiguration();
+	/**
+	 * Only contain values that are safe to add if the key is not present.
+	 * @param path
+	 * @return
+	 */
+	public static CompatConfig getSimpleDefaultConfig(Path path){
+		CompatConfig defaults = CompatConfigFactory.getConfig(null);
+		defaults.setPathSeparatorChar(path.sep);
 		Settings ref = new Settings();
 		// exp workaround:
 		defaults.set(path.expEnabled, ref.expEnabled);
@@ -199,9 +213,30 @@ public class Settings {
 		defaults.set(path.noAbort, ref.noAbort);
 		defaults.set(path.allowOps, Settings.defaultAllowOps);
 		defaults.set(path.superperms, Settings.defaultSuperperms);
-		for ( String p : defaultFakePermissions){
-			defaults.set("permissions"+path.sep+"players"+path.sep+p, new LinkedList<String>());
-		}
+		
+		// Sets are not added, for they can interfere.
+		
 		return defaults;
 	}
+
+	public static boolean addDefaults(CompatConfig config, Path path) {
+		boolean changed = ConfigUtil.forceDefaults(getSimpleDefaultConfig(path), config);
+		if (!config.contains(path.permSets)){
+			final String base = path.permSets + path.sep + "set";
+			int i = 0;
+			for (String[] perms : presetPermSets){
+				i ++;
+				List<String> entries = new LinkedList<String>();
+				for ( String e : perms){
+					entries.add(e);
+				}
+				final String prefix =  base + i + path.sep;
+				config.set( prefix + path.keyPerms, entries);
+				config.set( prefix + path.keyPlayers, new LinkedList<String>());
+			}
+			changed = true;
+		}
+		return changed;
+	}
+	
 }

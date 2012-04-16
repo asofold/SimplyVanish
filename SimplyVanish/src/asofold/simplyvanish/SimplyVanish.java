@@ -12,7 +12,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -60,9 +59,6 @@ public class SimplyVanish extends JavaPlugin {
 	static{
 		stats.setLogStats(false);
 	}
-	
-	
-	Configuration defaults = null;
 	
 	/**
 	 * Map aliases to recognized labels.
@@ -118,11 +114,15 @@ public class SimplyVanish extends JavaPlugin {
 		sched.cancelTasks(this);
 		CompatConfig config = CompatConfigFactory.getConfig(new File(getDataFolder(), "config.yml"));
 		final Path path;
-		if (config.setPathSeparatorChar('/')) path = new Path('/');
-		else path = new Path('.');
-		defaults = Settings.getDefaultConfig(path);
+//		if (config.setPathSeparatorChar('/')){
+//			path = new Path('/');
+//		} else{
+//			// This would  render some things inoperable (permissions with dot as keys).
+			path = new Path('.');
+//		}
+		
 		config.load();
-		boolean changed = Utils.forceDefaults(defaults, config);
+		boolean changed = Settings.addDefaults(config, path);
 		Settings settings = new Settings();
 		settings.applyConfig(config, path);
 		core.setSettings(settings);
