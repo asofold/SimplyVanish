@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,7 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import asofold.simplyvanish.config.Settings;
+import asofold.simplyvanish.SimplyVanish;
 import asofold.simplyvanish.config.compatlayer.CompatConfig;
 
 /**
@@ -30,31 +29,13 @@ import asofold.simplyvanish.config.compatlayer.CompatConfig;
 public class Utils {
 	
 	/**
-	 * Simplistic: Ops have permissions always, others get checked (superperms).
-	 * @param player
-	 * @param 
-	 * @return
-	 */
-	public static final boolean hasPermission(final CommandSender sender, final String perm) {
-		if (!(sender instanceof Player)) return sender.isOp();
-		if (Settings.allowOps && sender.isOp()) return true;
-		else if (Settings.superperms && sender.hasPermission(perm)) return true;
-		else{
-			final Set<String> perms = Settings.fakePermissions.get(((Player)sender).getName().toLowerCase());
-			if (perms == null) return false;
-			else if (perms.contains("simplyvanish.all")) return true;
-			else return perms.contains(perm.toLowerCase());
-		}
-	}
-
-	/**
 	 * Check, message on failure.
 	 * @param sender
 	 * @param perm
 	 * @return
 	 */
 	public static boolean checkPerm(CommandSender sender, String perm){
-		if ( !hasPermission(sender, perm)){
+		if ( !SimplyVanish.hasPermission(sender, perm)){
 			noPerm(sender);
 			return false;
 		}
@@ -185,7 +166,7 @@ public class Utils {
 			else if (targets.toLowerCase().startsWith("permission:") && targets.length()>11){
 				String perm = targets.substring(11).trim();
 				for (Player player : online){
-					if (Utils.hasPermission(player, perm)) players.add(player);
+					if (SimplyVanish.hasPermission(player, perm)) players.add(player);
 				}
 			}
 		}

@@ -245,7 +245,7 @@ public class SimplyVanishCore implements Listener{
 			if (settings.notifyState && !cancelled){
 				String msg = SimplyVanish.msgLabel+ChatColor.GREEN+name+ChatColor.GRAY+action;
 				for (Player other : Bukkit.getServer().getOnlinePlayers()){
-					if (Utils.hasPermission(other, settings.notifyStatePerm)) other.sendMessage(msg);
+					if (SimplyVanish.hasPermission(other, settings.notifyStatePerm)) other.sendMessage(msg);
 				}
 			}
 			return true; // suppress in any case if vanished.
@@ -373,7 +373,7 @@ public class SimplyVanishCore implements Listener{
 		boolean was = cfg != null && cfg.vanished.state;
 		boolean auto = false; // Indicate if the player should be vanished due to auto-vanish.
 		if ( settings.autoVanishUse && (cfg == null || cfg.auto.state) ) {
-			if (Utils.hasPermission(player, settings.autoVanishPerm)){
+			if (SimplyVanish.hasPermission(player, settings.autoVanishPerm)){
 				// permission given, do attempt to vanish
 				auto = true;
 				if (cfg == null) cfg = getVanishConfig(playerName);
@@ -427,7 +427,7 @@ public class SimplyVanishCore implements Listener{
 		for ( Player other : Bukkit.getServer().getOnlinePlayers()){
 			if (other.getName().equals(name)) continue;
 			boolean shouldSee = shouldSeeVanished(other);
-			boolean notify = settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm);
+			boolean notify = settings.notifyState && SimplyVanish.hasPermission(other, settings.notifyStatePerm);
 			if ( other.canSee(player)){
 				if (!shouldSee) hidePlayer(player, other); 
 				if (notify){
@@ -465,7 +465,7 @@ public class SimplyVanishCore implements Listener{
 		final String msgNotify = SimplyVanish.msgLabel+ChatColor.RED+name+ChatColor.GRAY+" reappeared.";
 		for ( Player other : Bukkit.getServer().getOnlinePlayers()){
 			if (other.getName().equals(name)) continue;
-			boolean notify = settings.notifyState && Utils.hasPermission(other, settings.notifyStatePerm);
+			boolean notify = settings.notifyState && SimplyVanish.hasPermission(other, settings.notifyStatePerm);
 			if (!other.canSee(player)){
 				showPlayer(player, other);
 				if (notify){
@@ -578,7 +578,7 @@ public class SimplyVanishCore implements Listener{
 		playerName = playerName.trim().toLowerCase();
 		if (playerName.isEmpty()) return;
 		final String permBase =  "simplyvanish.flags.set."+(other?"other":"self"); // bypass permission
-		if (!hasBypass) hasBypass = Utils.hasPermission(sender, permBase);
+		if (!hasBypass) hasBypass = SimplyVanish.hasPermission(sender, permBase);
 		VanishConfig cfg = vanishConfigs.get(playerName);
 		boolean hasSomePerm = hasBypass; // indicates that the player has any permission at all.
 		if (cfg == null) cfg = new VanishConfig();
@@ -607,7 +607,7 @@ public class SimplyVanishCore implements Listener{
 		Set<String> ok = new HashSet<String>();
 		for ( String fn : changes){
 			String name = fn.substring(1);
-			if (!hasBypass && !Utils.hasPermission(sender, permBase+"."+name)) missing.add(name);
+			if (!hasBypass && !SimplyVanish.hasPermission(sender, permBase+"."+name)) missing.add(name);
 			else{
 				hasSomePerm = true;
 				ok.add(name);
@@ -730,7 +730,7 @@ public class SimplyVanishCore implements Listener{
 		if(cfg!=null){
 			if (!cfg.see.state) return false;
 		}
-		return Utils.hasPermission(player, "simplyvanish.see-all"); 
+		return SimplyVanish.hasPermission(player, "simplyvanish.see-all"); 
 	}
 
 	public final boolean isVanished(final String playerName) {
@@ -770,7 +770,7 @@ public class SimplyVanishCore implements Listener{
 			}
 			else{
 				builder.append(" "+ChatColor.GREEN+player.getName());
-				if (!Utils.hasPermission(player, "simplyvanish.see-all")) builder.append(ChatColor.DARK_RED+"[CANTSEE]");
+				if (!SimplyVanish.hasPermission(player, "simplyvanish.see-all")) builder.append(ChatColor.DARK_RED+"[CANTSEE]");
 				else if (isNosee) builder.append(ChatColor.RED+"[NOSEE]");
 			}
 		}
@@ -840,6 +840,18 @@ public class SimplyVanishCore implements Listener{
 			hookUtil.addHook(hook);
 			System.out.println("[SimplyVanish] Add hook: "+hook.getHookName());
 		} catch(Throwable t){
+		}
+	}
+
+	public final boolean hasPermission(final CommandSender sender, final String perm) {
+		if (!(sender instanceof Player)) return sender.isOp();
+		if (settings.allowOps && sender.isOp()) return true;
+		else if (settings.superperms && sender.hasPermission(perm)) return true;
+		else{
+			final Set<String> perms = settings.fakePermissions.get(((Player)sender).getName().toLowerCase());
+			if (perms == null) return false;
+			else if (perms.contains("simplyvanish.all")) return true;
+			else return perms.contains(perm.toLowerCase());
 		}
 	}
 

@@ -16,6 +16,15 @@ import asofold.simplyvanish.util.Utils;
 
 
 public class Settings {
+	
+	// static
+	public static final String[][] presetPermSets = new String[][]{
+		{"all"},
+		{"vanish.self", "flags.display.self", "flags.set.self.drop"},
+	};
+	
+	
+	// non static:
 	/**
 	 * exp-workaround
 	 */
@@ -77,22 +86,14 @@ public class Settings {
 	 */
 	public long pingPeriod = 30000;
 
-	public static boolean allowOps = true;
+	public boolean allowOps = true;
 
-	public static boolean superperms = true;
+	public boolean superperms = true;
 
 	/**
 	 * All lower-case: Player -> permissions.
 	 */
-	public static final Map<String, Set<String>> fakePermissions = new HashMap<String, Set<String>>(); 
-
-	public static final boolean defaultAllowOps = true;
-	public static final boolean defaultSuperperms = true;
-	
-	public static final String[][] presetPermSets = new String[][]{
-		{"all"},
-		{"vanish.self", "flags.display.self", "flags.set.self.drop"},
-	};
+	public final Map<String, Set<String>> fakePermissions = new HashMap<String, Set<String>>(); 
 	
 	public boolean addExtendedConfiguration = true;
 	
@@ -145,9 +146,8 @@ public class Settings {
 		noAbort = config.getBoolean(path.noAbort, ref.noAbort);
 		addExtendedConfiguration = config.getBoolean(path.addExtended, ref.addExtendedConfiguration);
 		
-		// TODO: THIS IS CRAP :)
-		Settings.allowOps = config.getBoolean(path.allowOps, Settings.defaultAllowOps);
-		Settings.superperms = config.getBoolean(path.superperms, Settings.defaultSuperperms);
+		allowOps = config.getBoolean(path.allowOps, ref.allowOps);
+		superperms = config.getBoolean(path.superperms, ref.superperms);
 		
 		//
 		fakePermissions.clear();
@@ -216,8 +216,8 @@ public class Settings {
 		defaults.set(path.autoVanishUse, ref.autoVanishUse);
 		defaults.set(path.autoVanishPerm, ref.autoVanishPerm);
 		defaults.set(path.noAbort, ref.noAbort);
-		defaults.set(path.allowOps, Settings.defaultAllowOps);
-		defaults.set(path.superperms, Settings.defaultSuperperms);
+		defaults.set(path.allowOps, ref.allowOps);
+		defaults.set(path.superperms, ref.superperms);
 		
 		defaults.set(path.addExtended, ref.addExtendedConfiguration);
 		

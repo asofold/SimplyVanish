@@ -61,6 +61,7 @@ STACK
 *** CONSISTENCY
 - !(add) save command
 - !refactor/ensure: use getVanishConfig(name, create) everywhere !
+- !Change static configuration flags to non static (+ static method SimplyVanish.hasPermission)!
 
 *** Delayed save:
 - !(add) save-delay (minimum delay for saving)
@@ -85,7 +86,8 @@ CHANGELOG
 
 (0.4.0-PRE-5)
 - (add) Configuration flag "extended-configuration": Will prevent adding fake permissions and commands entries, if set to false.
-- (add) API - SimplyVanish: getDefaultVanishConfig, getRegisteredHook ; SimplyVanishStateEvent: getPlayer, isPlayerOnline
+- (add) API - SimplyVanish.hasPermission + make permission related settings non-static.
+- (add) API - SimplyVanish: getDefaultVanishConfig, getRegisteredHook ; SimplyVanishStateEvent: getPlayer, isPlayerOnline 
 - (bugfix) /simplyvanish command without arguments is again recognized for display of flags.
 
 (0.4.0-PRE-4)

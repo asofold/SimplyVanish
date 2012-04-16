@@ -147,7 +147,7 @@ public class SimplyVanish extends JavaPlugin {
 			String label, String[] args) {
 		return cmdExe.onCommand(sender, command, label, args);
 	}
-	
+
 	/**
 	 * API
 	 * @param player
@@ -309,6 +309,16 @@ public class SimplyVanish extends JavaPlugin {
 	 */
 	public static void removeAllHooks(){
 		core.hookUtil.removeAllHooks();
+	}
+	
+	/**
+	 * Simplistic: Ops have permissions always, others get checked (superperms).
+	 * @param player
+	 * @param 
+	 * @return
+	 */
+	public static final boolean hasPermission(final CommandSender sender, final String perm) {
+		return core.hasPermission(sender, perm);
 	}
 	
 	/**
