@@ -16,37 +16,7 @@ import java.util.Set;
  */
 public interface CompatConfig {
 	
-	public boolean hasEntry(String path);
-
-	public void load();
-	
-	public boolean save();
-
-	public Double getDouble(String path, Double defaultValue);
-
-	public Long getLong(String path, Long defaultValue);
-
-	public String getString(String path, String defaultValue);
-
-	public Integer getInt(String path, Integer defaultValue);
-	
-	public List<String> getStringKeys(String path);
-	
-	public List<Object> getKeys(String path);
-	public List<Object> getKeys();
-
-	public Object getProperty(String path, Object defaultValue);
-
-	/**
-	 * 
-	 * @return never null
-	 */
-	public List<String> getStringKeys();
-
-	public void setProperty(String path, Object obj);
-
-	public List<String> getStringList(String path, List<String> defaultValue);
-	
+	// Boolean
 	/**
 	 * Only accepts true and false , 'true' and 'false'.
 	 * @param path
@@ -54,25 +24,70 @@ public interface CompatConfig {
 	 * @return
 	 */
 	public Boolean getBoolean(String path, Boolean defaultValue);
+	public Boolean getBoolean(String path);
 	
-	public List<Integer> getIntList(String path, List<Integer> defaultValue);
+	// Long
+	public Long getLong(String path);
+	public Long getLong(String path, Long defaultValue);
 	
-	public void removeProperty(String path);
-	
+	// Double
+	public Double getDouble(String path);
+	public Double getDouble(String path, Double defaultValue);
+	public List<Double> getDoubleList(String path);
 	public List<Double> getDoubleList(String path , List<Double> defaultValue);
 	
-	/**
-	 * Equivalent to new config: values(true)
-	 * @return
-	 */
-	public Map<String, Object> getValuesDeep();
+	// Integer (abbreviation)
+	public Integer getInt(String path);
+	public Integer getInt(String path, Integer defaultValue);
+	public List<Integer> getIntList(String path);
+	public List<Integer> getIntList(String path, List<Integer> defaultValue);
+	// Integer (full name)
+	public Integer getInteger(String path);
+	public Integer getInteger(String path, Integer defaultValue);
+	public List<Integer> getIntegerList(String path);
+	public List<Integer> getIntegerList(String path, List<Integer> defaultValue);
+
+	// String
+	public String getString(String path);
+	public String getString(String path, String defaultValue);
+	public List<String> getStringList(String path);
+	public List<String> getStringList(String path, List<String> defaultValue);
 	
+	// Generic methods:
+	public Object get(String path);
+	public Object get(String path, Object defaultValue);
+	public Object getProperty(String path);
+	public Object getProperty(String path, Object defaultValue);
+	public void set(String path, Object value);
+	public void setProperty(String path, Object value);
+	public void remove(String path);
+	public void removeProperty(String path);
+	
+	// Contains/has
+	public boolean hasEntry(String path);
+	public boolean contains(String path);
+	
+	// Keys (Object): [possibly deprecated]
 	/**
-	 * False if not supported.
-	 * @param sep
+	 * @deprecated Seems not to be supported anymore by new configuration, use getStringKeys(String path);
+	 * @param path
 	 * @return
 	 */
-	public boolean setPathSeparatorChar(char sep);
+	public List<Object> getKeys(String path);
+	/**
+	 * @deprecated Seems not to be supported anymore by new configuration, use getStringKeys();
+	 * @return
+	 */
+	public List<Object> getKeys();
+	
+	// Keys (String):
+	/**
+	 * 
+	 * @return never null
+	 */
+	public List<String> getStringKeys();
+	
+	public List<String> getStringKeys(String path);
 	
 	/**
 	 * Get all keys from the section (deep or shallow).
@@ -89,4 +104,25 @@ public interface CompatConfig {
 	 * 
 	 */
 	public Set<String> getStringKeysDeep(String path);
+	
+	// Values:
+	/**
+	 * Equivalent to new config: values(true)
+	 * @return
+	 */
+	public Map<String, Object> getValuesDeep();
+	
+	// Technical / IO:
+	/**
+	 * False if not supported.
+	 * @param sep
+	 * @return
+	 */
+	public boolean setPathSeparatorChar(char sep);
+	
+	public void load();
+	
+	public boolean save();
+	
+
 }

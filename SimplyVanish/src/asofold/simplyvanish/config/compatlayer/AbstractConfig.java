@@ -118,5 +118,96 @@ public abstract class AbstractConfig implements CompatConfig {
 		}
 		return out;
 	}
+
+	@Override
+	public Object get(String path, Object defaultValue) {
+		return getProperty(path, defaultValue);
+	}
+
+	@Override
+	public void set(String path, Object value) {
+		setProperty(path, value);
+	}
+
+	@Override
+	public void remove(String path) {
+		removeProperty(path);
+	}
+
+	@Override
+	public Boolean getBoolean(String path) {
+		return getBoolean(path, null);
+	}
+
+	@Override
+	public Double getDouble(String path) {
+		return getDouble(path, null);
+	}
+
+	@Override
+	public List<Double> getDoubleList(String path) {
+		return getDoubleList(path, null);
+	}
+
+	@Override
+	public Integer getInt(String path) {
+		return getInt(path, null);
+	}
+
+	@Override
+	public List<Integer> getIntList(String path) {
+		return getIntList(path, null);
+	}
+
+	@Override
+	public Integer getInteger(String path) {
+		return getInt(path, null);
+	}
+
+	@Override
+	public List<Integer> getIntegerList(String path) {
+		return getIntList(path, null);
+	}
+
+	@Override
+	public String getString(String path) {
+		return getString(path, null);
+	}
+
+	@Override
+	public List<String> getStringList(String path) {
+		return getStringList(path, null);
+	}
+
+	@Override
+	public Object get(String path) {
+		return getProperty(path, null);
+	}
+
+	@Override
+	public Object getProperty(String path) {
+		return getProperty(path, null);
+	}
+
+	@Override
+	public boolean contains(String path) {
+		return hasEntry(path);
+	}
+
+	@Override
+	public Integer getInteger(String path, Integer defaultValue) {
+		return getInt(path, defaultValue);
+	}
+
+	@Override
+	public List<Integer> getIntegerList(String path, List<Integer> defaultValue) {
+		return getIntList(path, defaultValue);
+	}
+
+	@Override
+	public Long getLong(String path) {
+		return getLong(path, null);
+	}
+
 	
 }

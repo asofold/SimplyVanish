@@ -4,12 +4,13 @@ import java.io.File;
 
 public class CompatConfigFactory {
 	
-	public static final String version = "0.4.0";
+	public static final String version = "0.5.0";
 	
 	/**
-	 * Attempt to get a working file configuration.
-	 * Use getDBConfig to use this with a database.
-	 * @param file
+	 * Attempt to get a working file configuration.<br>
+	 * This is not fit for fast processing.<br>
+	 * Use getDBConfig to use this with a database.<br>
+	 * @param file May be null (then memory is used).
 	 * @return null if fails.
 	 */
 	public static final CompatConfig getConfig(File file){
