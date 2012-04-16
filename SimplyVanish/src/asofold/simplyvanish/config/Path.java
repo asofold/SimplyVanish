@@ -63,7 +63,7 @@ public class Path {
 	public final String keyPlayers;
 
 
-	
+	public final String addExtended;
 
 	public Path(char sep){
 		this.sep = sep;
@@ -125,5 +125,7 @@ public class Path {
 
 		keyPerms = "permissions";
 		keyPlayers = "players";
+		
+		addExtended = "extended-configuration";
 	}
 }

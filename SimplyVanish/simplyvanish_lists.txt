@@ -34,6 +34,8 @@ PLANNED FEATURES AND QUESTIONS
 ? (add) API / Hooks for players (other plugins, whatever): onVanish, onReappear, toLine, boolean parse
 - ?(add) boolean hooks for hide and show player. (though they get called many times)
 - !(add) prevent-hooks 
+- !(adjust) Check PalyerJoin twice: lowest = update state, highest = update messages
+- !CONSIDER: Delayed message on join. 
 
 *** LANGUAGE
 ? language update
@@ -50,13 +52,6 @@ STACK
 
 *** (0.4.0) [RELEASE]
 
-*** API
-
-*** USABILITY
-- Consider a config flag "extended-options" to hide extended configuration !
-
-*** [HOOKS]
-
 *** [CORE FEATURES]
 - ?(add) god mode ? /simgod = all flags apply though not vanished ! + /simungod [aliases by LightCommands]
 - flag: ?cmd(only blocks cmds declared in the configuration.)
@@ -65,19 +60,18 @@ STACK
 
 *** CONSISTENCY
 - !(add) save command
-- !(add) save-delay (minimum delay for saving)
 - !refactor/ensure: use getVanishConfig(name, create) everywhere !
-- !(adjust) Check PalyerJoin twice: lowest = update state, highest = update messages
-- !CONSIDER: Delayed message on join. 
+
+*** Delayed save:
+- !(add) save-delay (minimum delay for saving)
+- !ENSURE: consistent use of changed-flag for VanishConfig (i.e. to determine if a save is necessary at all).
 
 *** BUGS
-- /simvan without arguments: print something useful.
-? API error: getVanishedPlayers (maybe CustomPlg error) 
 
 
 
 *** SUGGESTED ITERATIONS:
-- API + COMMANDS + HOOKS
+- COMMANDS
 - CORE FEATURES
 - INTERNALS
 - BUGS
@@ -90,6 +84,7 @@ CHANGELOG
 ---------------------------------------------
 
 (0.4.0-PRE-5)
+- (add) Configuration flag "extended-configuration": Will prevent adding fake permissions and commands entries, if set to false.
 - (add) API - SimplyVanish: getDefaultVanishConfig, getRegisteredHook ; SimplyVanishStateEvent: getPlayer, isPlayerOnline
 - (bugfix) /simplyvanish command without arguments is again recognized for display of flags.
 

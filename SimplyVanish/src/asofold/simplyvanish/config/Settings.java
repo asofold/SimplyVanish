@@ -94,6 +94,8 @@ public class Settings {
 		{"vanish.self", "flags.display.self", "flags.set.self.drop"},
 	};
 	
+	public boolean addExtendedConfiguration = true;
+	
 	/**
 	 * Adjust internal settings to the given configuration.
 	 * TODO: put this to plugin / some settings helper
@@ -141,9 +143,13 @@ public class Settings {
 		panicCommand = config.getString(path.panicCommand, "");
 		
 		noAbort = config.getBoolean(path.noAbort, ref.noAbort);
+		addExtendedConfiguration = config.getBoolean(path.addExtended, ref.addExtendedConfiguration);
 		
-		allowOps = config.getBoolean(path.allowOps, Settings.allowOps);
-		superperms = config.getBoolean(path.superperms, Settings.superperms);
+		// TODO: THIS IS CRAP :)
+		Settings.allowOps = config.getBoolean(path.allowOps, Settings.defaultAllowOps);
+		Settings.superperms = config.getBoolean(path.superperms, Settings.defaultSuperperms);
+		
+		//
 		fakePermissions.clear();
 		String inUse = "";
 		Collection<String> keys = config.getStringKeys(path.permSets);
@@ -202,10 +208,6 @@ public class Settings {
 		defaults.set(path.notifyStatePerm, ref.notifyStatePerm);
 		defaults.set(path.pingEnabled, ref.pingEnabled);
 		defaults.set(path.pingPeriod, ref.pingPeriod/1000); // seconds
-		// commands:
-		for ( String cmd : SimplyVanish.baseLabels){
-			defaults.set("commands"+path.sep+cmd+path.sep+"aliases", new LinkedList<String>());
-		}
 //		defaults.set("server-ping.subtract-vanished", false); // TODO: Feature request pending ...
 		defaults.set(path.saveVanished, ref.saveVanished); // TODO: load/save vanished players.
 		defaults.set(path.saveVanishedAlways, ref.saveVanishedAlways); // TODO: load/save vanished players.
@@ -217,13 +219,19 @@ public class Settings {
 		defaults.set(path.allowOps, Settings.defaultAllowOps);
 		defaults.set(path.superperms, Settings.defaultSuperperms);
 		
+		defaults.set(path.addExtended, ref.addExtendedConfiguration);
+		
 		// Sets are not added, for they can interfere.
 		
 		return defaults;
 	}
 
 	public static boolean addDefaults(CompatConfig config, Path path) {
+		// Add simple default entries:
 		boolean changed = ConfigUtil.forceDefaults(getSimpleDefaultConfig(path), config);
+		// Return if no extended entries desired:
+		if (!config.getBoolean(path.addExtended, true)) return changed;
+		// Fake permissions example entries:
 		if (!config.contains(path.permSets)){
 			final String base = path.permSets + path.sep + "set";
 			int i = 0;
@@ -238,6 +246,14 @@ public class Settings {
 				config.set( prefix + path.keyPlayers, new LinkedList<String>());
 			}
 			changed = true;
+		}
+		// Command aliases:
+		for ( String cmd : SimplyVanish.baseLabels){
+			String p = "commands"+path.sep+cmd+path.sep+"aliases";
+			if (!config.contains(p)){
+				config.set(p, new LinkedList<String>());
+				changed = true;
+			}
 		}
 		return changed;
 	}
