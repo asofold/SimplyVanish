@@ -55,9 +55,19 @@ public class Utils {
 	 */
 	public static boolean checkPerm(CommandSender sender, String perm){
 		if ( !hasPermission(sender, perm)){
-			sender.sendMessage(ChatColor.DARK_RED+"[SimplyVanish] No permission.");
+			noPerm(sender);
 			return false;
 		}
+		return true;
+	}
+
+	/**
+	 * Intended as direct return value for onCommand.
+	 * @param sender
+	 * @return
+	 */
+	public static boolean noPerm(CommandSender sender) {
+		sender.sendMessage(ChatColor.DARK_RED+"[SimplyVanish] No permission.");
 		return true;
 	}
 
