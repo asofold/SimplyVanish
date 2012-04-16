@@ -1,7 +1,10 @@
 package asofold.simplyvanish.config.compatlayer;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -10,6 +13,8 @@ import java.util.List;
  *
  */
 public abstract class AbstractConfig implements CompatConfig {
+	
+	protected char sep = '.';
 
 	@Override
 	public Boolean getBoolean(String path, Boolean defaultValue) {
@@ -90,6 +95,28 @@ public abstract class AbstractConfig implements CompatConfig {
 		}
 		return out;
 	}
+
+	@Override
+	public Set<String> getStringKeys(String path, boolean deep) {
+		if (deep) return getStringKeysDeep(path);
+		Set<String> keys = new HashSet<String>();
+		keys.addAll(getStringKeys(path));
+		return keys;
+		
+	}
 	
+	@Override
+	public Set<String> getStringKeysDeep(String path) {
+		// NOTE: pretty inefficient, but aimed at seldomly read sections.
+		Map<String, Object> values = getValuesDeep();
+		Set<String> out = new HashSet<String>();
+		final int len = path.length();
+		for (String key : values.keySet()){
+			if (!key.startsWith(path)) continue;
+			else if (key.length() == len) continue;
+			else if (key.charAt(len) == sep) out.add(key);
+		}
+		return out;
+	}
 	
 }

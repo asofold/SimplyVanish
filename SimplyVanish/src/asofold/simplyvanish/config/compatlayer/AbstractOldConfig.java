@@ -115,4 +115,8 @@ public abstract class AbstractOldConfig extends AbstractConfig {
 		config.removeProperty(path);
 	}
 
+	@Override
+	public boolean setPathSeparatorChar(char sep) {
+		return false;
+	}
 }

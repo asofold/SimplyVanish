@@ -15,8 +15,6 @@ public abstract class AbstractNewConfig extends AbstractConfig {
 	File file = null;
 	MemoryConfiguration config = null;
 	
-
-	
 	public AbstractNewConfig(File file){
 		this.file = file;
 		this.config = new MemoryConfiguration();
@@ -208,8 +206,15 @@ public abstract class AbstractNewConfig extends AbstractConfig {
 
 	void setOptions(Configuration cfg){
 		ConfigurationOptions opt = cfg.options();
-		opt.pathSeparator('.');
+		opt.pathSeparator(this.sep);
 		//opt.copyDefaults(true);
+	}
+	
+	@Override
+	public boolean setPathSeparatorChar(char sep) {
+		this.sep = sep;
+		setOptions(config);
+		return true;
 	}
 
 }

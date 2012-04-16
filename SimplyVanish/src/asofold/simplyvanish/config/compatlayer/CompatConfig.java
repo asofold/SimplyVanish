@@ -3,6 +3,7 @@ package asofold.simplyvanish.config.compatlayer;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * CONVENTIONS: 
@@ -36,6 +37,10 @@ public interface CompatConfig {
 
 	public Object getProperty(String path, Object defaultValue);
 
+	/**
+	 * 
+	 * @return never null
+	 */
 	public List<String> getStringKeys();
 
 	public void setProperty(String path, Object obj);
@@ -69,4 +74,19 @@ public interface CompatConfig {
 	 */
 	public boolean setPathSeparatorChar(char sep);
 	
+	/**
+	 * Get all keys from the section (deep or shallow).
+	 * @param path
+	 * @param deep
+	 * @return Never null.
+	 */
+	public Set<String> getStringKeys(String path, boolean deep);
+	
+	/**
+	 * convenience method.
+	 * @param path
+	 * @return never null
+	 * 
+	 */
+	public Set<String> getStringKeysDeep(String path);
 }
