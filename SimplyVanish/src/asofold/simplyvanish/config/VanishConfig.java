@@ -217,10 +217,20 @@ public class VanishConfig {
 		return flags.get(name).state;
 	}
 	
+	/**
+	 * For setting existing flags, will fail if flag does not exist.
+	 * @param flag
+	 * @param state
+	 */
 	public void set(Flag flag, boolean state){
 		set(flag.name, state);
 	}
 	
+	/**
+	 * For setting existing flags, will fail if flag does not exist.
+	 * @param name
+	 * @param state
+	 */
 	public void set(String name, boolean state){
 		Flag flag = flags.get(name);
 		if (flag.state != state){

@@ -169,8 +169,7 @@ public class SimplyVanishCore implements Listener{
 						n = n.substring(7).trim();
 						if (n.isEmpty()) continue;
 						VanishConfig cfg = getVanishConfig(n, true);
-						cfg.see.state = false;
-						cfg.changed = true;
+						cfg.set(cfg.see, false);
 					}
 					else{
 						String[] split = n.split(" ");
@@ -678,8 +677,7 @@ public class SimplyVanishCore implements Listener{
 		VanishConfig cfg = getVanishConfig(name, true);
 		boolean res = false;
 		if (!cfg.vanished.state){
-			cfg.vanished.state = true;
-			cfg.changed = true;
+			cfg.set(cfg.vanished, true);
 			res = true;
 		}
 		if (cfg.changed && settings.saveVanishedAlways) saveVanished();
@@ -696,9 +694,8 @@ public class SimplyVanishCore implements Listener{
 		if (cfg==null) return false;
 		boolean res = false;
 		if (cfg.vanished.state){
-			cfg.vanished.state = false;
+			cfg.set(cfg.vanished, false);
 			if (!cfg.needsSave()) removeVanishConfig(name);
-			cfg.changed = true;
 			res = true;
 		}
 		if (cfg.changed && settings.saveVanishedAlways) saveVanished();

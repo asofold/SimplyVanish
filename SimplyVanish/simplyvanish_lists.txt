@@ -86,7 +86,7 @@ CHANGELOG
 - (add) API - SimplyVanish.hasPermission + make permission related settings non-static.
 - (add) API - SimplyVanish: getDefaultVanishConfig, getRegisteredHook ; SimplyVanishStateEvent: getPlayer, isPlayerOnline 
 - (bugfix) /simplyvanish command without arguments is again recognized for display of flags.
-- (refactor) Adjust internals for more reliability and easier maintainance in some spots (VanishConfig handling).
+- (refactor) Adjust internals for more reliability and easier maintainance in some spots (VanishConfig: handling, changed flag).
 
 (0.4.0-PRE-4)
 - (add) /simplyvanish flags command to show all flags with default value.
