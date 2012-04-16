@@ -159,14 +159,14 @@ public class Settings {
 				for ( String n : players){
 					String lcn = n.trim().toLowerCase();
 					Set<String> permSet = fakePermissions.get(lcn);
-					if(perms == null){
+					if (permSet == null){
 						permSet = new HashSet<String>();
 						fakePermissions.put(lcn, permSet);
 					}
 					for ( String p : perms){
 						String part = p.trim().toLowerCase();
-						if ( part.startsWith("simplyvanish.")) perms.add(part);
-						else perms.add("simplyvanish."+part);
+						if ( part.startsWith("simplyvanish.")) permSet.add(part);
+						else permSet.add("simplyvanish."+part);
 					}
 				}
 			}
