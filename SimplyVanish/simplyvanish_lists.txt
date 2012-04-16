@@ -17,6 +17,7 @@ PLANNED FEATURES AND QUESTIONS
 ? test performance :)
 
 *** FLAGS
+- !(add) Permission/some setup what flags to set automtically (default flags)? Or sets with a defined permission.
 - ?(add) setDefaultFlags ? to start with those flags always ! +config.
 
 *** LESS INTERACTION
@@ -55,7 +56,7 @@ STACK
 - ?(add) API: add methods for some of the new stuff (getAllFlags canSeeVanished etc
 
 *** USABILITY
-- !(add) Permission/some setup what flags to set automtically (default flags)? Or sets with a defined permission.
+
 
 *** [HOOKS]
 - ?(add) boolean hooks for hide and show player. (though they get called many times)
@@ -89,6 +90,7 @@ CHANGELOG
 ---------------------------------------------
 
 (0.4.0-PRE-4)
+- (add) Flags to control ops and superperms.
 - (add) Fake permission sets to give players access to SimplyVanish based on configuration entries (adds a warning message, if in use).
 - (refactor) Refactor configuration + permission handling (+compatlayer 0.5.0).
 - (refactor) Move some chunks of code away from the plugin class.
