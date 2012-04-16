@@ -89,7 +89,7 @@ CHANGELOG
 
 (0.4.0-PRE-4)
 - (add) /simplyvanish flags command to show all flags with default value.
-- (add) Flags to control ops and superperms.
+- (add) Configuration flags to control ops and superperms.
 - (add) Fake permission sets to give players access to SimplyVanish based on configuration entries (adds a warning message, if in use).
 - (bugfix) Removed double no-permission-messages on reappear.
 - (refactor) Refactor configuration + permission handling (+compatlayer 0.5.0).

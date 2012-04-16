@@ -170,14 +170,14 @@ public class SimplyVanishCommand{
 			boolean hasFlags) {
 		if ( len==0 ){
 			if ( !Utils.checkPlayer(sender)) return true;
-			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self") && !Utils.checkPerm(sender, "simplyvanish.reappear.self")) return Utils.noPerm(sender);
+			if ( !Utils.hasPermission(sender, "simplyvanish.vanish.self") && !Utils.hasPermission(sender, "simplyvanish.reappear.self")) return Utils.noPerm(sender);
 			// Let the player be seen...
 			if (hasFlags) core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
 			if (!SimplyVanish.setVanished((Player) sender, false)) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
 			return true;
 		} 
 		else if ( len==1 ){
-			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.other") && !Utils.checkPerm(sender, "simplyvanish.reappear.other")) return Utils.noPerm(sender);
+			if ( !Utils.hasPermission(sender, "simplyvanish.vanish.other") && !Utils.hasPermission(sender, "simplyvanish.reappear.other")) return Utils.noPerm(sender);
 			// Make sure the other player is shown...
 			String name = args[0].trim();
 			if (hasFlags) core.setFlags(name, args, len, sender, false, true, false);
