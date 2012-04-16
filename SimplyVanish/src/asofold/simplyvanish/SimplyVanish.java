@@ -210,14 +210,18 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	/**
+	 * The create flag does in this case not force to store the configuration internally. To force that you have to use setVanishConfig.
 	 * API
 	 * @param playerName
 	 * @param create
 	 * @return A clone of the VanishConfig.
 	 */
 	public static VanishConfig getVanishConfig(String playerName, boolean create){
-		VanishConfig cfg = core.getVanishConfig(playerName, create);
-		if (cfg == null) return null;
+		VanishConfig cfg = core.getVanishConfig(playerName, false);
+		if (cfg == null){
+			if (create) return getDefaultVanishConfig();
+			else return null;
+		}
 		else return cfg.clone();
 	}
 	
@@ -230,7 +234,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @param update
 	 */
 	public static void setVanishConfig(String playerName, VanishConfig cfg, boolean update){
-		core.setVanishedConfig(playerName, cfg, update, false);
+		core.setVanishConfig(playerName, cfg, update, false);
 	}
 	
 	/**
@@ -243,7 +247,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @param message
 	 */
 	public static void setVanishConfig(String playerName, VanishConfig cfg, boolean update, boolean message){
-		core.setVanishedConfig(playerName, cfg, update, message);
+		core.setVanishConfig(playerName, cfg, update, message);
 	}
 	
 	/**

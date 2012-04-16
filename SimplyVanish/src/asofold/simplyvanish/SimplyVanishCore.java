@@ -168,7 +168,7 @@ public class SimplyVanishCore implements Listener{
 						// kept for compatibility:
 						n = n.substring(7).trim();
 						if (n.isEmpty()) continue;
-						VanishConfig cfg = getVanishConfig(n);
+						VanishConfig cfg = getVanishConfig(n, true);
 						cfg.see.state = false;
 						cfg.changed = true;
 					}
@@ -176,7 +176,7 @@ public class SimplyVanishCore implements Listener{
 						String[] split = n.split(" ");
 						n = split[0].trim().toLowerCase();
 						if (n.isEmpty()) continue;
-						VanishConfig cfg = getVanishConfig(n);
+						VanishConfig cfg = getVanishConfig(n, true);
 						cfg.readFromArray(split, 1, true);
 					}
 				}
@@ -259,7 +259,7 @@ public class SimplyVanishCore implements Listener{
 		final Entity target = event.getTarget();
 		if (!(target instanceof Player)) return;
 		final String playerName = ((Player) target).getName();
-		final VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
+		final VanishConfig cfg = getVanishConfig(playerName, false);
 		if (cfg == null) return;
 		if (cfg.vanished.state){
 			if (settings.expEnabled && !cfg.pickup.state){
@@ -283,7 +283,7 @@ public class SimplyVanishCore implements Listener{
 			for ( LivingEntity entity : affected){
 				if (entity instanceof Player ){
 					String playerName = ((Player) entity).getName();
-					VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
+					VanishConfig cfg = getVanishConfig(playerName, false);
 					if (cfg == null) continue;
 					if (cfg.vanished.state){
 						if (!cfg.damage.state) rem.add(entity);
@@ -338,7 +338,7 @@ public class SimplyVanishCore implements Listener{
 		final Entity entity = event.getEntity();
 		if (!(entity instanceof Player)) return;
 		final String playerName = ((Player) entity).getName();
-		final VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
+		final VanishConfig cfg = getVanishConfig(playerName, false);
 		if (cfg == null) return;
 		if (!cfg.vanished.state || cfg.damage.state) return;
 		event.setCancelled(true);
@@ -349,7 +349,7 @@ public class SimplyVanishCore implements Listener{
 	void onItemPickUp(PlayerPickupItemEvent event){
 		if ( event.isCancelled() ) return;
 		Player player = event.getPlayer();
-		VanishConfig cfg = vanishConfigs.get(player.getName().toLowerCase());
+		VanishConfig cfg = getVanishConfig(player.getName(), false);
 		if (cfg == null) return;
 		if (!cfg.vanished.state) return;
 		if (!cfg.pickup.state) event.setCancelled(true);
@@ -359,7 +359,7 @@ public class SimplyVanishCore implements Listener{
 	void onItemDrop(PlayerDropItemEvent event){
 		if ( event.isCancelled() ) return;
 		Player player = event.getPlayer();
-		VanishConfig cfg = vanishConfigs.get(player.getName().toLowerCase());
+		VanishConfig cfg = getVanishConfig(player.getName(), false);
 		if (cfg == null) return;
 		if (!cfg.vanished.state) return;
 		if (!cfg.drop.state) event.setCancelled(true);
@@ -369,14 +369,14 @@ public class SimplyVanishCore implements Listener{
 	void onPlayerJoin( PlayerJoinEvent event){
 		Player player = event.getPlayer();
 		String playerName = player.getName();
-		VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
+		VanishConfig cfg = getVanishConfig(playerName, false);
 		boolean was = cfg != null && cfg.vanished.state;
 		boolean auto = false; // Indicate if the player should be vanished due to auto-vanish.
 		if ( settings.autoVanishUse && (cfg == null || cfg.auto.state) ) {
 			if (hasPermission(player, settings.autoVanishPerm)){
 				// permission given, do attempt to vanish
 				auto = true;
-				if (cfg == null) cfg = getVanishConfig(playerName);
+				if (cfg == null) cfg = getVanishConfig(playerName, true);
 			}
 		}
 		boolean doVanish = auto || was;
@@ -579,7 +579,7 @@ public class SimplyVanishCore implements Listener{
 		if (playerName.isEmpty()) return;
 		final String permBase =  "simplyvanish.flags.set."+(other?"other":"self"); // bypass permission
 		if (!hasBypass) hasBypass = hasPermission(sender, permBase);
-		VanishConfig cfg = vanishConfigs.get(playerName);
+		VanishConfig cfg = getVanishConfig(playerName, false);
 		boolean hasSomePerm = hasBypass; // indicates that the player has any permission at all.
 		if (cfg == null) cfg = new VanishConfig();
 		boolean hasClearFlag = false;
@@ -623,7 +623,7 @@ public class SimplyVanishCore implements Listener{
 			return;
 		}
 		// if pass:
-		vanishConfigs.put(playerName, cfg); // just to ensure it is there.
+		putVanishConfig(playerName, cfg); // just to ensure it is there.
 		
 		// TODO: setflags event !
 		
@@ -675,7 +675,7 @@ public class SimplyVanishCore implements Listener{
 	}
 	
 	public boolean addVanishedName(String name) {
-		VanishConfig cfg = getVanishConfig(name);
+		VanishConfig cfg = getVanishConfig(name, true);
 		boolean res = false;
 		if (!cfg.vanished.state){
 			cfg.vanished.state = true;
@@ -692,12 +692,12 @@ public class SimplyVanishCore implements Listener{
 	 * @return If the player was vanished.
 	 */
 	public boolean removeVanishedName(String name) {
-		VanishConfig cfg = vanishConfigs.get(name.toLowerCase());
+		VanishConfig cfg = getVanishConfig(name, false);
 		if (cfg==null) return false;
 		boolean res = false;
 		if (cfg.vanished.state){
 			cfg.vanished.state = false;
-			if (!cfg.needsSave()) vanishConfigs.remove(name.toLowerCase());
+			if (!cfg.needsSave()) removeVanishConfig(name);
 			cfg.changed = true;
 			res = true;
 		}
@@ -706,27 +706,12 @@ public class SimplyVanishCore implements Listener{
 	}
 	
 	/**
-	 * Get a VanishConfig, create it if necessary.<br>
-	 * (Might be from vanished, parked, or new thus put to parked).
-	 * @param playerName
-	 * @return
-	 */
-	public final VanishConfig getVanishConfig(String playerName){
-		playerName = playerName.toLowerCase();
-		VanishConfig cfg = vanishConfigs.get(playerName);
-		if (cfg != null) return cfg;
-		cfg = new VanishConfig();
-		vanishConfigs.put(playerName, cfg);
-		return cfg;
-	}
-	
-	/**
 	 * Central access point for checking if player has permission and wants to see vanished players.
 	 * @param player
 	 * @return
 	 */
 	public final boolean shouldSeeVanished(final Player player) {
-		final VanishConfig cfg = vanishConfigs.get(player.getName().toLowerCase());
+		final VanishConfig cfg = getVanishConfig(player.getName(), false);
 		if(cfg!=null){
 			if (!cfg.see.state) return false;
 		}
@@ -734,7 +719,7 @@ public class SimplyVanishCore implements Listener{
 	}
 
 	public final boolean isVanished(final String playerName) {
-		final VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
+		final VanishConfig cfg = getVanishConfig(playerName, false);
 		if (cfg == null) return false;
 		else return cfg.vanished.state;
 	}
@@ -793,7 +778,7 @@ public class SimplyVanishCore implements Listener{
 	public void onShowFlags(CommandSender sender, String name) {
 		if ( name == null) name = sender.getName();
 		name = name.toLowerCase();
-		VanishConfig cfg = vanishConfigs.get(name);
+		VanishConfig cfg = getVanishConfig(name, false);
 		if (cfg != null) sender.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Flags("+name+"): "+cfg.toLine());
 		else sender.sendMessage(SimplyVanish.msgNoFlags);
 	}
@@ -809,25 +794,45 @@ public class SimplyVanishCore implements Listener{
 			player.sendMessage(SimplyVanish.msgNotifyPing);
 		}
 	}
-
+	
 	/**
-	 * This does not put a newly generate config into vanishConfigs.
-	 * @param playerName
-	 * @param create if to create if not present.
+	 * Get a VanishConfig, create it if necessary.<br>
+	 * (Might be from vanished, parked, or new thus put to parked).
+	 * @param lcName
 	 * @return
 	 */
-	public VanishConfig getVanishConfig(String playerName, boolean create) {
-		VanishConfig cfg = vanishConfigs.get(playerName.toLowerCase());
+	public final VanishConfig getVanishConfig(final String name, final boolean create){
+		final String lcName = name.toLowerCase();
+		final VanishConfig cfg = vanishConfigs.get(lcName);
 		if (cfg != null) return cfg;
-		else if (create) return new VanishConfig();
-		else return null;
+		else if (!create) return null;
+		else{
+			final VanishConfig newCfg = new VanishConfig();
+			vanishConfigs.put(lcName, newCfg);
+			return newCfg;	
+		}
+	}
+	
+	private final void putVanishConfig(final String name, final VanishConfig cfg) {
+		vanishConfigs.put(name.toLowerCase(), cfg);
+	}
+	
+	private final void removeVanishConfig(final String name) {
+		vanishConfigs.remove(name.toLowerCase());
 	}
 
-	public void setVanishedConfig(String playerName, VanishConfig cfg,
+	/**
+	 * API method.
+	 * @param playerName
+	 * @param cfg
+	 * @param update
+	 * @param message
+	 */
+	public void setVanishConfig(String playerName, VanishConfig cfg,
 			boolean update, boolean message) {
 		VanishConfig newCfg = new VanishConfig();
 		newCfg.setAll(cfg);
-		vanishConfigs.put(playerName.toLowerCase(), newCfg);
+		putVanishConfig(playerName, newCfg);
 		if (update){
 			Player player = Bukkit.getServer().getPlayerExact(playerName);
 			if (player != null) updateVanishState(player, message);
