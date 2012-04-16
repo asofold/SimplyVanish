@@ -89,7 +89,7 @@ CHANGELOG
 ---------------------------------------------
 
 (0.4.0-PRE-4)
-- (add) Fake permission sets to give players access to SimplyVanish based on configuration entries.
+- (add) Fake permission sets to give players access to SimplyVanish based on configuration entries (adds a warning message, if in use).
 - (refactor) Refactor configuration + permission handling (+compatlkayer 0.5.0).
 - (refactor) Reduce some code cloning, move stuff, get rid of some delegation.
 

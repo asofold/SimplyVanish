@@ -120,11 +120,16 @@ public class SimplyVanish extends JavaPlugin {
 //			// This would  render some things inoperable (permissions with dot as keys).
 			path = new Path('.');
 //		}
-		
-		config.load();
-		boolean changed = Settings.addDefaults(config, path);
-		Settings settings = new Settings();
-		settings.applyConfig(config, path);
+	    boolean changed = false;
+	    Settings settings = new Settings();
+		try{
+			config.load();
+			changed = Settings.addDefaults(config, path);
+			settings.applyConfig(config, path);
+		} catch (Throwable t){
+			Utils.severe("Failed to load the configuration, continue with default settings. ", t);
+			settings = new Settings();
+		}
 		core.setSettings(settings);
 		registerCommandAliases(config, path);
 		if (changed) config.save(); // TODO: maybe check for changes, somehow ?
@@ -289,7 +294,8 @@ public class SimplyVanish extends JavaPlugin {
 					if ( !Utils.checkPerm(sender, "simplyvanish.stats.display")) return true;
 					Utils.send(sender, stats.getStatsStr(true));
 					return true;
-				} else if (len==2 && args[0].equalsIgnoreCase("stats") && args[1].equalsIgnoreCase("reset")){
+				} 
+				else if (len==2 && args[0].equalsIgnoreCase("stats") && args[1].equalsIgnoreCase("reset")){
 					if ( !Utils.checkPerm(sender, "simplyvanish.stats.reset")) return true;
 					stats.clear();
 					Utils.send(sender, msgLabel+"Stats reset.");

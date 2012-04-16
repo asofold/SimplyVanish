@@ -145,6 +145,7 @@ public class Settings {
 		allowOps = config.getBoolean(path.allowOps, Settings.allowOps);
 		superperms = config.getBoolean(path.superperms, Settings.superperms);
 		fakePermissions.clear();
+		String inUse = "";
 		Collection<String> keys = config.getStringKeys(path.permSets);
 		if (keys != null){
 			for (String setName : keys){
@@ -157,6 +158,7 @@ public class Settings {
 				}
 				if (players.isEmpty()) continue; // just skip;
 				for ( String n : players){
+					inUse += " "+n;
 					String lcn = n.trim().toLowerCase();
 					Set<String> permSet = fakePermissions.get(lcn);
 					if (permSet == null){
@@ -171,6 +173,7 @@ public class Settings {
 				}
 			}
 		}
+		if (!inUse.isEmpty()) Utils.warn("Fake permissions in use for: "+inUse);
 	}
 	
 	/**
