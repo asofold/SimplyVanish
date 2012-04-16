@@ -81,5 +81,11 @@ public class SimplyVanishStateEvent extends Event implements SimplyVanishEvent{
 	public Player getPlayer(){
 		return Bukkit.getServer().getPlayerExact(playerName);
 	}
+	
+	public boolean isPlayerOnline(){
+		final Player player = getPlayer();
+		if (player == null) return false;
+		return player.isOnline();
+	}
 
 }
