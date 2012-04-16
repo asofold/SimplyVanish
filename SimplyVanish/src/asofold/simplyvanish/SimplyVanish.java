@@ -312,7 +312,7 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	/**
-	 * Simplistic: Ops have permissions always, others get checked (superperms).
+	 * Respects allow-ops, superperms and fake-permissions configuration entries. 
 	 * @param player
 	 * @param 
 	 * @return
