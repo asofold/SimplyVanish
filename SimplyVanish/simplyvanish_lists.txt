@@ -59,9 +59,7 @@ STACK
 ? some help
 
 *** CONSISTENCY
-- !(add) save command
 - !refactor/ensure: use getVanishConfig(name, create) everywhere !
-- !Change static configuration flags to non static (+ static method SimplyVanish.hasPermission)!
 
 *** Delayed save:
 - !(add) save-delay (minimum delay for saving)
@@ -72,7 +70,6 @@ STACK
 
 
 *** SUGGESTED ITERATIONS:
-- COMMANDS
 - CORE FEATURES
 - INTERNALS
 - BUGS
@@ -85,6 +82,7 @@ CHANGELOG
 ---------------------------------------------
 
 (0.4.0-PRE-5)
+- (add) '/simplyvanish save' command (simplyvanish.cmd.save).
 - (add) Configuration flag "extended-configuration": Will prevent adding fake permissions and commands entries, if set to false.
 - (add) API - SimplyVanish.hasPermission + make permission related settings non-static.
 - (add) API - SimplyVanish: getDefaultVanishConfig, getRegisteredHook ; SimplyVanishStateEvent: getPlayer, isPlayerOnline 
