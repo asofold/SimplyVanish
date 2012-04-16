@@ -79,6 +79,7 @@ STACK
 ? API error: getVanishedPlayers (maybe CustomPlg error) 
 
 
+
 *** SUGGESTED ITERATIONS:
 - API + COMMANDS + HOOKS
 - CORE FEATURES
@@ -86,6 +87,8 @@ STACK
 - BUGS
 
 *** (0.4.0-PRE-5)
+- (bugfix) /simplyvanish command without arguments is again recognized for display of flags.
+
 
 CHANGELOG 
 ---------------------------------------------

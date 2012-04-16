@@ -133,8 +133,8 @@ public class SimplyVanishCommand{
 			return true;
 		} 
 		else if ( label.equals("simplyvanish") || label.equals("vanflag")){
-			if (label.equals("simplyvanish") && !hasFlags) return rootCommand(sender, args);
-			else return flagCommand(sender, args, len, hasFlags);
+			if (hasFlags || len == 0) return flagCommand(sender, args, len, hasFlags);
+			else if (!hasFlags && label.equals("simplyvanish")) return rootCommand(sender, args);
 		}
 		return unrecognized(sender);
 	}
