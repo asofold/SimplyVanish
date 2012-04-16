@@ -142,8 +142,6 @@ public class SimplyVanish extends JavaPlugin {
 		}
 	}
 	
-
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
@@ -200,6 +198,15 @@ public class SimplyVanish extends JavaPlugin {
 	public static Set<String> getVanishedPlayers(){
 		if (!core.isEnabled()) return new HashSet<String>();
 		else return core.getVanishedPlayers();
+	}
+	
+	/**
+	 * Convenience method, get default VanishConfig (copy), for checking flags.<br>
+	 * Later on this might be useful, because default flags might be configurable.
+	 * @return
+	 */
+	public static VanishConfig getDefaultVanishConfig(){
+		return  new VanishConfig();
 	}
 	
 	/**
@@ -265,6 +272,15 @@ public class SimplyVanish extends JavaPlugin {
 	 */
 	public static boolean addHook(Hook hook){
 		return core.hookUtil.addHook(hook);
+	}
+	
+	/**
+	 * Get a hook if registered, the name must exactly match.
+	 * @param name
+	 * @return Hook or null, if not registered.
+	 */
+	public static Hook getRegisteredHook(String name){
+		return core.hookUtil.getHook(name);
 	}
 	
 	/**

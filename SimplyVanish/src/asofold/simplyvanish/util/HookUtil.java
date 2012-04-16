@@ -208,5 +208,9 @@ public class HookUtil {
 		}
 	}
 
+	public Hook getHook(String name) {
+		return registeredHooks.get(name);
+	}
+
 
 }

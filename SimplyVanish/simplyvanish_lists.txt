@@ -11,41 +11,38 @@ PLANNED FEATURES AND QUESTIONS
 - !(adjust) Better xp orb handling !
 
 *** PERFORMANCE
-? use entity ids for fastest checking ?
+? use entity ids or similar for fastest checking ?
 ? check update for efficiency (uh uh)
-? Faster exclusion cheecks (mix-in permission?) for setFlags
+? Faster exclusion checks (mix-in permission?) for setFlags
 ? test performance :)
 
 *** FLAGS
 - !(add) Permission/some setup what flags to set automtically (default flags)? Or sets with a defined permission.
 - ?(add) setDefaultFlags ? to start with those flags always ! +config.
 
-*** LESS INTERACTION
+*** CORE FEATURES: INTERACTION
 ? camera vanish
 ? add canceling of more interaction !
 - ?(add) prevent chat toggle 
 ?(add) Prevent commands feature ? 
 
 **** COMMANDS
-? dynamic command registration (also for vanishcfgs) -> lightweight command aliases (check preprocess, if not exists -> use)
-- ?(add) Configurable: command aliases for standard commands (read from config, applied directly)
 ?(add) '/simplyvanish clear' command to let all players be seen again.
-- !(add) Configuration flag to deactivate all special command aliases (Not register at all?).
 
 *** COMPATIBILITY / HOOKS
 - ?hide / show player: collect Map<String, Set<String>> or similar then call hooks then hide/show cumulative
 ? (add) API / Hooks for players (other plugins, whatever): onVanish, onReappear, toLine, boolean parse
 - ?(add) boolean hooks for hide and show player. (though they get called many times)
+- !(add) prevent-hooks 
 
 *** LANGUAGE
 ? language update
 
 *** PERMISSIONS
-- ?(add) allow-players list
 - ?bind-auto-vanish: bind permission to visibility at login (force reappear) [problematic]
 
 *** APPEARANCE
-- !(add) Digest warning messages where possible (show one instead of two).
+- !(add) Panic: Digest warning messages where possible (show one instead of two).
 
 
 STACK
@@ -54,14 +51,11 @@ STACK
 *** (0.4.0) [RELEASE]
 
 *** API
-- ?(add) API: add methods for some of the new stuff (getAllFlags canSeeVanished etc
 
 *** USABILITY
-
+- Consider a config flag "extended-options" to hide extended configuration !
 
 *** [HOOKS]
-- !(add) getHook(String) + hasHook + prevent-hooks 
-- add convenience methods: getPlayer and hasPlayer to event(s)?
 
 *** [CORE FEATURES]
 - ?(add) god mode ? /simgod = all flags apply though not vanished ! + /simungod [aliases by LightCommands]
@@ -73,6 +67,8 @@ STACK
 - !(add) save command
 - !(add) save-delay (minimum delay for saving)
 - !refactor/ensure: use getVanishConfig(name, create) everywhere !
+- !(adjust) Check PalyerJoin twice: lowest = update state, highest = update messages
+- !CONSIDER: Delayed message on join. 
 
 *** BUGS
 - /simvan without arguments: print something useful.
@@ -87,13 +83,15 @@ STACK
 - BUGS
 
 *** (0.4.0-PRE-5)
-- (bugfix) /simplyvanish command without arguments is again recognized for display of flags.
+
 
 
 CHANGELOG 
 ---------------------------------------------
 
 (0.4.0-PRE-5)
+- (add) API - SimplyVanish: getDefaultVanishConfig, getRegisteredHook ; SimplyVanishStateEvent: getPlayer, isPlayerOnline
+- (bugfix) /simplyvanish command without arguments is again recognized for display of flags.
 
 (0.4.0-PRE-4)
 - (add) /simplyvanish flags command to show all flags with default value.
