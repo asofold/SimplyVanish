@@ -75,7 +75,13 @@ public class SimplyVanishCommand{
 			if (!aliasManager.registerCommand(cmd, needed, plugin)){
 				// TODO: log maybe
 			}
-			if (plugin.getCommand(cmd) != null) aliasManager.removeAlias(cmd); // the command is registered already.
+			Command ref = plugin.getCommand(cmd) ;
+			if ( ref != null){
+				aliasManager.removeAlias(cmd); // the command is registered already.
+				for (String alias : ref.getAliases() ) {
+					aliasManager.removeAlias(alias); // TODO ?
+				}
+			}
 			for ( String alias: needed){
 				alias = alias.trim().toLowerCase();
 				commandAliases.put(alias, cmd);
