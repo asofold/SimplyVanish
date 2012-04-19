@@ -52,34 +52,26 @@ STACK
 
 *** (0.4.0) [RELEASE]
 
-*** [CORE FEATURES]
-
-*** ? MAKE A POLL ? which to make default flag states ?
+***[EXTRAS]
 ? (add) Expiration time for vanishconfigs (checked at getVanishConfig) to allow temporary vanishing. ? RSP- integration: invisible arena ? 
 - ?(add) god mode ? /simgod = all flags apply though not vanished ! + /simungod [aliases by LightCommands]
 - flag: ?cmd(only blocks cmds declared in the configuration.)
-- Add composite flags: chat (+tell)?, 
-? some help
-
-? bypass or snoop flag (default -bypass ): allow interaction with predefined blocks and items ? and entities! 
-
-- add more cumulative flags to set directly (*fight(drop pickup, attack damage interact) *all *) => flag sets ? [maybe dont need defaults]
-
+? some help text  / more info
 ? make config flags if to register the listeners at all ?
 
-consider: flag without +/- => use default state ?
+*** [CORE FEATURES]
 
-* chat flag (allow by default)
-* flag sets, selectable with "*" prefix, like "*camera", similar to "*clear" . Clear must be overridable.
+* Keep considering: What to bring in finally a) as default values b) For composite flags like attack / interact / chat / cmd / 
+* consider: flag without +/- => use default state or extra prefix (complicates all though)?
 
+!(add) example flag sets for typical use (let others vanish "safely")
+!(add)flag sets, selectable with "*" prefix, like "*camera", similar to "*clear" . Clear must be overridable.
+!(add) chat flag (allow by default)
+!(add) bypass or snoop flag (default -bypass ): allow interaction with predefined blocks and items ? and entities! 
 
-
-*** CONSISTENCY
-
-*** Delayed save:
 
 *** BUGS
-- tvanish should also show flags !
+- tvanish should also show flags if flags were given! [same with vanish/reappear, just if flags were given]
 
 
 *** SUGGESTED ITERATIONS:
