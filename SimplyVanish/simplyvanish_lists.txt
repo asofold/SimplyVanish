@@ -55,7 +55,7 @@ STACK
 *** [CORE FEATURES]
 - ?(add) god mode ? /simgod = all flags apply though not vanished ! + /simungod [aliases by LightCommands]
 - flag: ?cmd(only blocks cmds declared in the configuration.)
-- Add composite flags: attack (damage, potion), interact (any sort?+ block break, block place), ?chat (+tell)?, 
+- Add composite flags: chat (+tell)?, 
 ? some help
 - add morecumulativce flags to set directly (*fight(drop pickup, attack damage interact) *all *)
 
@@ -81,6 +81,7 @@ CHANGELOG
 ---------------------------------------------
 
 (0.4.0-PRE-5)
+- (add) More complex flags: attack, interact. [clicked away one event, what was it...] 
 - (add) "-damage" also prevents negative food level change now.
 - (remove) Obsolete command: /simplyvanish drop
 - (add) save.delay: Do delay saving for at least this amount of seconds.
