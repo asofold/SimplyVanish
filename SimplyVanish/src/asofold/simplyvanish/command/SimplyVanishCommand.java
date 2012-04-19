@@ -227,12 +227,12 @@ public class SimplyVanishCommand{
 			Utils.send(sender, SimplyVanish.msgLabel + ChatColor.YELLOW+"Settings reloaded.");
 			return true;
 		}
-		else if (len==1 && args[0].equalsIgnoreCase("drop")){
-			if ( !Utils.checkPerm(sender, "simplyvanish.cmd.drop")) return true;
-			if (!Utils.checkPlayer(sender)) return true;
-			Utils.dropItemInHand((Player) sender);
-			return true;
-		}
+//		else if (len==1 && args[0].equalsIgnoreCase("drop")){
+//			if ( !Utils.checkPerm(sender, "simplyvanish.cmd.drop")) return true;
+//			if (!Utils.checkPlayer(sender)) return true;
+//			Utils.dropItemInHand((Player) sender);
+//			return true;
+//		}
 		else if (len == 1 && args[0].equalsIgnoreCase("save")){
 			if (!Utils.checkPerm(sender, "simplyvanish.cmd.save")) return true;
 			core.doSaveVanished();
