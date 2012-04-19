@@ -31,6 +31,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -378,6 +379,19 @@ public class SimplyVanishCore implements Listener{
 		if (!cfg.vanished.state || cfg.damage.state) return;
 		event.setCancelled(true);
 		if ( entity.getFireTicks()>0) entity.setFireTicks(0);
+	}
+	
+	@EventHandler(priority=EventPriority.LOW)
+	void onFoodLevel(FoodLevelChangeEvent event){
+		if ( event.isCancelled() ) return;
+		final LivingEntity entity = event.getEntity();
+		if (!(entity instanceof Player)) return;
+		Player player = (Player) entity;
+		if (event.getFoodLevel() - player.getFoodLevel() >= 0) return;
+		final VanishConfig cfg = getVanishConfig(player.getName(), false);
+		if (cfg == null) return;
+		if (!cfg.vanished.state || cfg.damage.state) return;
+		event.setCancelled(true);
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
