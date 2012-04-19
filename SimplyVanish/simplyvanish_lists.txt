@@ -90,6 +90,7 @@ CHANGELOG
 - (add) API - SimplyVanish: getDefaultVanishConfig, getRegisteredHook ; SimplyVanishStateEvent: getPlayer, isPlayerOnline
 - (adjust) API call setVanishConfig will issue a save now. 
 - (bugfix) /simplyvanish command without arguments is again recognized for display of flags.
+- (refactor) One listener class for each flag (which needs any).
 - (refactor) Adjust internals for more reliability and easier maintainance in some spots (VanishConfig: handling, changed flag).
 
 (0.4.0-PRE-4)

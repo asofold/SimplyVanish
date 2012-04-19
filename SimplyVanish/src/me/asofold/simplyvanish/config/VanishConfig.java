@@ -31,6 +31,8 @@ public class VanishConfig {
 				{"drop", "dr"},
 				{"damage", "dam", "dmg", "dm", "da"},
 				{"target", "targ", "tgt", "tg", "ta"},
+				{"in", "int", "inter", "interact"},
+				{"at", "att", "attac", "attack"},
 		}){
 			for (int i = 1; i < c.length; i++){
 				mappedFlags.put(c[i] , c[0]);
@@ -79,6 +81,16 @@ public class VanishConfig {
 	 * Become target of mobs.
 	 */
 	public final Flag target = addFlag("target", false);
+	
+	/**
+	 * Allow the player to attack, or inflict damage on others.
+	 */
+	public final Flag attack = addFlag("attack", false);
+	
+	/**
+	 * Allow interaction with the rest of the world, like changing blocks, entities.
+	 */
+	public final Flag interact = addFlag("interact", false);
 	
 	/**
 	 * Player wants auto-vanish to be set. If set to null, default configuration behavior is used.

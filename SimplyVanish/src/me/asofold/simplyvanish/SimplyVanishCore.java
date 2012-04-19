@@ -11,13 +11,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import me.asofold.simplyvanish.api.events.SimplyVanishAtLoginEvent;
 import me.asofold.simplyvanish.api.events.SimplyVanishStateEvent;
 import me.asofold.simplyvanish.api.hooks.Hook;
 import me.asofold.simplyvanish.api.hooks.impl.DisguiseCraftHook;
@@ -29,28 +27,10 @@ import me.asofold.simplyvanish.util.Utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PotionSplashEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.util.Vector;
 
 
 /**
@@ -58,7 +38,7 @@ import org.bukkit.util.Vector;
  * @author mc_dev
  *
  */
-public class SimplyVanishCore implements Listener{
+public class SimplyVanishCore{
 	
 	/**
 	 * Vanished players.
@@ -259,196 +239,6 @@ public class SimplyVanishCore implements Listener{
 	
 	public void setVanishedFile(File file) {
 		vanishedFile = file;
-	}
-	
-	@EventHandler(priority=EventPriority.HIGHEST)
-	void onPlayerQuit(PlayerQuitEvent event){
-		if (onLeave(event.getPlayer().getName(), false, " quit.")) event.setQuitMessage(null);
-	}
-	
-	@EventHandler(priority=EventPriority.HIGHEST)
-	void onPlayerKick(PlayerKickEvent event){
-		if (onLeave(event.getPlayer().getName(), event.isCancelled(), " was kicked.")) event.setLeaveMessage(null);
-	}
-	
-	/**
-	 * For Quit / kick.
-	 * @param name
-	 * @param cancelled if event was cancelled
-	 * @return If to clear the leave message.
-	 */
-	boolean onLeave(String name, boolean cancelled, String action){
-		if (settings.suppressQuitMessage && isVanished(name)){
-			if (settings.notifyState && !cancelled){
-				String msg = SimplyVanish.msgLabel+ChatColor.GREEN+name+ChatColor.GRAY+action;
-				for (Player other : Bukkit.getServer().getOnlinePlayers()){
-					if (hasPermission(other, settings.notifyStatePerm)) other.sendMessage(msg);
-				}
-			}
-			return true; // suppress in any case if vanished.
-		}
-		else return false;
-	}
-	
-	@EventHandler(priority=EventPriority.LOW)
-	final void onEntityTarget(final EntityTargetEvent event){
-		if ( event.isCancelled() ) return;
-		final Entity target = event.getTarget();
-		if (!(target instanceof Player)) return;
-		final String playerName = ((Player) target).getName();
-		final VanishConfig cfg = getVanishConfig(playerName, false);
-		if (cfg == null) return;
-		if (cfg.vanished.state){
-			if (settings.expEnabled && !cfg.pickup.state){
-				Entity entity = event.getEntity();
-				if ( entity instanceof ExperienceOrb){
-					repellExpOrb((Player) target, (ExperienceOrb) entity);
-					event.setCancelled(true);
-					event.setTarget(null);
-					return;
-				}
-			}
-			if (!cfg.target.state) event.setTarget(null);
-		}
-	}
-	
-	@EventHandler(priority=EventPriority.HIGHEST)
-	void onPotionSplash(PotionSplashEvent event){
-		try{
-			final List<Entity> rem = new LinkedList<Entity>();
-			final Collection<LivingEntity> affected = event.getAffectedEntities();
-			for ( LivingEntity entity : affected){
-				if (entity instanceof Player ){
-					String playerName = ((Player) entity).getName();
-					VanishConfig cfg = getVanishConfig(playerName, false);
-					if (cfg == null) continue;
-					if (cfg.vanished.state){
-						if (!cfg.damage.state) rem.add(entity);
-					}
-				}
-			}
-			if (!rem.isEmpty()) affected.removeAll(rem);
-		} catch(Throwable t){
-			// ignore (fast addition.)
-		}
-	}
-	
-//	@EventHandler(priority=EventPriority.HIGHEST)
-//	void onServerListPing(ServerListPingEvent event){
-//		// TODO: try reflection ??
-//	}
-	
-	/**
-	 * Attempt some workaround for experience orbs:
-	 * prevent it getting near the player.
-	 * @param target
-	 * @param entity
-	 */
-	void repellExpOrb(Player player, ExperienceOrb orb) {
-		Location pLoc = player.getLocation();
-		Location oLoc = orb.getLocation();
-		Vector dir = oLoc.toVector().subtract(pLoc.toVector());
-		double dx = Math.abs(dir.getX());
-		double dz = Math.abs(dir.getZ());
-		if ( (dx == 0.0) && (dz == 0.0)){
-			// Special case probably never happens
-			dir.setX(0.001);
-		}
-		if ((dx < settings.expThreshold) && (dz < settings.expThreshold)){
-			Vector nDir = dir.normalize();
-			Vector newV = nDir.clone().multiply(settings.expVelocity);
-			newV.setY(0);
-			orb.setVelocity(newV);
-			if ((dx < settings.expTeleDist) && (dz < settings.expTeleDist)){
-				// maybe oLoc
-				orb.teleport(oLoc.clone().add(nDir.multiply(settings.expTeleDist)), TeleportCause.PLUGIN);
-			} 
-			if ((dx < settings.expKillDist) && (dz < settings.expKillDist)){
-				orb.remove();
-			} 
-		} 
-	}
-
-	@EventHandler(priority=EventPriority.LOW)
-	final void onEntityDamage(final EntityDamageEvent event){
-		if ( event.isCancelled() ) return;
-		final Entity entity = event.getEntity();
-		if (!(entity instanceof Player)) return;
-		final String playerName = ((Player) entity).getName();
-		final VanishConfig cfg = getVanishConfig(playerName, false);
-		if (cfg == null) return;
-		if (!cfg.vanished.state || cfg.damage.state) return;
-		event.setCancelled(true);
-		if ( entity.getFireTicks()>0) entity.setFireTicks(0);
-	}
-	
-	@EventHandler(priority=EventPriority.LOW)
-	void onFoodLevel(FoodLevelChangeEvent event){
-		if ( event.isCancelled() ) return;
-		final LivingEntity entity = event.getEntity();
-		if (!(entity instanceof Player)) return;
-		Player player = (Player) entity;
-		if (event.getFoodLevel() - player.getFoodLevel() >= 0) return;
-		final VanishConfig cfg = getVanishConfig(player.getName(), false);
-		if (cfg == null) return;
-		if (!cfg.vanished.state || cfg.damage.state) return;
-		event.setCancelled(true);
-	}
-	
-	@EventHandler(priority=EventPriority.LOW)
-	void onItemPickUp(PlayerPickupItemEvent event){
-		if ( event.isCancelled() ) return;
-		Player player = event.getPlayer();
-		VanishConfig cfg = getVanishConfig(player.getName(), false);
-		if (cfg == null) return;
-		if (!cfg.vanished.state) return;
-		if (!cfg.pickup.state) event.setCancelled(true);
-	}
-	
-	@EventHandler(priority=EventPriority.LOW)
-	void onItemDrop(PlayerDropItemEvent event){
-		if ( event.isCancelled() ) return;
-		Player player = event.getPlayer();
-		VanishConfig cfg = getVanishConfig(player.getName(), false);
-		if (cfg == null) return;
-		if (!cfg.vanished.state) return;
-		if (!cfg.drop.state) event.setCancelled(true);
-	}
-	
-	@EventHandler(priority=EventPriority.HIGHEST)
-	void onPlayerJoin( PlayerJoinEvent event){
-		Player player = event.getPlayer();
-		String playerName = player.getName();
-		VanishConfig cfg = getVanishConfig(playerName, false);
-		boolean was = cfg != null && cfg.vanished.state;
-		boolean auto = false; // Indicate if the player should be vanished due to auto-vanish.
-		if ( settings.autoVanishUse && (cfg == null || cfg.auto.state) ) {
-			if (hasPermission(player, settings.autoVanishPerm)){
-				// permission given, do attempt to vanish
-				auto = true;
-				if (cfg == null) cfg = getVanishConfig(playerName, true);
-			}
-		}
-		boolean doVanish = auto || was;
-		if (doVanish){
-			SimplyVanishAtLoginEvent svEvent = new SimplyVanishAtLoginEvent(playerName, was, doVanish, auto);
-			Bukkit.getServer().getPluginManager().callEvent(svEvent);
-			if (svEvent.isCancelled()){
-				// no update
-				return;
-			}
-			doVanish = svEvent.getVisibleAfter();
-			cfg.set("vanished", doVanish);
-			if (doVanish) hookUtil.callBeforeVanish(playerName); // need to check again.
-		}
-		updateVanishState(event.getPlayer()); // called in any case
-		if (doVanish){
-			hookUtil.callAfterVanish(playerName);	
-			if ( settings.suppressJoinMessage && cfg.vanished.state){
-				event.setJoinMessage(null);
-			}
-			else if (!cfg.needsSave()) removeVanishedName(playerName);
-		}
 	}
 	
 	/**
@@ -907,6 +697,14 @@ public class SimplyVanishCore implements Listener{
 			else if (perms.contains("simplyvanish.all")) return true;
 			else return perms.contains(perm.toLowerCase());
 		}
+	}
+
+	public Settings getSettings() {
+		return settings;
+	}
+
+	public HookUtil getHookUtil() {
+		return hookUtil;
 	}
 
 

@@ -11,6 +11,11 @@ import me.asofold.simplyvanish.config.Settings;
 import me.asofold.simplyvanish.config.VanishConfig;
 import me.asofold.simplyvanish.config.compatlayer.CompatConfig;
 import me.asofold.simplyvanish.config.compatlayer.CompatConfigFactory;
+import me.asofold.simplyvanish.listeners.CoreListener;
+import me.asofold.simplyvanish.listeners.DamageListener;
+import me.asofold.simplyvanish.listeners.DropListener;
+import me.asofold.simplyvanish.listeners.PickupListener;
+import me.asofold.simplyvanish.listeners.TargetListener;
 import me.asofold.simplyvanish.stats.Stats;
 import me.asofold.simplyvanish.util.Utils;
 
@@ -18,6 +23,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -87,7 +93,17 @@ public class SimplyVanish extends JavaPlugin {
 		}
 		// register events:
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(core, this);
+		for ( Listener listener : new Listener[]{
+//				new AttackListener(core);
+				new CoreListener(core),
+				new DamageListener(core),
+				new DropListener(core),
+//				new InteractListener(core);
+				new PickupListener(core),
+				new TargetListener(core),	
+		}){
+			pm.registerEvents(listener, this);
+		}
 		pm.registerEvents(cmdExe.aliasManager, this);
 		// finished enabling.
 		core.setEnabled(true);
