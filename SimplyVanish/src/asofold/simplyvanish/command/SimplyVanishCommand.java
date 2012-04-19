@@ -235,7 +235,7 @@ public class SimplyVanishCommand{
 		}
 		else if (len == 1 && args[0].equalsIgnoreCase("save")){
 			if (!Utils.checkPerm(sender, "simplyvanish.cmd.save")) return true;
-			core.saveVanished();
+			core.doSaveVanished();
 			sender.sendMessage(SimplyVanish.msgLabel + "Saved vanished configs.");
 			return true;
 		}

@@ -37,9 +37,11 @@ public class Path {
 	public final String  panicRunCommand;
 	public final String  panicCommand;
 	
-	public final String  saveVanished;
+	public final String saveVanished;
+	public final String  saveVanishedEnabled;
 	public final String  saveVanishedAlways;
 	public final String  saveVanishedInterval;
+	public final String saveVanishedDelay;
 	
 	public final String autoVanish;
 	public final String  autoVanishUse;
@@ -107,9 +109,12 @@ public class Path {
 		panicCommand = panic + sep + "command";
 		
 		// TODO: save vanished section	
-		saveVanished = "save-vanished";
-		saveVanishedAlways = "save-vanished-always";
-		saveVanishedInterval = "save-vanished-interval";
+		
+		saveVanished = "save";
+		saveVanishedEnabled = saveVanished + sep + "enabled";
+		saveVanishedAlways = saveVanished + sep + "always";
+		saveVanishedInterval = saveVanished + sep + "interval";
+		saveVanishedDelay = saveVanished + sep + "delay";
 		
 		autoVanish = "auto-vanish";
 		autoVanishUse = autoVanish + sep + "use";

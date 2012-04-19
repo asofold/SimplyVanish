@@ -66,7 +66,7 @@ public class SimplyVanish extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		if (core.settings.saveVanished) core.saveVanished();
+		if (core.settings.saveVanished) core.doSaveVanished();
 		core.setEnabled(false);
 		core.setPlugin(null);
 		// TODO: maybe let all players see each other again?
@@ -136,7 +136,7 @@ public class SimplyVanish extends JavaPlugin {
 			sched.scheduleSyncRepeatingTask(this, new Runnable(){
 				@Override
 				public void run() {
-					core.saveVanished();
+					core.doSaveVanished();
 				}
 			}, period, period);
 		}
@@ -226,7 +226,7 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	/**
-	 * Set the VanishConfig for the player, silently (no notifications).<br>
+	 * Set the VanishConfig for the player, silently (no notifications), issues saving the configs.<br>
 	 * This actually will create a new config and apply changes from the given one.<br>
 	 * If update is true, this will bypass hooks and events.
 	 * @param playerName
@@ -238,7 +238,7 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	/**
-	 * Set the VanishConfig for the player, with optional notifications, if the player is online.<br>
+	 * Set the VanishConfig for the player, with optional notifications, if the player is online, does issue saving the configs.<br>
 	 * This actually will create a new config and apply changes from the given one.<br>
 	 * If update is true, this will bypass hooks and events.
 	 * @param playerName

@@ -38,6 +38,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 
 import asofold.simplyvanish.api.events.SimplyVanishAtLoginEvent;
@@ -71,6 +72,8 @@ public class SimplyVanishCore implements Listener{
 	
 	Settings settings = new Settings();
 	
+	private long tsSave = 0;
+	private int saveTaskId = -1;
 	/*
 	 * File to save vanished players to.
 	 */
@@ -114,10 +117,36 @@ public class SimplyVanishCore implements Listener{
 	}
 
 	/**
-	 * Save vanished names to file, does NOT update states (!).
+	 * Might save vanished names to file, checks timestamp, does NOT update states (!).
 	 */
-	public void saveVanished(){
+	public void onSaveVanished(){
+		if (settings.saveVanishedDelay >= 0){
+			if (System.currentTimeMillis() - tsSave > settings.saveVanishedDelay){
+				// Delay has expired.
+				if (saveTaskId != -1) saveTaskId = -1; // Do not cancel anything, presumably that is done.
+				doSaveVanished();
+			} else{
+				// Within delay time frame, schedule new task (unless already done):
+				BukkitScheduler sched = Bukkit.getServer().getScheduler();
+				if (saveTaskId != -1 && sched.isQueued(saveTaskId)) return;
+				saveTaskId = sched.scheduleSyncDelayedTask(plugin, new Runnable(){
+					@Override
+					public void run() {
+						onSaveVanished(); // Check if save is necessary.
+					}
+				}, 1+(settings.saveVanishedDelay/50));
+				if (saveTaskId == -1) doSaveVanished(); // force save if scheduling failed.
+			}
+		}
+		else doSaveVanished(); // Delay is not used.
+	}
+	
+	/**
+	 * Force save vanished names to file, does NOT update states (!).
+	 */
+	public void doSaveVanished(){
 		long ns = System.nanoTime();
+		tsSave = System.currentTimeMillis();
 		File file = getVanishedFile();
 		if ( file==null){
 			Utils.warn("Can not save vanished players: File is not set.");
@@ -638,7 +667,7 @@ public class SimplyVanishCore implements Listener{
 		for (String name : ok){
 			cfg.set(name, newCfg.get(name));
 		}
-		if ( save && cfg.changed && settings.saveVanishedAlways) saveVanished();
+		if ( save && cfg.changed && settings.saveVanishedAlways) onSaveVanished();
 		Player player = Bukkit.getServer().getPlayerExact(playerName);
 		if (player != null) updateVanishState(player, false);
 		if (!cfg.needsSave()) removeVanishedName(playerName);
@@ -687,7 +716,7 @@ public class SimplyVanishCore implements Listener{
 			cfg.set(cfg.vanished, true);
 			res = true;
 		}
-		if (cfg.changed && settings.saveVanishedAlways) saveVanished();
+		if (cfg.changed && settings.saveVanishedAlways) onSaveVanished();
 		return res;
 	}
 
@@ -705,7 +734,7 @@ public class SimplyVanishCore implements Listener{
 			if (!cfg.needsSave()) removeVanishConfig(name);
 			res = true;
 		}
-		if (cfg.changed && settings.saveVanishedAlways) saveVanished();
+		if (cfg.changed && settings.saveVanishedAlways) onSaveVanished();
 		return res;
 	}
 	
@@ -841,6 +870,7 @@ public class SimplyVanishCore implements Listener{
 			Player player = Bukkit.getServer().getPlayerExact(playerName);
 			if (player != null) updateVanishState(player, message);
 		}
+		if (settings.saveVanishedAlways) onSaveVanished();
 	}
 	
 	void addStandardHooks(){

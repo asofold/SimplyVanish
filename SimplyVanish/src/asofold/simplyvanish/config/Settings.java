@@ -74,6 +74,10 @@ public class Settings {
 	 * Stored in milliseconds, read from config in minutes.
 	 */
 	public long saveVanishedInterval = 0; 
+	/**
+	 * Stored in milliseconds, read from config in SECONDS.
+	 */
+	public long saveVanishedDelay = 10;
 	
 	public boolean autoVanishUse = false;
 	public String autoVanishPerm = "simplyvanish.auto-vanish";
@@ -126,9 +130,10 @@ public class Settings {
 		pingPeriod = config.getLong(path.pingPeriod, ref.pingPeriod/1000) * 1000; // in seconds
 		if (pingPeriod<=0) pingEnabled = false;
 		// command aliases: see SimplyVanish plugin.
-		saveVanished = config.getBoolean(path.saveVanished, ref.saveVanished);
+		saveVanished = config.getBoolean(path.saveVanishedEnabled, ref.saveVanished);
 		saveVanishedAlways = config.getBoolean(path.saveVanishedAlways, ref.saveVanishedAlways);
 		saveVanishedInterval = config.getLong(path.saveVanishedInterval, ref.saveVanishedInterval/60000)*60000;
+		saveVanishedDelay = config.getLong(path.saveVanishedDelay, ref.saveVanishedDelay/1000) * 1000;
 		
 		autoVanishUse = config.getBoolean("auto-vanish.use", ref.autoVanishUse);
 		autoVanishPerm = config.getString("auto-vanish.permission", ref.autoVanishPerm);
@@ -209,9 +214,10 @@ public class Settings {
 		defaults.set(path.pingEnabled, ref.pingEnabled);
 		defaults.set(path.pingPeriod, ref.pingPeriod/1000); // seconds
 //		defaults.set("server-ping.subtract-vanished", false); // TODO: Feature request pending ...
-		defaults.set(path.saveVanished, ref.saveVanished); // TODO: load/save vanished players.
+		defaults.set(path.saveVanishedEnabled, ref.saveVanished); // TODO: load/save vanished players.
 		defaults.set(path.saveVanishedAlways, ref.saveVanishedAlways); // TODO: load/save vanished players.
 		defaults.set(path.saveVanishedInterval, ref.saveVanishedInterval/60000); // minutes
+		defaults.set(path.saveVanishedDelay, ref.saveVanishedDelay/1000); // SECONDS
 		
 		defaults.set(path.autoVanishUse, ref.autoVanishUse);
 		defaults.set(path.autoVanishPerm, ref.autoVanishPerm);
