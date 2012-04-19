@@ -25,6 +25,13 @@ public class DamageListener implements Listener {
 		this.core = core;
 	}
 	
+	private final boolean shouldCancel(final String name) {
+		final VanishConfig cfg = core.getVanishConfig(name, false);
+		if (cfg == null) return false;
+		if (!cfg.vanished.state || cfg.damage.state) return false;
+		return true;
+	}
+	
 	@EventHandler(priority=EventPriority.LOW)
 	void onFoodLevel(FoodLevelChangeEvent event){
 		if ( event.isCancelled() ) return;
@@ -60,13 +67,6 @@ public class DamageListener implements Listener {
 		} catch(Throwable t){
 			// ignore (fast addition.)
 		}
-	}
-	
-	private final boolean shouldCancel(final String name) {
-		final VanishConfig cfg = core.getVanishConfig(name, false);
-		if (cfg == null) return false;
-		if (!cfg.vanished.state || cfg.damage.state) return false;
-		return true;
 	}
 	
 }
