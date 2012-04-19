@@ -55,15 +55,19 @@ STACK
 *** [CORE FEATURES]
 
 *** ? MAKE A POLL ? which to make default flag states ?
+? (add) Expiration time for vanishconfigs (checked at getVanishConfig) to allow temporary vanishing. ? RSP- integration: invisible arena ? 
 - ?(add) god mode ? /simgod = all flags apply though not vanished ! + /simungod [aliases by LightCommands]
 - flag: ?cmd(only blocks cmds declared in the configuration.)
 - Add composite flags: chat (+tell)?, 
 ? some help
 
-- add more cumulativce flags to set directly (*fight(drop pickup, attack damage interact) *all *) => flag sets ? [maybe dont need defaults]
+? bypass or snoop flag (default -bypass ): allow interaction with predefined blocks and items ? and entities! 
+
+- add more cumulative flags to set directly (*fight(drop pickup, attack damage interact) *all *) => flag sets ? [maybe dont need defaults]
 
 ? make config flags if to register the listeners at all ?
 
+consider: flag without +/- => use default state ?
 
 * chat flag (allow by default)
 * flag sets, selectable with "*" prefix, like "*camera", similar to "*clear" . Clear must be overridable.
@@ -75,7 +79,7 @@ STACK
 *** Delayed save:
 
 *** BUGS
-
+- tvanish should also show flags !
 
 
 *** SUGGESTED ITERATIONS:
@@ -84,9 +88,12 @@ STACK
 
 *** (0.4.0-PRE-5)
 
+* TEST: using *clear while not being allowed to reset all !
 * Testing and default behavior of the new flags: attack, interact
-
-
+- !(add) Flag set for creation: set name!
+- !(add) Flag-sets, defined as one string like ingame + example set (fight)
+- !(add) chat flag (allow by default: chat).
+- !(add) cmd flag (inactive by default)
 
 CHANGELOG 
 ---------------------------------------------
