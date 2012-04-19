@@ -77,7 +77,7 @@ public class Settings {
 	/**
 	 * Stored in milliseconds, read from config in SECONDS.
 	 */
-	public long saveVanishedDelay = 10;
+	public long saveVanishedDelay = 10000;
 	
 	public boolean autoVanishUse = false;
 	public String autoVanishPerm = "simplyvanish.auto-vanish";
