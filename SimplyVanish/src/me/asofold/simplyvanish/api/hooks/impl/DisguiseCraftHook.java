@@ -112,7 +112,6 @@ public class DisguiseCraftHook  extends AbstractHook {
 	
 	public DisguiseCraftHook(){
 		DisguiseCraft.getAPI(); // to fail in case.
-		System.out.println("[SimplyVanish] DisguiseCraft hook created.");
 	}
 
 }
