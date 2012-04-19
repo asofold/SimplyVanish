@@ -53,11 +53,17 @@ STACK
 *** (0.4.0) [RELEASE]
 
 *** [CORE FEATURES]
+
+*** ? MAKE A POLL ? which to make default flag states ?
 - ?(add) god mode ? /simgod = all flags apply though not vanished ! + /simungod [aliases by LightCommands]
 - flag: ?cmd(only blocks cmds declared in the configuration.)
 - Add composite flags: chat (+tell)?, 
 ? some help
 - add morecumulativce flags to set directly (*fight(drop pickup, attack damage interact) *all *)
+? make config flags if to register the listeners at all ?
+
+
+
 
 *** CONSISTENCY
 
