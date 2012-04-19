@@ -31,8 +31,8 @@ public class VanishConfig {
 				{"drop", "dr"},
 				{"damage", "dam", "dmg", "dm", "da"},
 				{"target", "targ", "tgt", "tg", "ta"},
-				{"in", "int", "inter", "interact"},
-				{"at", "att", "attac", "attack"},
+				{"interact", "in", "int", "inter"},
+				{"attack", "at", "att", "attac"},
 		}){
 			for (int i = 1; i < c.length; i++){
 				mappedFlags.put(c[i] , c[0]);
