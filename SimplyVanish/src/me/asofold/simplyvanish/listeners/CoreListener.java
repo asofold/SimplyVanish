@@ -65,7 +65,7 @@ public class CoreListener implements Listener {
 
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
-	void onPlayerJoin( PlayerJoinEvent event){
+	void onPlayerJoin(PlayerJoinEvent event){
 		Player player = event.getPlayer();
 		String playerName = player.getName();
 		Settings settings = core.getSettings();

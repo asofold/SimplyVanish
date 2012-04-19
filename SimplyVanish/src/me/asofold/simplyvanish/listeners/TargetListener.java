@@ -22,7 +22,7 @@ public class TargetListener implements Listener {
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	final void onEntityTarget(final EntityTargetEvent event){
+	void onEntityTarget(final EntityTargetEvent event){
 		if ( event.isCancelled() ) return;
 		final Entity target = event.getTarget();
 		if (!(target instanceof Player)) return;

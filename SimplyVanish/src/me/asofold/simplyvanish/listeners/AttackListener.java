@@ -19,7 +19,7 @@ public class AttackListener implements Listener {
 		this.core = core;
 	}
 	
-	private final boolean shouldCancel(final String name) {
+	private final boolean shouldCancelAttack(final String name) {
 		final VanishConfig cfg = core.getVanishConfig(name, false);
 		if (cfg == null) return false;
 		if (!cfg.vanished.state || cfg.attack.state) return false;
@@ -28,19 +28,20 @@ public class AttackListener implements Listener {
 	
 	@EventHandler(priority=EventPriority.LOW)
 	void onEntitiyDamage(EntityDamageByEntityEvent event){
+		// TODO: maybe integrate with the damage check
 		if (event.isCancelled()) return;
 		Entity entity = event.getDamager();
 		if (entity == null) return;
 		if (entity instanceof Projectile) entity = ((Projectile) entity).getShooter();
 		if (!(entity instanceof Player)) return;
-		if (shouldCancel(((Player) entity).getName())) event.setCancelled(true);		
+		if (shouldCancelAttack(((Player) entity).getName())) event.setCancelled(true);		
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
 	void onProjectileLaunch(ProjectileLaunchEvent event){
 		Entity entity = event.getEntity().getShooter();
 		if (!(entity instanceof Player)) return;
-		if (shouldCancel(((Player) entity).getName())) event.setCancelled(true);
+		if (shouldCancelAttack(((Player) entity).getName())) event.setCancelled(true);
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
@@ -48,7 +49,7 @@ public class AttackListener implements Listener {
 		// nmot sure about this one.
 		Entity entity = event.getEntity();
 		if (!(entity instanceof Player)) return;
-		if (shouldCancel(((Player) entity).getName())) event.setCancelled(true);
+		if (shouldCancelAttack(((Player) entity).getName())) event.setCancelled(true);
 	}
 	
 }

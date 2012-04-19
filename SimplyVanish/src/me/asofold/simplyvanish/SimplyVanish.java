@@ -11,9 +11,11 @@ import me.asofold.simplyvanish.config.Settings;
 import me.asofold.simplyvanish.config.VanishConfig;
 import me.asofold.simplyvanish.config.compatlayer.CompatConfig;
 import me.asofold.simplyvanish.config.compatlayer.CompatConfigFactory;
+import me.asofold.simplyvanish.listeners.AttackListener;
 import me.asofold.simplyvanish.listeners.CoreListener;
 import me.asofold.simplyvanish.listeners.DamageListener;
 import me.asofold.simplyvanish.listeners.DropListener;
+import me.asofold.simplyvanish.listeners.InteractListener;
 import me.asofold.simplyvanish.listeners.PickupListener;
 import me.asofold.simplyvanish.listeners.TargetListener;
 import me.asofold.simplyvanish.stats.Stats;
@@ -94,11 +96,11 @@ public class SimplyVanish extends JavaPlugin {
 		// register events:
 		PluginManager pm = getServer().getPluginManager();
 		for ( Listener listener : new Listener[]{
-//				new AttackListener(core);
+				new AttackListener(core),
 				new CoreListener(core),
 				new DamageListener(core),
 				new DropListener(core),
-//				new InteractListener(core);
+				new InteractListener(core),
 				new PickupListener(core),
 				new TargetListener(core),	
 		}){

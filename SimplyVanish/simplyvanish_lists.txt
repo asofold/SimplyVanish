@@ -57,6 +57,7 @@ STACK
 - flag: ?cmd(only blocks cmds declared in the configuration.)
 - Add composite flags: attack (damage, potion), interact (any sort?+ block break, block place), ?chat (+tell)?, 
 ? some help
+- add morecumulativce flags to set directly (*fight(drop pickup, attack damage interact) *all *)
 
 *** CONSISTENCY
 

@@ -25,7 +25,7 @@ public class DamageListener implements Listener {
 		this.core = core;
 	}
 	
-	private final boolean shouldCancel(final String name) {
+	private final boolean shouldCancelDamage(final String name) {
 		final VanishConfig cfg = core.getVanishConfig(name, false);
 		if (cfg == null) return false;
 		if (!cfg.vanished.state || cfg.damage.state) return false;
@@ -39,7 +39,7 @@ public class DamageListener implements Listener {
 		if (!(entity instanceof Player)) return;
 		Player player = (Player) entity;
 		if (event.getFoodLevel() - player.getFoodLevel() >= 0) return;
-		if (shouldCancel(player.getName()))	event.setCancelled(true);
+		if (shouldCancelDamage(player.getName()))	event.setCancelled(true);
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
@@ -47,7 +47,7 @@ public class DamageListener implements Listener {
 		if ( event.isCancelled() ) return;
 		final Entity entity = event.getEntity();
 		if (!(entity instanceof Player)) return;
-		if (shouldCancel(((Player) entity).getName())){
+		if (shouldCancelDamage(((Player) entity).getName())){
 			event.setCancelled(true);
 			if ( entity.getFireTicks()>0) entity.setFireTicks(0);
 		}
@@ -60,7 +60,7 @@ public class DamageListener implements Listener {
 			final Collection<LivingEntity> affected = event.getAffectedEntities();
 			for ( LivingEntity entity : affected){
 				if (entity instanceof Player ){
-					if (shouldCancel(((Player) entity).getName())) rem.add(entity);
+					if (shouldCancelDamage(((Player) entity).getName())) rem.add(entity);
 				}
 			}
 			if (!rem.isEmpty()) affected.removeAll(rem);
