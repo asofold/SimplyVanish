@@ -21,10 +21,10 @@ commands:
      aliases:
      - vand
   simplyvanish:
-     description: 'For reloading the configuration: /simplyvanish reload'
+     description: '/simplyvanish ... for: reload | save | stats [reset] | flags | Otherwise same as vanflag.'
      aliases:
      - simvan
   vanflag:
-     description: 'For setting flags for yourself or others.'
+     description: 'Set or display flags for yourself or others.'
      aliases:
      - flagvan
