@@ -1,5 +1,5 @@
 name: SimplyVanish
-main: asofold.simplyvanish.SimplyVanish
+main: me.asofold.simplyvanish.SimplyVanish
 version: 0.4.0-PRE-5
 commands:
   vanish: 
