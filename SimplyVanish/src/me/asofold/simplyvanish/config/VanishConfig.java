@@ -26,13 +26,13 @@ public class VanishConfig {
 	
 	static{
 		for (String[] c : new String[][]{
-				{"vanished", "vanish"}, // Aliases have no use anyway?
-				{"pickup", "pick", "pi"},
-				{"drop", "dr"},
+				{"vanished", "vanish", "van", "va"}, // Aliases have no use anyway?
+				{"pickup", "pick", "pic",  "pi"},
+				{"drop", "drp", "dr"},
 				{"damage", "dam", "dmg", "dm", "da"},
-				{"target", "targ", "tgt", "tg", "ta"},
-				{"interact", "in", "int", "inter"},
-				{"attack", "at", "att", "attac"},
+				{"target", "targ", "tar", "tgt", "tg", "ta"},
+				{"interact", "inter", "int", "in" },
+				{"attack", "attac", "att", "at"},
 		}){
 			for (int i = 1; i < c.length; i++){
 				mappedFlags.put(c[i] , c[0]);
