@@ -59,9 +59,14 @@ STACK
 - flag: ?cmd(only blocks cmds declared in the configuration.)
 - Add composite flags: chat (+tell)?, 
 ? some help
-- add morecumulativce flags to set directly (*fight(drop pickup, attack damage interact) *all *)
+
+- add more cumulativce flags to set directly (*fight(drop pickup, attack damage interact) *all *) => flag sets ? [maybe dont need defaults]
+
 ? make config flags if to register the listeners at all ?
 
+
+* chat flag (allow by default)
+* flag sets, selectable with "*" prefix, like "*camera", similar to "*clear" . Clear must be overridable.
 
 
 
@@ -79,7 +84,7 @@ STACK
 
 *** (0.4.0-PRE-5)
 
-
+* Testing and default behavior of the new flags: attack, interact
 
 
 
@@ -94,7 +99,7 @@ CHANGELOG
 - (add) '/simplyvanish save' command (simplyvanish.cmd.save).
 - (change) Save settings do have their own configuration section now.
 - (add) Configuration flag "extended-configuration": Will prevent adding fake permissions and commands entries, if set to false.
-- (add) API - SimplyVanish.hasPermission + make permission related settings non-static.
+- (add) API - SimplyVanish.hasPermission + Internals: make permission related settings non-static.
 - (add) API - SimplyVanish: getDefaultVanishConfig, getRegisteredHook ; SimplyVanishStateEvent: getPlayer, isPlayerOnline
 - (adjust) API call setVanishConfig will issue a save now. 
 - (bugfix) /simplyvanish command without arguments is again recognized for display of flags.
