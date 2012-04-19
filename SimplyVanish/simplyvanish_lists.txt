@@ -80,6 +80,7 @@ CHANGELOG
 ---------------------------------------------
 
 (0.4.0-PRE-5)
+- (remove) Obsolete command: /simplyvanish drop
 - (add) save.delay: Do delay saving for at least this amount of seconds.
 - (add) '/simplyvanish save' command (simplyvanish.cmd.save).
 - (change) Save settings do have their own configuration section now.
