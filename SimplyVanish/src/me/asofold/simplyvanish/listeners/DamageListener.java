@@ -32,10 +32,7 @@ public class DamageListener implements Listener {
 		if (!(entity instanceof Player)) return;
 		Player player = (Player) entity;
 		if (event.getFoodLevel() - player.getFoodLevel() >= 0) return;
-		final VanishConfig cfg = core.getVanishConfig(player.getName(), false);
-		if (cfg == null) return;
-		if (!cfg.vanished.state || cfg.damage.state) return;
-		event.setCancelled(true);
+		if (shouldCancel(player.getName()))	event.setCancelled(true);
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
@@ -43,12 +40,10 @@ public class DamageListener implements Listener {
 		if ( event.isCancelled() ) return;
 		final Entity entity = event.getEntity();
 		if (!(entity instanceof Player)) return;
-		final String playerName = ((Player) entity).getName();
-		final VanishConfig cfg = core.getVanishConfig(playerName, false);
-		if (cfg == null) return;
-		if (!cfg.vanished.state || cfg.damage.state) return;
-		event.setCancelled(true);
-		if ( entity.getFireTicks()>0) entity.setFireTicks(0);
+		if (shouldCancel(((Player) entity).getName())){
+			event.setCancelled(true);
+			if ( entity.getFireTicks()>0) entity.setFireTicks(0);
+		}
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
@@ -58,18 +53,20 @@ public class DamageListener implements Listener {
 			final Collection<LivingEntity> affected = event.getAffectedEntities();
 			for ( LivingEntity entity : affected){
 				if (entity instanceof Player ){
-					String playerName = ((Player) entity).getName();
-					VanishConfig cfg = core.getVanishConfig(playerName, false);
-					if (cfg == null) continue;
-					if (cfg.vanished.state){
-						if (!cfg.damage.state) rem.add(entity);
-					}
+					if (shouldCancel(((Player) entity).getName())) rem.add(entity);
 				}
 			}
 			if (!rem.isEmpty()) affected.removeAll(rem);
 		} catch(Throwable t){
 			// ignore (fast addition.)
 		}
+	}
+	
+	private final boolean shouldCancel(final String name) {
+		final VanishConfig cfg = core.getVanishConfig(name, false);
+		if (cfg == null) return false;
+		if (!cfg.vanished.state || cfg.damage.state) return false;
+		return true;
 	}
 	
 }
