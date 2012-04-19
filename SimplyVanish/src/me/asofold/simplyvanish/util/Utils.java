@@ -14,6 +14,7 @@ import me.asofold.simplyvanish.config.compatlayer.CompatConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Item;
@@ -207,5 +208,10 @@ public class Utils {
 			if ( i<max && link!=null ) builder.append(link);
 		}
 		return builder.toString();
+	}
+
+	public static final void sendBlock(final Player player, final Block block) {
+		if (block == null) return;
+		player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
 	}
 }
