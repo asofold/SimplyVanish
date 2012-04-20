@@ -33,6 +33,7 @@ public class VanishConfig {
 				{"target", "targ", "tar", "tgt", "tg", "ta"},
 				{"interact", "inter", "int", "in" },
 				{"attack", "attac", "att", "at"},
+				{"cmd", "cm"},
 		}){
 			for (int i = 1; i < c.length; i++){
 				mappedFlags.put(c[i] , c[0]);
