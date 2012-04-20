@@ -62,10 +62,13 @@ STACK
 ? DisplayPolice for flags: DEFAULT, POSITIVE, NEGATIVE (Show only changes to those stats, saving and loading always with difference to DEFAULT)  
 
 
+
 *** ADJUST FEATURES + BUGS
 
 
 *** (0.4.0-PRE-5) [FEATURE FREEZE]
+
+? refactor: only use updatevanishstate also from doVanish and doReappear!
 
 ** cleanup the changelog for 0.4.0-PRE-5
 
