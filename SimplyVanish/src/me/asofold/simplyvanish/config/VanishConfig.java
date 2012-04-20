@@ -93,6 +93,11 @@ public class VanishConfig {
 	public final Flag interact = addFlag("interact", false);
 	
 	/**
+	 * Allow chat.
+	 */
+	public final Flag chat = addFlag("chat", true);
+	
+	/**
 	 * Player wants auto-vanish to be set. If set to null, default configuration behavior is used.
 	 */
 	public final Flag auto = addFlag("auto", true);
