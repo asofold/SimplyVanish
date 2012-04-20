@@ -76,7 +76,7 @@ public class SimplyVanish extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		if (core.settings.saveVanished) core.doSaveVanished();
+		if (core.getSettings().saveVanished) core.doSaveVanished();
 		core.setEnabled(false);
 		core.setPlugin(null);
 		// TODO: maybe let all players see each other again?

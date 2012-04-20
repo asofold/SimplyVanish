@@ -50,9 +50,9 @@ public class SimplyVanishCore{
 	/**
 	 * Flag for if the plugin is enabled.
 	 */
-	boolean enabled = false;
+	private boolean enabled = false;
 	
-	Settings settings = new Settings();
+	private Settings settings = new Settings();
 	
 	private long tsSave = 0;
 	private int saveTaskId = -1;
