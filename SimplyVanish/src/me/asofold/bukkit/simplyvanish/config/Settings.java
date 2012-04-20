@@ -122,10 +122,15 @@ public class Settings {
 	
 	public boolean addExtendedConfiguration = true;
 	
-	public Set<Integer> bypassBlocks = new HashSet<Integer>();
-	public Set<EntityType> bypassEntities = new HashSet<EntityType>();
+	public final Set<Integer> bypassBlocks = new HashSet<Integer>();
+	public final Set<EntityType> bypassEntities = new HashSet<EntityType>();
 	
 	public boolean bypassIgnorePermissions = true;
+	
+	
+	public boolean cmdWhitelist = false;
+	
+	public final Set<String> cmdCommands = new HashSet<String>();
 	
 	/**
 	 * Adjust internal settings to the given configuration.
@@ -186,6 +191,18 @@ public class Settings {
 		bypassBlocks.addAll(getIdList(config.getStringList(path.flagsBypassBlocks, null)));
 		bypassEntities.clear();
 		bypassEntities.addAll(getEntityList(config.getStringList(path.flagsBypassEntities, null)));
+		
+		// cmd flag:
+		cmdWhitelist = config.getBoolean(path.flagsCmdWhitelist, ref.cmdWhitelist);
+		cmdCommands.clear();
+		List<String> cmds = config.getStringList(path.flagsCmdCommands, null);
+		if (cmds != null){
+			for (String cmd : cmds){
+				cmd = cmd.trim().toLowerCase();
+				if (cmd.isEmpty()) continue;
+				else cmds.add(cmd);
+			}
+		}
 		
 		// Command aliases: are set in another place !
 		
@@ -306,16 +323,9 @@ public class Settings {
 		defaults.set(path.addExtended, ref.addExtendedConfiguration);
 		
 		defaults.set(path.flagsBypassIgnorePermissions, ref.bypassIgnorePermissions);
-		List<String> blocks = new LinkedList<String>();
-		for (Integer id : presetBypassBlocks){
-			blocks.add(id.toString());
-		}
-		defaults.set(path.flagsBypassBlocks, blocks);
-		List<String> entities = new LinkedList<String>();
-		for (EntityType entity : presetBypassEntities){
-			entities.add(entity.toString());
-		}
-		defaults.set(path.flagsBypassEntities, entities);
+		
+		defaults.set(path.flagsCmdWhitelist, ref.cmdWhitelist);
+		defaults.set(path.flagsCmdCommands, new LinkedList<String>());
 		
 		// Sets are not added, for they can interfere.
 		
@@ -323,8 +333,25 @@ public class Settings {
 	}
 
 	public static boolean addDefaults(CompatConfig config, Path path) {
+		// Add more complex defaults:
+		if (!config.contains(path.flagsBypass)){
+			List<String> blocks = new LinkedList<String>();
+			for (Integer id : presetBypassBlocks){
+				blocks.add(id.toString());
+			}
+			config.set(path.flagsBypassBlocks, blocks);
+			List<String> entities = new LinkedList<String>();
+			for (EntityType entity : presetBypassEntities){
+				entities.add(entity.toString());
+			}
+			config.set(path.flagsBypassEntities, entities);
+		}
 		// Add simple default entries:
 		boolean changed = ConfigUtil.forceDefaults(getSimpleDefaultConfig(path), config);
+		// Add more complex defaults:
+		if (!config.contains(path.flagsBypassBlocks)) config.set(path.flagsBypassBlocks, new LinkedList<String>());
+		if (!config.contains(path.flagsBypassEntities)) config.set(path.flagsBypassEntities, new LinkedList<String>());	
+		
 		// Return if no extended entries desired:
 		if (!config.getBoolean(path.addExtended, true)) return changed;
 		// Fake permissions example entries:

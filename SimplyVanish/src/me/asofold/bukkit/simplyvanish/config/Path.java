@@ -73,6 +73,10 @@ public class Path {
 	public final String flagsBypassIgnorePermissions;
 	public final String flagsBypassEntities;
 	public final String flagsBypassBlocks;
+	
+	public final String flagsCmd;
+	public final String flagsCmdWhitelist;
+	public final String flagsCmdCommands;
 
 	public Path(char sep){
 		this.sep = sep;
@@ -145,5 +149,9 @@ public class Path {
 		flagsBypassIgnorePermissions = flagsBypass + sep + "ignore-permissions";
 	    flagsBypassEntities = flagsBypass + sep + "entities";
 		flagsBypassBlocks = flagsBypass + sep + "blocks";
+		
+		flagsCmd = flags + sep + "cmd";
+		flagsCmdWhitelist = flagsCmd + sep + "whitelist";
+		flagsCmdCommands = flagsCmd + sep + "commands";
 	}
 }
