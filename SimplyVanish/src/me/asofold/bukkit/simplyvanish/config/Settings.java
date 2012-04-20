@@ -200,7 +200,7 @@ public class Settings {
 			for (String cmd : cmds){
 				cmd = cmd.trim().toLowerCase();
 				if (cmd.isEmpty()) continue;
-				else cmds.add(cmd);
+				else cmdCommands.add(cmd);
 			}
 		}
 		
