@@ -202,6 +202,7 @@ public class SimplyVanishCommand{
 			// Make sure the player is vanished...
 			if (hasFlags) core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
 			if (!SimplyVanish.setVanished((Player) sender, true)) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
+			if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self")) core.onShowFlags((Player) sender, null);
 			return true;
 		} 
 		else if ( len==1 ){
@@ -211,6 +212,7 @@ public class SimplyVanishCommand{
 			if (hasFlags) core.setFlags(name, args, len, sender, false, true, false);
 			if (SimplyVanish.setVanished(name, true)) Utils.send(sender, SimplyVanish.msgLabel + "Vanish player: "+name);
 			else Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
+			if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.other")) core.onShowFlags((Player) sender, name);
 			return true;
 		} 
 		return unrecognized(sender);
