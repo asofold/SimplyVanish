@@ -613,6 +613,11 @@ public class SimplyVanishCore{
 		return sorted;
 	}
 
+	/**
+	 * Show flags for name to sender, or use the senders name, if name is null.
+	 * @param sender
+	 * @param name
+	 */
 	public void onShowFlags(CommandSender sender, String name) {
 		if ( name == null) name = sender.getName();
 		name = name.toLowerCase();
