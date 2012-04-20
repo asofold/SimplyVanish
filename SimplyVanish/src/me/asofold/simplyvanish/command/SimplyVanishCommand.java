@@ -134,8 +134,10 @@ public class SimplyVanishCommand{
 			return true;
 		} 
 		else if ( label.equals("simplyvanish") || label.equals("vanflag")){
-			if (hasFlags || len == 0) return flagCommand(sender, args, len, hasFlags);
-			else if (!hasFlags && label.equals("simplyvanish")) return rootCommand(sender, args);
+			if (!hasFlags && label.equals("simplyvanish")) {
+				if (rootCommand(sender, args)) return true;
+			}
+			return flagCommand(sender, args, len, hasFlags);
 		}
 		return unrecognized(sender);
 	}
@@ -212,12 +214,12 @@ public class SimplyVanishCommand{
 	}
 
 	/**
-	 * No flags.
+	 * Try to use as root command.
 	 * @param sender
 	 * @param command
 	 * @param label Expected to be mapped already.
 	 * @param args
-	 * @return
+	 * @return IF COMMAND EXECUTED
 	 */
 	private boolean rootCommand(CommandSender sender, String[] args) {
 		SimplyVanish plugin = core.getPlugin();
@@ -262,7 +264,7 @@ public class SimplyVanishCommand{
 			Utils.send(sender, SimplyVanish.msgLabel + ChatColor.GRAY+"All default flags: "+ChatColor.YELLOW+b.toString());
 			return true;
 		}
-		return unrecognized(sender);
+		return false; // command not executed, maybe unknown.
 		
 	}
 
