@@ -14,6 +14,9 @@ import me.asofold.bukkit.simplyvanish.config.compatlayer.CompatConfigFactory;
 import me.asofold.bukkit.simplyvanish.config.compatlayer.ConfigUtil;
 import me.asofold.bukkit.simplyvanish.util.Utils;
 
+import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
+
 
 
 public class Settings {
@@ -22,6 +25,23 @@ public class Settings {
 	public static final String[][] presetPermSets = new String[][]{
 		{"all"},
 		{"vanish.self", "flags.display.self", "flags.set.self.drop"},
+	};
+	
+	/**
+	 * Some bypass blocks typical for inspection and use:
+	 */
+	public static final int[] presetBypassBlocks = new int[]{
+		23, // dispenser
+		54,  // chest
+		61, 62, // furnace
+		58, // crafting table
+		116, // Enchantment table
+		117, // Brewing stand
+		118, // Cauldron
+	};
+	
+	public static final EntityType[] presetBypassEntities = new EntityType[]{
+		EntityType.MINECART,
 	};
 	
 	
@@ -102,6 +122,11 @@ public class Settings {
 	
 	public boolean addExtendedConfiguration = true;
 	
+	public Set<Integer> bypassBlocks = new HashSet<Integer>();
+	public Set<EntityType> bypassEntities = new HashSet<EntityType>();
+	
+	public boolean bypassIgnorePermissions = true;
+	
 	/**
 	 * Adjust internal settings to the given configuration.
 	 * TODO: put this to plugin / some settings helper
@@ -155,7 +180,16 @@ public class Settings {
 		allowOps = config.getBoolean(path.allowOps, ref.allowOps);
 		superperms = config.getBoolean(path.superperms, ref.superperms);
 		
-		//
+		// Bypasses:
+		bypassIgnorePermissions = config.getBoolean(path.flagsBypassIgnorePermissions, ref.bypassIgnorePermissions);
+		bypassBlocks.clear();
+		bypassBlocks.addAll(getIdList(config.getStringList(path.flagsBypassBlocks, null)));
+		bypassEntities.clear();
+		bypassEntities.addAll(getEntityList(config.getStringList(path.flagsBypassEntities, null)));
+		
+		// Command aliases: are set in another place !
+		
+		// Fake permissions:
 		fakePermissions.clear();
 		String inUse = "";
 		Collection<String> keys = config.getStringKeys(path.permSets);
@@ -188,6 +222,49 @@ public class Settings {
 		if (!inUse.isEmpty()) Utils.warn("Fake permissions in use for: "+inUse);
 	}
 	
+	private List<EntityType> getEntityList(List<String> entries) {
+		List<EntityType> out = new LinkedList<EntityType>();
+		if (entries == null) return out;
+		for (String entry : entries){
+			EntityType type = null;
+			try{
+				type = EntityType.valueOf(entry.trim().toUpperCase().replace(" ", "_"));
+			} catch (Throwable t){
+			}
+			if (type != null) out.add(type);
+			else Utils.warn("Unrecognized entity definition: "+entry);
+		}
+		return out;
+	}
+
+	private List<Integer> getIdList(List<String> blocks) {
+		List<Integer> out = new LinkedList<Integer>();
+		if ( blocks == null) return out;
+		for ( String entry : blocks){
+			Material mat = null;
+			try{
+				mat = Material.matchMaterial(entry.trim().toUpperCase());
+			} 
+			catch (Throwable t){
+			}
+			if (mat != null){
+				out.add(mat.getId());
+				continue;
+			}
+			try{
+				mat = Material.getMaterial(Integer.parseInt(entry.trim()));
+			}
+			catch (Throwable t){	
+			}
+			if (mat != null){
+				out.add(mat.getId());
+				continue;
+			}
+			Utils.warn("Unrecognized block definition: "+entry);
+		}
+		return out;
+	}
+
 	/**
 	 * Only contain values that are safe to add if the key is not present.
 	 * @param path
@@ -227,6 +304,18 @@ public class Settings {
 		defaults.set(path.superperms, ref.superperms);
 		
 		defaults.set(path.addExtended, ref.addExtendedConfiguration);
+		
+		defaults.set(path.flagsBypassIgnorePermissions, ref.bypassIgnorePermissions);
+		List<String> blocks = new LinkedList<String>();
+		for (Integer id : presetBypassBlocks){
+			blocks.add(id.toString());
+		}
+		defaults.set(path.flagsBypassBlocks, blocks);
+		List<String> entities = new LinkedList<String>();
+		for (EntityType entity : presetBypassEntities){
+			entities.add(entity.toString());
+		}
+		defaults.set(path.flagsBypassEntities, entities);
 		
 		// Sets are not added, for they can interfere.
 		

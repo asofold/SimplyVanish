@@ -1,15 +1,19 @@
 package me.asofold.bukkit.simplyvanish.listeners;
 
 import me.asofold.bukkit.simplyvanish.SimplyVanishCore;
+import me.asofold.bukkit.simplyvanish.config.Settings;
 import me.asofold.bukkit.simplyvanish.config.VanishConfig;
 import me.asofold.bukkit.simplyvanish.util.Utils;
 
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.painting.PaintingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -39,13 +43,33 @@ public class InteractListener implements Listener {
 		return true;
 	}
 	
+	private boolean hasBypass(Player player, EntityType type) {
+		if (!core.getVanishConfig(player.getName(), false).bypass.state) return false;
+		if (type == null) return false;
+		Settings settings = core.getSettings();
+		if (!settings.bypassIgnorePermissions && player.hasPermission("simplyvanish.flags.bypass."+(type.toString().toLowerCase()))) return true;
+		else if (settings.bypassEntities.contains(type)) return true; 
+		else return false;
+	}
+	
+	private boolean hasBypass(Player player, int blockId) {
+		if (!core.getVanishConfig(player.getName(), false).bypass.state) return false;
+		Settings settings = core.getSettings();
+		if (!settings.bypassIgnorePermissions && player.hasPermission("simplyvanish.flags.bypass."+blockId)) return true;
+		else if (settings.bypassBlocks.contains(blockId)) return true;
+		else return false;
+	}
+	
 	@EventHandler(priority=EventPriority.HIGHEST)
 	void onInteract(PlayerInteractEvent event){
 		// This is on highest to allow the use of info and teleport tools.
 		if (event.isCancelled()) return;
-		if (shouldCancel(event.getPlayer().getName())){
+		final Player player = event.getPlayer();
+		if (shouldCancel(player.getName())){
+			Block block = event.getClickedBlock();
+			if (block != null && hasBypass(player, block.getTypeId())) return;
 			event.setCancelled(true);
-			Utils.sendBlock(event.getPlayer(), event.getClickedBlock());
+			Utils.sendBlock(event.getPlayer(), block);
 		}
 	}
 	
@@ -53,9 +77,14 @@ public class InteractListener implements Listener {
 	// This is on highest to allow the use of info and teleport tools.
 	void onInteractEntity(PlayerInteractEntityEvent event){
 		if (event.isCancelled()) return;
-		if (shouldCancel(event.getPlayer().getName())) event.setCancelled(true);
+		final Player player = event.getPlayer();
+		if (shouldCancel(player.getName())){
+			// check bypass:
+			if (hasBypass(player, event.getRightClicked().getType())) return;
+			event.setCancelled(true);
+		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.LOW)
 	void onBucketFill(PlayerBucketFillEvent event){
 		if (event.isCancelled()) return;
@@ -63,6 +92,13 @@ public class InteractListener implements Listener {
 			event.setCancelled(true);
 			Utils.sendBlock(event.getPlayer(), event.getBlockClicked());
 		}
+	}
+	
+	@EventHandler(priority=EventPriority.LOW)
+	void onBlockBreak(BlockBreakEvent event){
+		// Do add these for bypasses.
+		if (event.isCancelled()) return;
+		if (shouldCancel(event.getPlayer().getName())) event.setCancelled(true);
 	}
 	
 	

@@ -66,6 +66,13 @@ public class Path {
 
 
 	public final String addExtended;
+	
+	
+	public final String flags;
+	public final String flagsBypass;
+	public final String flagsBypassIgnorePermissions;
+	public final String flagsBypassEntities;
+	public final String flagsBypassBlocks;
 
 	public Path(char sep){
 		this.sep = sep;
@@ -132,5 +139,11 @@ public class Path {
 		keyPlayers = "players";
 		
 		addExtended = "extended-configuration";
+		
+		flags = "flags";
+		flagsBypass = flags + sep + "bypass";
+		flagsBypassIgnorePermissions = flagsBypass + sep + "ignore-permissions";
+	    flagsBypassEntities = flagsBypass + sep + "entities";
+		flagsBypassBlocks = flagsBypass + sep + "blocks";
 	}
 }
