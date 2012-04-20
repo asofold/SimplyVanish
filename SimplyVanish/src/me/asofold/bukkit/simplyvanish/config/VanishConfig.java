@@ -93,9 +93,19 @@ public class VanishConfig {
 	public final Flag interact = addFlag("interact", false);
 	
 	/**
+	 * Bypass flag for interact.
+	 */
+	public final Flag bypass = addFlag("bypass", false);
+	
+	/**
 	 * Allow chat.
 	 */
 	public final Flag chat = addFlag("chat", true);
+	
+	/**
+	 * Allow blocked cmds (...).
+	 */
+	public final Flag cmd = addFlag("cmd", true);
 	
 	/**
 	 * Player wants auto-vanish to be set. If set to null, default configuration behavior is used.
@@ -106,7 +116,6 @@ public class VanishConfig {
 	 * Notify ping.
 	 */
 	public final Flag ping = addFlag("ping", true);
-	
 	
 	protected Flag addFlag(String name, boolean preset){
 		if (flags.containsKey(name)) throw new IllegalArgumentException("Flags must be unique, got: "+name);
