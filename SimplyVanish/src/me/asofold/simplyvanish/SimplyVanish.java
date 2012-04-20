@@ -296,7 +296,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @return If one was already present.
 	 */
 	public static boolean addHook(Hook hook){
-		return core.hookUtil.addHook(hook);
+		return core.getHookUtil().addHook(hook);
 	}
 	
 	/**
@@ -305,7 +305,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @return Hook or null, if not registered.
 	 */
 	public static Hook getRegisteredHook(String name){
-		return core.hookUtil.getHook(name);
+		return core.getHookUtil().getHook(name);
 	}
 	
 	/**
@@ -315,7 +315,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @return If one was already present.
 	 */
 	public static boolean removeHook(Hook hook){
-		return core.hookUtil.removeHook(hook);
+		return core.getHookUtil().removeHook(hook);
 	}
 	
 	/**
@@ -325,7 +325,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @return If one was already present.
 	 */
 	public static boolean removeHook(String hookName){
-		return core.hookUtil.removeHook(hookName);
+		return core.getHookUtil().removeHook(hookName);
 	}
 	
 	/**
@@ -333,7 +333,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * API
 	 */
 	public static void removeAllHooks(){
-		core.hookUtil.removeAllHooks();
+		core.getHookUtil().removeAllHooks();
 	}
 	
 	/**

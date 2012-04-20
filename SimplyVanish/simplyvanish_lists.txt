@@ -73,14 +73,13 @@ STACK
 * consider: flag without +/- => use default state or extra prefix (complicates all though)?
 
 !(add) example flag sets for typical use (let others vanish "safely")
-!(add)flag sets, selectable with "*" prefix, like "*camera", similar to "*clear" . Clear must be overridable.
+!(add) flag sets, selectable with "*" prefix, like "*camera", similar to "*clear".
 
 ?(add) flag: ?cmd(only blocks cmds declared in the configuration.)
-!(add) bypass or snoop flag (default -bypass ): allow interaction with predefined blocks and items ? and entities! 
+!(add) bypass or snoop flag (default -bypass ): allow interaction with predefined blocks and items ? and entities!
 
 
 *** BUGS
-- tvanish should also show flags if flags were given! [same with vanish/reappear, just if flags were given]
 
 
 
@@ -101,7 +100,7 @@ CHANGELOG
 - (adjust) API call setVanishConfig will issue a save now. 
 - (bugfix) /simplyvanish command without arguments is again recognized for display of flags.
 - (refactor) One listener class for each flag (which needs any).
-- (refactor) Adjust internals for more reliability and easier maintainance in some spots (VanishConfig: handling, changed flag).
+- (refactor) Adjust internals for more reliability and easier maintenance in some spots (VanishConfig: handling, changed flag).
 
 (0.4.0-PRE-4)
 - (add) /simplyvanish flags command to show all flags with default value.

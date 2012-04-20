@@ -45,7 +45,7 @@ public class SimplyVanishCore{
 	 */
 	private final Map<String, VanishConfig> vanishConfigs = new HashMap<String, VanishConfig>();
 	
-	final HookUtil hookUtil = new HookUtil();
+	private final HookUtil hookUtil = new HookUtil();
 	
 	/**
 	 * Flag for if the plugin is enabled.
