@@ -43,8 +43,7 @@ public class ChatListener implements Listener {
 		final VanishConfig cfg = core.getVanishConfig(name, false);
 		if (cfg == null) return false;
 		if (!cfg.vanished.state) return false;
-		if (!cfg.chat.state && cmd.equals("me")) return true;
-		else if (!cfg.cmd.state){
+		if (!cfg.cmd.state){
 			Settings settings = core.getSettings();
 			final boolean contains = settings.cmdCommands.contains(cmd);
 			if (settings.cmdWhitelist) return !contains;
