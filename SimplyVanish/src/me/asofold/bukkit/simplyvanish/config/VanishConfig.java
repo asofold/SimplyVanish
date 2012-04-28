@@ -52,16 +52,12 @@ public class VanishConfig {
 	 */
 	final Map<String, Flag> flags = new HashMap<String, Flag>();
 	
+	// False flags:
+	
 	/**
 	 * Player is vanished.
 	 */
 	public final Flag vanished = addFlag("vanished", false);
-	
-	/**
-	 * Player does not want to see other vanished players.<br>
-	 * (Though he potentially might y permission to.)
-	 */
-	public final Flag see = addFlag("see", true);
 	
 	/**
 	 * Player wants to be able to pick up items.
@@ -107,6 +103,14 @@ public class VanishConfig {
 	 * Allow blocked cmds (...).
 	 */
 	public final Flag cmd = addFlag("cmd", false);
+	
+	// True flags:
+	
+	/**
+	 * Player does not want to see other vanished players.<br>
+	 * (Though he potentially might y permission to.)
+	 */
+	public final Flag see = addFlag("see", true);
 	
 	/**
 	 * Player wants auto-vanish to be set. If set to null, default configuration behavior is used.
