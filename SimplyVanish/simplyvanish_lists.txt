@@ -50,57 +50,58 @@ PLANNED FEATURES AND QUESTIONS
 STACK
 ---------------------------------------------
 
-*** (0.4.0) [RELEASE]
+*** (0.5.0) 
 
 
 ***[EXTRAS]
+- ?(add) god mode ? /simgod = all flags apply though not vanished ! + /simungod [aliases by LightCommands]
 ? make config flags if to register the listeners at all ?
 ? (add) Expiration time for vanishconfigs (checked at getVanishConfig) to allow temporary vanishing. ? RSP- integration: invisible arena ? 
-- ?(add) god mode ? /simgod = all flags apply though not vanished ! + /simungod [aliases by LightCommands]
 ? some help text  / more info
 
 ? DisplayPolice for flags: DEFAULT, POSITIVE, NEGATIVE (Show only changes to those stats, saving and loading always with difference to DEFAULT)  
+* consider: flag without +/- => use default state or extra prefix (complicates all though)?
 
 
+*** (0.4.0) [FEATURE FREEZE]
 
-*** ADJUST FEATURES + BUGS
-
-
-*** (0.4.0-PRE-5) [FEATURE FREEZE]
+** cleanup the changelog for 0.4.0
+* Keep considering: What to bring in finally a) as default values b) For composite flags like attack / interact / chat / cmd / 
 
 ? refactor: only use updatevanishstate also from doVanish and doReappear!
-
-** cleanup the changelog for 0.4.0-PRE-5
-
-* Keep considering: What to bring in finally a) as default values b) For composite flags like attack / interact / chat / cmd / 
-* consider: flag without +/- => use default state or extra prefix (complicates all though)?
+?(add) colored flag output: red = - green = + // name gray if default value and configured to show
 
 !(add) example flag sets for typical use (let others vanish "safely")
 !(add) flag sets, selectable with "*" prefix, like "*camera", similar to "*clear".
+? add /tell to chat flag ? -> rather add tell and me to the cmd list ?
 
-!(add) colored flag output: red = - green = + // name gray if default value and configured to show
-!(add) Order of flags !! most significant first !! 
-?(add)  
+
+** MUST DO
+!(add) Order of flags !! most significant first !!
 
 *** BUGS
 vanflag bypass -> wrong: All flags are at default values ! (+bypass works !)
+? bug: vanish state not saved on disable ?
 
+! (add) deprecated warnings for old configuration entries ! (or even copy settings)
+
+! new mob targeting problems ?
 
 CHANGELOG 
 ---------------------------------------------
 
 (0.4.0-PRE-5)
-- (bugfix) Show flags if used with vanish, reappear or tvanish.
 - (add) More complex flags: attack, interact+bypass, chat, cmd. [clicked away one event, what was it...] 
-- (add) "-damage" also prevents negative food level change now.
-- (remove) Obsolete command: /simplyvanish drop
 - (add) save.delay: Do delay saving for at least this amount of seconds.
 - (add) '/simplyvanish save' command (simplyvanish.cmd.save).
-- (change) Save settings do have their own configuration section now.
+- (change) Save-settings do have their own configuration section now.
 - (add) Configuration flag "extended-configuration": Will prevent adding fake permissions and commands entries, if set to false.
 - (add) API - SimplyVanish.hasPermission + Internals: make permission related settings non-static.
 - (add) API - SimplyVanish: getDefaultVanishConfig, getRegisteredHook ; SimplyVanishStateEvent: getPlayer, isPlayerOnline
 - (adjust) API call setVanishConfig will issue a save now. 
+- (remove) Obsolete command: /simplyvanish drop
+- (bugfix) "-damage" also prevents negative food level change now.
+- (bugfix) Show flags if used with vanish, reappear or tvanish.
 - (bugfix) /simplyvanish command without arguments is again recognized for display of flags.
 - (refactor) One listener class for each flag (which needs any).
 - (refactor) Adjust internals for more reliability and easier maintenance in some spots (VanishConfig: handling, changed flag).
