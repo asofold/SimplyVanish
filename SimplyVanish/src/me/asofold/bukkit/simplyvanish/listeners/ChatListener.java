@@ -59,7 +59,7 @@ public class ChatListener implements Listener {
 		final Player player = event.getPlayer();
 		if (shouldCancelChat(player.getName())){
 			event.setCancelled(true);
-			msgCancel(player);
+			player.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"Disabled! (/vanflag +chat or /reappear)");
 		}
 	}
 	
@@ -72,11 +72,7 @@ public class ChatListener implements Listener {
 		final Player player = event.getPlayer();
 		if (shouldCancelCmd(player.getName(), cmd)){
 			event.setCancelled(true);
-			msgCancel(player);
+			player.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"Disabled! (/vanflag +cmd or /reappear)");
 		}
-	}
-
-	private void msgCancel(Player player) {
-		player.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"Disabled! (Flags: +chat or +cmd, or /reappear)");
 	}
 }
