@@ -101,7 +101,7 @@ public class VanishConfig {
 	/**
 	 * Allow chat.
 	 */
-	public final Flag chat = addFlag("chat", true);
+	public final Flag chat = addFlag("chat", false);
 	
 	/**
 	 * Allow blocked cmds (...).
