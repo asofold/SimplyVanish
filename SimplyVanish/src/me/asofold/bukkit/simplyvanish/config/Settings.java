@@ -43,6 +43,10 @@ public class Settings {
 	public static final EntityType[] presetBypassEntities = new EntityType[]{
 		EntityType.MINECART,
 	};
+
+	public static final String[] defaultFLagCmds = new String[]{
+		"me", "tell",
+	};
 	
 	
 	// non static:
@@ -325,7 +329,11 @@ public class Settings {
 		defaults.set(path.flagsBypassIgnorePermissions, ref.bypassIgnorePermissions);
 		
 		defaults.set(path.flagsCmdWhitelist, ref.cmdWhitelist);
-		defaults.set(path.flagsCmdCommands, new LinkedList<String>());
+		List<String> cmds = new LinkedList<String>();
+		for (String cmd: defaultFLagCmds){
+			cmds.add(cmd);
+		}
+		defaults.set(path.flagsCmdCommands, cmds);
 		
 		// Sets are not added, for they can interfere.
 		
