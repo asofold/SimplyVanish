@@ -106,7 +106,7 @@ public class VanishConfig {
 	/**
 	 * Allow blocked cmds (...).
 	 */
-	public final Flag cmd = addFlag("cmd", true);
+	public final Flag cmd = addFlag("cmd", false);
 	
 	/**
 	 * Player wants auto-vanish to be set. If set to null, default configuration behavior is used.
