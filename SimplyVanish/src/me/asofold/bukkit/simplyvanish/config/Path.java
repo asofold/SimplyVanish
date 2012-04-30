@@ -2,6 +2,8 @@ package me.asofold.bukkit.simplyvanish.config;
 
 
 public class Path {
+	public final String flagSets;
+
 	public final char sep;
 	
 	public final String pickup;
@@ -153,5 +155,7 @@ public class Path {
 		flagsCmd = flags + sep + "cmd";
 		flagsCmdWhitelist = flagsCmd + sep + "whitelist";
 		flagsCmdCommands = flagsCmd + sep + "commands";
+		
+		flagSets = "flag-sets";
 	}
 }

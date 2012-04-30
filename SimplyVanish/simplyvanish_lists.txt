@@ -63,17 +63,17 @@ STACK
 * consider: flag without +/- => use default state or extra prefix (complicates all though)?
 
 
+? refactor: only use updatevanishstate also from doVanish and doReappear!
+
 *** (0.4.0) [FEATURE FREEZE]
 
 ** cleanup the changelog for 0.4.0
-* Keep considering: What to bring in finally a) as default values b) For composite flags like attack / interact / chat / cmd / 
-
-? refactor: only use updatevanishstate also from doVanish and doReappear!
+* CHeck what else could be done for flags (interact, attack).
 ?(add) colored flag output: red = - green = + // name gray if default value and configured to show
 
+*** Flag sets.
 !(add) example flag sets for typical use (let others vanish "safely")
 !(add) flag sets, selectable with "*" prefix, like "*camera", similar to "*clear".
-? add /tell to chat flag ? -> rather add tell and me to the cmd list ?
 
 
 ** MUST DO
@@ -87,10 +87,13 @@ vanflag bypass -> wrong: All flags are at default values ! (+bypass works !)
 
 ! new mob targeting problems ?
 
+? flag set aliases ? -> + use some class to wrap flag sets ?
+
 CHANGELOG 
 ---------------------------------------------
 
-(0.4.0-PRE-5)
+(0.4.0)
+- (add) Flag sets for shortcuts.
 - (add) More complex flags: attack, interact+bypass, chat, cmd. [clicked away one event, what was it...] 
 - (add) save.delay: Do delay saving for at least this amount of seconds.
 - (add) '/simplyvanish save' command (simplyvanish.cmd.save).
@@ -98,7 +101,7 @@ CHANGELOG
 - (add) Configuration flag "extended-configuration": Will prevent adding fake permissions and commands entries, if set to false.
 - (add) API - SimplyVanish.hasPermission + Internals: make permission related settings non-static.
 - (add) API - SimplyVanish: getDefaultVanishConfig, getRegisteredHook ; SimplyVanishStateEvent: getPlayer, isPlayerOnline
-- (adjust) API call setVanishConfig will issue a save now. 
+- (adjust) API call setVanishConfig will issue a save now, if configured so. 
 - (remove) Obsolete command: /simplyvanish drop
 - (bugfix) "-damage" also prevents negative food level change now.
 - (bugfix) Show flags if used with vanish, reappear or tvanish.

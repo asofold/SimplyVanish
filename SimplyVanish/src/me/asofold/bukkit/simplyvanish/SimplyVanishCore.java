@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -423,12 +424,24 @@ public class SimplyVanishCore{
 		boolean hasSomePerm = hasBypass; // indicates that the player has any permission at all.
 		if (cfg == null) cfg = new VanishConfig();
 		boolean hasClearFlag = false;
+		List<String[]> applySets = new LinkedList<String[]>();
 		for ( int i = startIndex; i<args.length; i++){
-			String name = VanishConfig.getMappedFlagName(args[i].trim().toLowerCase());
-			if ( name.equals("clear")){
-				hasClearFlag = true;
-				break;
-			} 
+			final String arg = args[i].trim().toLowerCase();
+			if (arg.isEmpty()) continue;
+			if (arg.charAt(0) == '*'){
+				String name = VanishConfig.getMappedFlagName(arg);
+				if ( name.equals("clear")){
+					hasClearFlag = true;
+					break;
+				} 
+				else if (settings.flagSets.containsKey(name)){
+					String[] set = settings.flagSets.get(name);
+					applySets.add(set);
+					for ( String x : set){
+						if (VanishConfig.getMappedFlagName(x).equals("clear")) hasClearFlag = true;
+					}
+				}
+			}
 		}
 		VanishConfig newCfg;
 		if (hasClearFlag){
@@ -436,7 +449,10 @@ public class SimplyVanishCore{
 			newCfg.set("vanished", cfg.get("vanished"));
 		}
 		else newCfg = cfg.clone();
-		
+		// flag sets:
+		for (String[] temp : applySets){
+			newCfg.readFromArray(temp, 0, false);
+		}
 		newCfg.readFromArray(args, startIndex, false);
 		
 		List<String> changes = cfg.getChanges(newCfg);

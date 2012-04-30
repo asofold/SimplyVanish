@@ -136,6 +136,8 @@ public class Settings {
 	
 	public final Set<String> cmdCommands = new HashSet<String>();
 	
+	public final Map<String, String[]> flagSets = new HashMap<String, String[]>();
+	
 	/**
 	 * Adjust internal settings to the given configuration.
 	 * TODO: put this to plugin / some settings helper
@@ -206,6 +208,15 @@ public class Settings {
 				if (cmd.isEmpty()) continue;
 				else cmdCommands.add(cmd);
 			}
+		}
+		
+		List<String> flagSetNames = config.getStringKeys(path.flagSets);
+		flagSets.clear();
+		for (String key : flagSetNames){
+			String flags = config.getString(path.flagSets+"."+key);
+			if (flags == null) continue;
+			String lcKey = key.trim().toLowerCase();
+			flagSets.put(lcKey, flags.split(" "));
 		}
 		
 		// Command aliases: are set in another place !
@@ -385,6 +396,12 @@ public class Settings {
 				config.set(p, new LinkedList<String>());
 				changed = true;
 			}
+		}
+		
+		if (!config.contains(path.flagSets)){
+			config.set(path.flagSets+".cc", "+cmd +chat");
+			config.set(path.flagSets+".cl", "clear");
+			changed = true;
 		}
 		return changed;
 	}
