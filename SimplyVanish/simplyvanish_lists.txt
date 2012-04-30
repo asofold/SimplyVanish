@@ -65,16 +65,15 @@ STACK
 
 ? refactor: only use updatevanishstate also from doVanish and doReappear!
 
+? flag set aliases ? -> + use some class to wrap flag sets ?
+? (add) Flag sets: permissions for applying just those flag sets ? -> not yet
+
+
 *** (0.4.0) [FEATURE FREEZE]
 
 ** cleanup the changelog for 0.4.0
 * CHeck what else could be done for flags (interact, attack).
 ?(add) colored flag output: red = - green = + // name gray if default value and configured to show
-
-*** Flag sets.
-!(add) example flag sets for typical use (let others vanish "safely")
-!(add) flag sets, selectable with "*" prefix, like "*camera", similar to "*clear".
-
 
 ** MUST DO
 !(add) Order of flags !! most significant first !!
@@ -87,7 +86,6 @@ vanflag bypass -> wrong: All flags are at default values ! (+bypass works !)
 
 ! new mob targeting problems ?
 
-? flag set aliases ? -> + use some class to wrap flag sets ?
 
 CHANGELOG 
 ---------------------------------------------
