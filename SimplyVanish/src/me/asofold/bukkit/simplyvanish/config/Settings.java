@@ -352,6 +352,7 @@ public class Settings {
 	}
 
 	public static boolean addDefaults(CompatConfig config, Path path) {
+		boolean changed  = false;
 		// Add more complex defaults:
 		if (!config.contains(path.flagsBypass)){
 			List<String> blocks = new LinkedList<String>();
@@ -364,9 +365,16 @@ public class Settings {
 				entities.add(entity.toString());
 			}
 			config.set(path.flagsBypassEntities, entities);
+			changed = true;
+		}
+		for (String p : path.deprecated){
+			if (config.contains(p)){
+				config.remove(p);
+				changed = true;
+			}
 		}
 		// Add simple default entries:
-		boolean changed = ConfigUtil.forceDefaults(getSimpleDefaultConfig(path), config);
+		changed = ConfigUtil.forceDefaults(getSimpleDefaultConfig(path), config);
 		// Add more complex defaults:
 		if (!config.contains(path.flagsBypassBlocks)) config.set(path.flagsBypassBlocks, new LinkedList<String>());
 		if (!config.contains(path.flagsBypassEntities)) config.set(path.flagsBypassEntities, new LinkedList<String>());	
