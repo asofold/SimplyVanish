@@ -79,6 +79,12 @@ public class Path {
 	public final String flagsCmd;
 	public final String flagsCmdWhitelist;
 	public final String flagsCmdCommands;
+	
+	public final String[] deprecated = new String[]{
+			"save-vanished", 
+			"save-vanished-always",
+			"save-vanished-interval",
+	};
 
 	public Path(char sep){
 		this.sep = sep;
