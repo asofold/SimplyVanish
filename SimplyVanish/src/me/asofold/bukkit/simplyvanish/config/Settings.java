@@ -374,7 +374,7 @@ public class Settings {
 			}
 		}
 		// Add simple default entries:
-		changed = ConfigUtil.forceDefaults(getSimpleDefaultConfig(path), config);
+		changed |= ConfigUtil.forceDefaults(getSimpleDefaultConfig(path), config);
 		// Add more complex defaults:
 		if (!config.contains(path.flagsBypassBlocks)) config.set(path.flagsBypassBlocks, new LinkedList<String>());
 		if (!config.contains(path.flagsBypassEntities)) config.set(path.flagsBypassEntities, new LinkedList<String>());	
