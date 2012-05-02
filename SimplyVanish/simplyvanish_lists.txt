@@ -68,23 +68,23 @@ STACK
 ? flag set aliases ? -> + use some class to wrap flag sets ?
 ? (add) Flag sets: permissions for applying just those flag sets ? -> not yet
 
+?(add) colored flag output: red = - green = + // name gray if default value and configured to show
 
 *** (0.4.0) [FEATURE FREEZE]
 
 ** cleanup the changelog for 0.4.0
-* CHeck what else could be done for flags (interact, attack).
-?(add) colored flag output: red = - green = + // name gray if default value and configured to show
+* Check what else could be done for flags (interact, attack).
+
+- ?cmd flag / bypass : allow certain commands by bypass flag.
 
 ** MUST DO
 !(add) Order of flags !! most significant first !!
 
 *** BUGS
-vanflag bypass -> wrong: All flags are at default values ! (+bypass works !)
-? bug: vanish state not saved on disable ?
-
-! (add) deprecated warnings for old configuration entries ! (or even copy settings)
 
 ! new mob targeting problems ?
+
+
 
 
 CHANGELOG 
