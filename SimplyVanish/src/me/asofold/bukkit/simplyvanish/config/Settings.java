@@ -47,6 +47,12 @@ public class Settings {
 	public static final String[] defaultFLagCmds = new String[]{
 		"me", "tell",
 	};
+
+	private static final String[][] defaultFlagSets = new String[][]{
+		{"cc", "+cmd +chat"},
+		{"cl", "clear"},
+		{"act", "+damage +attack +target +interact +pickup +drop"}, 
+	};
 	
 	
 	// non static:
@@ -407,8 +413,9 @@ public class Settings {
 		}
 		
 		if (!config.contains(path.flagSets)){
-			config.set(path.flagSets+".cc", "+cmd +chat");
-			config.set(path.flagSets+".cl", "clear");
+			for (String[] entry : defaultFlagSets){
+				config.set(path.flagSets + path.sep + entry[0], entry[1]);
+			}
 			changed = true;
 		}
 		return changed;
