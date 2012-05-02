@@ -26,14 +26,16 @@ public class VanishConfig {
 	
 	static{
 		for (String[] c : new String[][]{
-				{"vanished", "vanish", "van", "va"}, // Aliases have no use anyway?
-				{"pickup", "pick", "pic",  "pi"},
-				{"drop", "drp", "dr"},
+				{"vanished", "vanish", "van", "va"}, // Not used for vanished flag.
+				{"pickup", "pick", "pic",  "pck", "pi"},
+				{"drop", "dro", "drp", "dr"},
 				{"damage", "dam", "dmg", "dm", "da"},
 				{"target", "targ", "tar", "tgt", "tg", "ta"},
 				{"interact", "inter", "int", "in" },
 				{"attack", "attac", "att", "at"},
-				{"cmd", "cm"},
+				{"bypass", "byp", "by", "bp"},
+				{"cmd", "command", "cm"}, // The only flag that maps to something shorter.
+				{"chat", "cha" ,"ch"},
 		}){
 			for (int i = 1; i < c.length; i++){
 				mappedFlags.put(c[i] , c[0]);
