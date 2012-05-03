@@ -77,8 +77,6 @@ STACK
 
 - ?cmd flag / bypass : allow certain commands by bypass flag.
 
-** MUST DO
-!(add) Order of flags !! most significant first !!
 
 *** BUGS
 
@@ -104,7 +102,7 @@ CHANGELOG
 - (bugfix) "-damage" also prevents negative food level change now.
 - (bugfix) Show flags if used with vanish, reappear or tvanish.
 - (bugfix) /simplyvanish command without arguments is again recognized for display of flags.
-- (refactor) One listener class for each flag (which needs any).
+- (refactor) Separate listener classes, roughly related to flags.
 - (refactor) Adjust internals for more reliability and easier maintenance in some spots (VanishConfig: handling, changed flag).
 
 (0.4.0-PRE-4)

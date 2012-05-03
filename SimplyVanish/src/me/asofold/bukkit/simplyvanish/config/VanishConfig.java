@@ -1,6 +1,7 @@
 package me.asofold.bukkit.simplyvanish.config;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class VanishConfig {
 	/**
 	 * Mapping names to flags.
 	 */
-	final Map<String, Flag> flags = new HashMap<String, Flag>();
+	final Map<String, Flag> flags = new LinkedHashMap<String, Flag>(); // takes more space but is the fastest way.
 	
 	// False flags:
 	
