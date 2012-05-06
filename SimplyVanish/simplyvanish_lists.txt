@@ -70,17 +70,9 @@ STACK
 
 ?(add) colored flag output: red = - green = + // name gray if default value and configured to show
 
-*** (0.4.0) [FEATURE FREEZE]
-
-** cleanup the changelog for 0.4.0
-* Check what else could be done for flags (interact, attack).
-
-- ?cmd flag / bypass : allow certain commands by bypass flag.
-
-
-*** BUGS
-
 ! new mob targeting problems ?
+* Check what else could be done for flags (interact, attack).
+- ?cmd flag / bypass : allow certain commands by bypass flag.
 
 
 
