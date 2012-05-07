@@ -85,6 +85,7 @@ CHANGELOG
 
 (0.4.1)
 - (change) Now seperate permissions must be used for vanish and reappear!
+- (add) /tvanish <other>
 - (bugfix) Flag display: default message instead of empty.
 - (bugfix) "cl: *clear"
 - (bugfix) Incompatibility of *clear with other flag sets.

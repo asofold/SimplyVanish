@@ -121,8 +121,17 @@ public class SimplyVanishCommand{
 		if ( label.equals("vanish")) return vanishCommand(sender, args, len, hasFlags);
 		else if (label .equals("reappear")) return reappearCommand(sender, args, len, hasFlags);
 		else if ( label.equals("tvanish")){
-			if ( !Utils.checkPlayer(sender)) return true;
-			if (!core.isVanished(((Player) sender).getName())) return vanishCommand(sender, args, len, hasFlags);
+			String name;
+			if (len == 0){
+				if ( !Utils.checkPlayer(sender)) return true;
+				name = ((Player) sender) .getName();
+			}
+			else if (len == 1){
+				name = args[0].trim();
+				if (name.isEmpty()) return unrecognized(sender);
+			} 
+			else return unrecognized(sender); 
+			if (!core.isVanished(name)) return vanishCommand(sender, args, len, hasFlags);
 			else return reappearCommand(sender, args, len, hasFlags);
 		}
 		else if (label.equals("vanished")){
