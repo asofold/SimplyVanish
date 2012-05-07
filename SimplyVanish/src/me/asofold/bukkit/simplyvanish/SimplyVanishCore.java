@@ -505,7 +505,8 @@ public class SimplyVanishCore{
 		name = name.toLowerCase();
 		VanishConfig cfg = getVanishConfig(name, false);
 		if (cfg != null){
-			sender.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Flags("+name+"): "+cfg.toLine());
+			if (!cfg.needsSave()) sender.sendMessage(SimplyVanish.msgDefaultFlags);
+			else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Flags("+name+"): "+cfg.toLine());
 		}
 		else sender.sendMessage(SimplyVanish.msgDefaultFlags);
 	}

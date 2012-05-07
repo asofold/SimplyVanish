@@ -84,6 +84,7 @@ CHANGELOG
 
 
 (0.4.1)
+- (bugfix) Flag display: default message instead of empty.
 - (bugfix) "cl: *clear"
 - (bugfix) Incompatibility of *clear with other flag sets.
 
