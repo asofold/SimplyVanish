@@ -84,6 +84,7 @@ CHANGELOG
 
 
 (0.4.1)
+- (bugfix) "cl: *clear"
 
 (0.4.0)
 - (add) Flag sets for shortcuts.

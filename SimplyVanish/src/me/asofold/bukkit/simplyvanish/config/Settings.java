@@ -50,7 +50,7 @@ public class Settings {
 
 	private static final String[][] defaultFlagSets = new String[][]{
 		{"cc", "+cmd +chat"},
-		{"cl", "clear"},
+		{"cl", "*clear"},
 		{"act", "+damage +attack +target +interact +pickup +drop"}, 
 	};
 	
