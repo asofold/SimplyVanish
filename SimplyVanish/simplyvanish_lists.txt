@@ -77,7 +77,7 @@ STACK
 
 *** 0.4.1
 
-- !(bugfix) Flag display (when not changed or empty).
+- !(bugfix) Display correct flags on error inputs.
 
 CHANGELOG 
 ---------------------------------------------
