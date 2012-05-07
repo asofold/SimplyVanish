@@ -122,18 +122,8 @@ public class SimplyVanishCommand{
 		else if (label .equals("reappear")) return reappearCommand(sender, args, len, hasFlags);
 		else if ( label.equals("tvanish") && len==0 ){
 			if ( !Utils.checkPlayer(sender)) return true;
-			Player player = (Player) sender;
-			String name = player.getName();
-			if (!core.isVanished(name)){
-				if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
-			}
-			else{
-				if ( !Utils.checkPerm(sender, "simplyvanish.reappear.self")) return true;
-			}
-			if (hasFlags) core.setFlags(player.getName(), args, len, sender, false, false, false);
-			if (!SimplyVanish.setVanished(player, !SimplyVanish.isVanished(player))) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
-			if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self")) core.onShowFlags((Player) sender, null);
-			return true;
+			if (!core.isVanished(((Player) sender).getName())) return vanishCommand(sender, args, len, hasFlags);
+			else return reappearCommand(sender, args, len, hasFlags);
 		}
 		else if (label.equals("vanished")){
 			if ( !Utils.checkPerm(sender, "simplyvanish.vanished")) return true;
