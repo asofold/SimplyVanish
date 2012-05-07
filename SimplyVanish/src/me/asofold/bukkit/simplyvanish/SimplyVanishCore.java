@@ -432,7 +432,6 @@ public class SimplyVanishCore{
 				String name = VanishConfig.getMappedFlagName(arg);
 				if ( name.equals("clear")){
 					hasClearFlag = true;
-					break;
 				} 
 				else if (settings.flagSets.containsKey(name)){
 					String[] set = settings.flagSets.get(name);

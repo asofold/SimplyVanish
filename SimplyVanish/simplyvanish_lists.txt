@@ -85,6 +85,7 @@ CHANGELOG
 
 (0.4.1)
 - (bugfix) "cl: *clear"
+- (bugfix) Incompatibility of *clear with other flag sets.
 
 (0.4.0)
 - (add) Flag sets for shortcuts.
