@@ -123,7 +123,13 @@ public class SimplyVanishCommand{
 		else if ( label.equals("tvanish") && len==0 ){
 			if ( !Utils.checkPlayer(sender)) return true;
 			Player player = (Player) sender;
-			if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
+			String name = player.getName();
+			if (!core.isVanished(name)){
+				if ( !Utils.checkPerm(sender, "simplyvanish.vanish.self")) return true;
+			}
+			else{
+				if ( !Utils.checkPerm(sender, "simplyvanish.reappear.self")) return true;
+			}
 			if (hasFlags) core.setFlags(player.getName(), args, len, sender, false, false, false);
 			if (!SimplyVanish.setVanished(player, !SimplyVanish.isVanished(player))) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
 			if (hasFlags && SimplyVanish.hasPermission(sender, "simplyvanish.flags.display.self")) core.onShowFlags((Player) sender, null);
@@ -174,7 +180,7 @@ public class SimplyVanishCommand{
 			boolean hasFlags) {
 		if ( len==0 ){
 			if ( !Utils.checkPlayer(sender)) return true;
-			if ( !SimplyVanish.hasPermission(sender, "simplyvanish.vanish.self") && !SimplyVanish.hasPermission(sender, "simplyvanish.reappear.self")) return Utils.noPerm(sender);
+			if (!SimplyVanish.hasPermission(sender, "simplyvanish.reappear.self")) return Utils.noPerm(sender);
 			// Let the player be seen...
 			if (hasFlags) core.setFlags(((Player) sender).getName(), args, len, sender, false, false, false);
 			if (!SimplyVanish.setVanished((Player) sender, false)) Utils.send(sender, SimplyVanish.msgLabel+ChatColor.RED+"Action was prevented by hooks.");
@@ -182,7 +188,7 @@ public class SimplyVanishCommand{
 			return true;
 		} 
 		else if ( len==1 ){
-			if ( !SimplyVanish.hasPermission(sender, "simplyvanish.vanish.other") && !SimplyVanish.hasPermission(sender, "simplyvanish.reappear.other")) return Utils.noPerm(sender);
+			if (!SimplyVanish.hasPermission(sender, "simplyvanish.reappear.other")) return Utils.noPerm(sender);
 			// Make sure the other player is shown...
 			String name = args[0].trim();
 			if (hasFlags) core.setFlags(name, args, len, sender, false, true, false);

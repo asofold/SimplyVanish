@@ -24,7 +24,7 @@ public class Settings {
 	// static
 	public static final String[][] presetPermSets = new String[][]{
 		{"all"},
-		{"vanish.self", "flags.display.self", "flags.set.self.drop"},
+		{"vanish.self", "reappear.self", "flags.display.self", "flags.set.self.drop"},
 	};
 	
 	/**
