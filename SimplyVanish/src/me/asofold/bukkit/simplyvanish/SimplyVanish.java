@@ -53,7 +53,7 @@ public class SimplyVanish extends JavaPlugin {
 	public static final String msgStillInvisible =  SimplyVanish.msgLabel+ChatColor.GRAY+"You are still "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players.";
 	public static final String msgNowInvisible = SimplyVanish.msgLabel+ChatColor.GRAY+"You are now "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+" to normal players.";
 	public static final String msgNotifyPing = SimplyVanish.msgLabel+ChatColor.GRAY+"You are "+ChatColor.GREEN+"invisible"+ChatColor.GRAY+", right now.";
-	public static final String msgNoFlags = SimplyVanish.msgLabel+ChatColor.GRAY+"Flags are at default values.";
+	public static final String msgDefaultFlags = SimplyVanish.msgLabel+ChatColor.GRAY+"Flags are at default values.";
 
 	public static final Stats stats = new Stats(msgLabel.trim()+"[STATS]");
 	public static final Integer statsUpdateVanishState = stats.getNewId("UpdateVanishState");

@@ -432,7 +432,7 @@ public class SimplyVanishCore{
 				String name = VanishConfig.getMappedFlagName(arg);
 				if ( name.equals("clear")){
 					hasClearFlag = true;
-				} 
+				}
 				else if (settings.flagSets.containsKey(name)){
 					String[] set = settings.flagSets.get(name);
 					applySets.add(set);
@@ -493,6 +493,21 @@ public class SimplyVanishCore{
 		if (!cfg.needsSave()) removeVanishedName(playerName);
 		hookUtil.callAfterSetFlags(playerName);
 		SimplyVanish.stats.addStats(SimplyVanish.statsSetFlags, System.nanoTime()-ns);
+	}
+	
+	/**
+	 * Show flags for name to sender, or use the senders name, if name is null.
+	 * @param sender
+	 * @param name
+	 */
+	public void onShowFlags(CommandSender sender, String name) {
+		if ( name == null) name = sender.getName();
+		name = name.toLowerCase();
+		VanishConfig cfg = getVanishConfig(name, false);
+		if (cfg != null){
+			sender.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Flags("+name+"): "+cfg.toLine());
+		}
+		else sender.sendMessage(SimplyVanish.msgDefaultFlags);
 	}
 	
 	/**
@@ -626,19 +641,6 @@ public class SimplyVanishCore{
 		sorted.addAll(vanished);
 		Collections.sort(sorted);
 		return sorted;
-	}
-
-	/**
-	 * Show flags for name to sender, or use the senders name, if name is null.
-	 * @param sender
-	 * @param name
-	 */
-	public void onShowFlags(CommandSender sender, String name) {
-		if ( name == null) name = sender.getName();
-		name = name.toLowerCase();
-		VanishConfig cfg = getVanishConfig(name, false);
-		if (cfg != null) sender.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Flags("+name+"): "+cfg.toLine());
-		else sender.sendMessage(SimplyVanish.msgNoFlags);
 	}
 
 	public void onNotifyPing() {
