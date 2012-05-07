@@ -75,10 +75,15 @@ STACK
 - ?cmd flag / bypass : allow certain commands by bypass flag.
 
 
+*** 0.4.1
 
+- !(bugfix) Flag display (when not changed or empty).
 
 CHANGELOG 
 ---------------------------------------------
+
+
+(0.4.1)
 
 (0.4.0)
 - (add) Flag sets for shortcuts.
