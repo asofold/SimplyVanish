@@ -75,9 +75,7 @@ STACK
 - ?cmd flag / bypass : allow certain commands by bypass flag.
 
 
-*** 0.4.1
-
-- !(bugfix) Display correct flags on error inputs.
+- ?(bugfix) Display correct flags on error inputs. [could not reproduice anymore]
 
 CHANGELOG 
 ---------------------------------------------
