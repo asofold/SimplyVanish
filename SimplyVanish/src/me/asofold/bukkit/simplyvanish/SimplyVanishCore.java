@@ -375,8 +375,8 @@ public class SimplyVanishCore{
 	 * This will send notification messages.
 	 * @param player
 	 */
-	public boolean updateVanishState2(Player player){
-		return updateVanishState2(player, true);
+	public boolean updateVanishState(Player player){
+		return updateVanishState(player, true);
 	}
 	
 	/**
@@ -385,8 +385,8 @@ public class SimplyVanishCore{
 	 * @param player
 	 * @param message If to message the player.
 	 */
-	public boolean updateVanishState2(final Player player, final boolean message){
-		return updateVanishState2(player, message, 0);
+	public boolean updateVanishState(final Player player, final boolean message){
+		return updateVanishState(player, message, 0);
 	}
 	
 	/**
@@ -395,7 +395,7 @@ public class SimplyVanishCore{
 	 * @param message If to message the player.
 	 * @param hookId Id of the caller (0  = SimplyVanish, >0 = some other registered hook or API call)
 	 */
-	public boolean updateVanishState2(final Player player, final boolean message, int hookId){
+	public boolean updateVanishState(final Player player, final boolean message, int hookId){
 		final long ns = System.nanoTime();
 		final String playerName = player.getName();
 		if (!hookUtil.allowUpdateVanishState(player, hookId)){
@@ -510,7 +510,7 @@ public class SimplyVanishCore{
 		if ( save && cfg.changed && settings.saveVanishedAlways) onSaveVanished();
 		Player player = Bukkit.getServer().getPlayerExact(playerName);
 		if (player != null){
-			updateVanishState2(player, false);
+			updateVanishState(player, false);
 			// TODO: what if returns false 
 		}
 		if (!cfg.needsSave()) removeVanishedName(playerName);
@@ -720,7 +720,7 @@ public class SimplyVanishCore{
 		if (update){
 			Player player = Bukkit.getServer().getPlayerExact(playerName);
 			if (player != null){
-				updateVanishState2(player, message);
+				updateVanishState(player, message);
 				// TODO: what if returns false ?
 			}
 		}
