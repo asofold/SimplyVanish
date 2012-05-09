@@ -80,4 +80,22 @@ public interface Hook {
 	 */
 	public boolean allowUpdateVanishState(Player player, int hookId, boolean isAllowed);
 	
+	/**
+	 * 
+	 * @param player
+	 * @param canSee
+	 * @param isAllowed
+	 * @return
+	 */
+	public boolean allowShow(Player player, Player canSee, boolean isAllowed);
+	
+	/**
+	 * 
+	 * @param player
+	 * @param canNotSee
+	 * @param isAllowed
+	 * @return
+	 */
+	public boolean allowHide(Player player, Player canNotSee, boolean isAllowed);
+	
 }

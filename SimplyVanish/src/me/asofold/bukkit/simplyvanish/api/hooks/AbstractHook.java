@@ -54,4 +54,15 @@ public abstract class AbstractHook implements Hook {
 	public boolean allowUpdateVanishState(Player player, int hookId, boolean isAllowed) {
 		return true;
 	}
+
+	@Override
+	public boolean allowShow(Player player, Player canSee, boolean isAllowed) {
+		return true;
+	}
+
+	@Override
+	public boolean allowHide(Player player, Player canNotSee, boolean isAllowed) {
+		return true;
+	}
+	
 }

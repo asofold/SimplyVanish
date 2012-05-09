@@ -224,6 +224,32 @@ public class HookUtil {
 		}
 		return allow;
 	}
+	
+	public final boolean allowShow(final Player player, final Player canSee) {
+		final HookPurpose sup = HookPurpose.ALLOW_SHOW;
+		boolean allow = true;
+		for (final Hook hook : getUsedHooks(sup)){
+			try{
+				allow &= hook.allowShow(player, canSee, allow);
+			} catch (Throwable t){
+				onHookCallError(sup, hook, player.getName(), t);
+			}
+		}
+		return allow;
+	}
+	
+	public final boolean allowHide(final Player player, final Player canNotSee) {
+		final HookPurpose sup = HookPurpose.ALLOW_HIDE;
+		boolean allow = true;
+		for (final Hook hook : getUsedHooks(sup)){
+			try{
+				allow &= hook.allowShow(player, canNotSee, allow);
+			} catch (Throwable t){
+				onHookCallError(sup, hook, player.getName(), t);
+			}
+		}
+		return allow;
+	}
 
 	public Hook getHook(String name) {
 		return registeredHooks.get(name);
