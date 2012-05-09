@@ -73,7 +73,7 @@ public class DisguiseCraftHook  extends AbstractHook {
 				@Override
 				public void run() {
 					Player dummy = Bukkit.getServer().getPlayerExact(player.getName());
-					if (dummy != null) SimplyVanish.updateVanishState(dummy, false);
+					if (dummy != null) SimplyVanish.updateVanishState(dummy, false, hookId);
 				}});
 		}
 		
@@ -96,13 +96,36 @@ public class DisguiseCraftHook  extends AbstractHook {
 	}
 
 	@Override
+	public final boolean allowUpdateVanishState(final Player player, final int hookId, boolean isAllowed) {
+		if (!isAllowed) return false;
+		if (hookId == this.hookId) return true;
+		else {
+			DisguiseCraftAPI api = DisguiseCraft.getAPI();
+			return !api.isDisguised(player);
+		}
+	}
+	
+	
+
+	@Override
+	public boolean allowShow(Player player, Player canSee, boolean isAllowed) {
+		DisguiseCraftAPI api = DisguiseCraft.getAPI();
+		return !api.isDisguised(player);
+	}
+
+	@Override
+	public boolean allowHide(Player player, Player canNotSee, boolean isAllowed) {
+		return true;
+	}
+
+	@Override
 	public String getHookName() {
 		return "DisguiseCraft";
 	}
 
 	@Override
 	public HookPurpose[] getSupportedMethods() {
-		return new HookPurpose[]{HookPurpose.LISTENER};
+		return new HookPurpose[]{HookPurpose.LISTENER, HookPurpose.ALLOW_UPDATE, HookPurpose.ALLOW_SHOW, HookPurpose.ALLOW_HIDE};
 	}
 
 	@Override

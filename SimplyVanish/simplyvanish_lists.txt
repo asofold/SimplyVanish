@@ -77,9 +77,19 @@ STACK
 
 - ?(bugfix) Display correct flags on error inputs. [could not reproduice anymore]
 
+*** 0.4.2
+? remove checkInvolved checks ? 
+!? unregister hooks somehow ?
+!?bugfix: static handlerlist atlogin event vs. stateevent
+
+
 CHANGELOG 
 ---------------------------------------------
 
+(0.4.2)
+- (bugfix) DisguiseCraft compatibility
+- (add) API: added allowShow + allowHide to Hook (per player)
+- (add) API : Hook.allowUpdateVanishState + updateVanishState return boolean now.
 
 (0.4.1)
 - (change) Now seperate permissions must be used for vanish and reappear!
