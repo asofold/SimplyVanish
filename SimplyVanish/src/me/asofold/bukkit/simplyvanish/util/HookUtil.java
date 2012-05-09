@@ -212,16 +212,17 @@ public class HookUtil {
 		}
 	}
 	
-	public boolean allowUpdateVanishState(Player player, int hookId) {
+	public final boolean allowUpdateVanishState(final Player player, final int hookId) {
 		final HookPurpose sup = HookPurpose.ALLOW_UPDATE;
+		boolean allow = true;
 		for (final Hook hook : getUsedHooks(sup)){
 			try{
-				if (!hook.allowUpdateVanishState(player, hookId)) return false;
+				allow &= hook.allowUpdateVanishState(player, hookId, allow); 
 			} catch (Throwable t){
 				onHookCallError(sup, hook, player.getName(), t);
 			}
 		}
-		return true;
+		return allow;
 	}
 
 	public Hook getHook(String name) {

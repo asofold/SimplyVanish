@@ -92,7 +92,7 @@ public class SimplyVanish extends JavaPlugin {
 		loadSettings(); // will also load vanished players
 		// just in case quadratic time checking:
 		for ( Player player : getServer().getOnlinePlayers()){
-			core.updateVanishState2(player);
+			core.updateVanishState(player);
 			// TODO: this remains a source of trouble when reloading !
 		}
 		// register events:
@@ -278,7 +278,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @return false, if the action was prevented by a hook, true otherwise.
 	 */
 	public static boolean updateVanishState(Player player){
-		return core.updateVanishState2(player, false); // Mind the difference of flag to core.updateVanishState(Player).
+		return core.updateVanishState(player, false); // Mind the difference of flag to core.updateVanishState(Player).
 	}
 	
 	/**
@@ -288,7 +288,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @return false, if the action was prevented by a hook, true otherwise.
 	 */
 	public static boolean updateVanishState(Player player, int hookId){
-		return core.updateVanishState2(player, false, hookId);
+		return core.updateVanishState(player, false, hookId);
 	}
 	
 	/**
@@ -298,7 +298,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @return false, if the action was prevented by a hook, true otherwise.
 	 */
 	public static boolean updateVanishState(Player player, boolean message){
-		return core.updateVanishState2(player, message);
+		return core.updateVanishState(player, message);
 	}
 	
 	/**
@@ -309,7 +309,7 @@ public class SimplyVanish extends JavaPlugin {
 	 * @return false, if the action was prevented by a hook, true otherwise.
 	 */
 	public static boolean updateVanishState(Player player, boolean message, int hookId){
-		return core.updateVanishState2(player, message, hookId);
+		return core.updateVanishState(player, message, hookId);
 	}
 	
 	/**

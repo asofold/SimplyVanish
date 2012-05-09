@@ -542,6 +542,7 @@ public class SimplyVanishCore{
 	 */
 	void showPlayer(Player player, Player canSee){
 		if (!Panic.checkInvolved(player, canSee, "showPlayer", settings.noAbort)) return;
+		// TODO: hooks
 		try{
 			canSee.showPlayer(player);
 		} catch(Throwable t){
@@ -559,6 +560,7 @@ public class SimplyVanishCore{
 	 */
 	void hidePlayer(Player player, Player canNotSee){
 		if (!Panic.checkInvolved(player, canNotSee, "hidePlayer", settings.noAbort)) return;
+		// TODO: hooks
 		try{
 			canNotSee.hidePlayer(player);
 		} catch ( Throwable t){

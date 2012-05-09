@@ -72,11 +72,12 @@ public interface Hook {
 	
 	/**
 	 * Called on updateVanishState.<br>
-	 * If one hook returns false, other hooks might not be called (!).
+	 * All hooks will be called, even if a hook returrns false (!), see isAllowed if it was cancelled.
 	 * @param player
 	 * @param hookId The caller of updateVanishState, 0 = SimplyVanish (or an API call not specifying a hookId).
+	 * @param isAllowed Will be set to false and stay false, if one hook returns false on allowUpdateVanishState.
 	 * @return If false is returned, an update will not be performed. 
 	 */
-	public boolean allowUpdateVanishState(Player player, int hookId);
+	public boolean allowUpdateVanishState(Player player, int hookId, boolean isAllowed);
 	
 }
