@@ -11,6 +11,7 @@ import me.asofold.bukkit.simplyvanish.api.hooks.HookPurpose;
 import me.asofold.bukkit.simplyvanish.config.VanishConfig;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
 
@@ -31,6 +32,8 @@ public class HookUtil {
 	 * Registered hooks by name.
 	 */
 	private final Map<String, Hook> registeredHooks = new HashMap<String, Hook>();
+	
+	private int maxHookId = 0;
 	
 	/**
 	 * 
@@ -208,10 +211,26 @@ public class HookUtil {
 			}
 		}
 	}
+	
+	public boolean allowUpdateVanishState(Player player, int hookId) {
+		final HookPurpose sup = HookPurpose.ALLOW_UPDATE;
+		for (final Hook hook : getUsedHooks(sup)){
+			try{
+				if (!hook.allowUpdateVanishState(player, hookId)) return false;
+			} catch (Throwable t){
+				onHookCallError(sup, hook, player.getName(), t);
+			}
+		}
+		return true;
+	}
 
 	public Hook getHook(String name) {
 		return registeredHooks.get(name);
 	}
 
+	public int getNewHookId() {
+		maxHookId++;
+		return maxHookId;
+	}
 
 }

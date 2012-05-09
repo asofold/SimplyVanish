@@ -1,5 +1,8 @@
 package me.asofold.bukkit.simplyvanish.api.hooks;
 
+import org.bukkit.entity.Player;
+
+import me.asofold.bukkit.simplyvanish.SimplyVanish;
 import me.asofold.bukkit.simplyvanish.config.VanishConfig;
 
 /**
@@ -8,6 +11,8 @@ import me.asofold.bukkit.simplyvanish.config.VanishConfig;
  *
  */
 public abstract class AbstractHook implements Hook {
+	
+	protected int hookId = SimplyVanish.getNewHookId();
 
 	@Override
 	public abstract String getHookName();
@@ -45,4 +50,8 @@ public abstract class AbstractHook implements Hook {
 	public void afterSetFlags(String playerName) {
 	}
 
+	@Override
+	public boolean allowUpdateVanishState(Player player, int hookId) {
+		return true;
+	}
 }

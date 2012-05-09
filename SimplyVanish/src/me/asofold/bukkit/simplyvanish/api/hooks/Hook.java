@@ -2,6 +2,8 @@ package me.asofold.bukkit.simplyvanish.api.hooks;
 
 import me.asofold.bukkit.simplyvanish.config.VanishConfig;
 
+import org.bukkit.entity.Player;
+
 /**
  * For hooks to add for vanish.<br>
  * Players might not be online or even might not exist at all.<br>
@@ -67,5 +69,14 @@ public interface Hook {
 	 * @param playerName
 	 */
 	public void afterSetFlags(String playerName);
+	
+	/**
+	 * Called on updateVanishState.<br>
+	 * If one hook returns false, other hooks might not be called (!).
+	 * @param player
+	 * @param hookId The caller of updateVanishState, 0 = SimplyVanish (or an API call not specifying a hookId).
+	 * @return If false is returned, an update will not be performed. 
+	 */
+	public boolean allowUpdateVanishState(Player player, int hookId);
 	
 }

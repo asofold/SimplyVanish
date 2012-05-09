@@ -371,21 +371,40 @@ public class SimplyVanishCore{
 	
 	/**
 	 * Heavy update for who can see this player and whom this player can see.<br>
+	 * This is for internal calls (hookId 0).<br>
 	 * This will send notification messages.
 	 * @param player
 	 */
-	public void updateVanishState(Player player){
-		updateVanishState(player, true);
+	public boolean updateVanishState2(Player player){
+		return updateVanishState2(player, true);
+	}
+	
+	/**
+	 * Heavy update for who can see this player and whom this player can see and other way round.
+	 * This is for internal calls (hookId 0).<br>
+	 * @param player
+	 * @param message If to message the player.
+	 */
+	public boolean updateVanishState2(final Player player, final boolean message){
+		return updateVanishState2(player, message, 0);
 	}
 	
 	/**
 	 * Heavy update for who can see this player and whom this player can see and other way round.
 	 * @param player
 	 * @param message If to message the player.
+	 * @param hookId Id of the caller (0  = SimplyVanish, >0 = some other registered hook or API call)
 	 */
-	public void updateVanishState(final Player player, final boolean message){
+	public boolean updateVanishState2(final Player player, final boolean message, int hookId){
 		final long ns = System.nanoTime();
 		final String playerName = player.getName();
+		if (!hookUtil.allowUpdateVanishState(player, hookId)){
+			// TODO: either just return or still do messaging ?
+			if (isVanished(playerName)) addVanishedName(playerName);
+			else removeVanishedName(playerName);
+			SimplyVanish.stats.addStats(SimplyVanish.statsUpdateVanishState, System.nanoTime()-ns);
+			return false;
+		}
 		final Server server = Bukkit.getServer();
 		final Player[] players = server.getOnlinePlayers();
 		final boolean shouldSee = shouldSeeVanished(player);
@@ -401,6 +420,7 @@ public class SimplyVanishCore{
 		if (was) doVanish(player, message); // remove: a) do not save 2x b) people will get notified.	
 		else removeVanishedName(playerName);
 		SimplyVanish.stats.addStats(SimplyVanish.statsUpdateVanishState, System.nanoTime()-ns);
+		return true;
 	}
 	
 	/**
@@ -489,7 +509,10 @@ public class SimplyVanishCore{
 		}
 		if ( save && cfg.changed && settings.saveVanishedAlways) onSaveVanished();
 		Player player = Bukkit.getServer().getPlayerExact(playerName);
-		if (player != null) updateVanishState(player, false);
+		if (player != null){
+			updateVanishState2(player, false);
+			// TODO: what if returns false 
+		}
 		if (!cfg.needsSave()) removeVanishedName(playerName);
 		hookUtil.callAfterSetFlags(playerName);
 		SimplyVanish.stats.addStats(SimplyVanish.statsSetFlags, System.nanoTime()-ns);
@@ -696,7 +719,10 @@ public class SimplyVanishCore{
 		putVanishConfig(playerName, newCfg);
 		if (update){
 			Player player = Bukkit.getServer().getPlayerExact(playerName);
-			if (player != null) updateVanishState(player, message);
+			if (player != null){
+				updateVanishState2(player, message);
+				// TODO: what if returns false ?
+			}
 		}
 		if (settings.saveVanishedAlways) onSaveVanished();
 	}
@@ -728,6 +754,10 @@ public class SimplyVanishCore{
 
 	public HookUtil getHookUtil() {
 		return hookUtil;
+	}
+
+	public int getNewHookId() {
+		return hookUtil.getNewHookId();
 	}
 
 

@@ -92,7 +92,10 @@ public class CoreListener implements Listener {
 			cfg.set("vanished", doVanish);
 			if (doVanish) hookUtil.callBeforeVanish(playerName); // need to check again.
 		}
-		core.updateVanishState(event.getPlayer()); // called in any case
+		if (!core.updateVanishState2(event.getPlayer())){
+			// TODO: set doVanish ? remove from vanished ?
+			return;
+		}
 		if (doVanish){
 			hookUtil.callAfterVanish(playerName);	
 			if ( settings.suppressJoinMessage && cfg.vanished.state){

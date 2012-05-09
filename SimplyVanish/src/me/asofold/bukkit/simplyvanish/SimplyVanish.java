@@ -92,7 +92,8 @@ public class SimplyVanish extends JavaPlugin {
 		loadSettings(); // will also load vanished players
 		// just in case quadratic time checking:
 		for ( Player player : getServer().getOnlinePlayers()){
-			core.updateVanishState(player);
+			core.updateVanishState2(player);
+			// TODO: this remains a source of trouble when reloading !
 		}
 		// register events:
 		PluginManager pm = getServer().getPluginManager();
@@ -272,22 +273,52 @@ public class SimplyVanish extends JavaPlugin {
 	}
 	
 	/**
-	 * Force an update of who sees who for this player, without notification.<br>
-	 * This bypasses hooks and events.
+	 * Force an update of who sees who for this player, without notification, as if SimplyVanish would acall it internally.<br>
 	 * @param player
+	 * @return false, if the action was prevented by a hook, true otherwise.
 	 */
-	public static void updateVanishState(Player player){
-		core.updateVanishState(player, false); // Mind the difference of flag to core.updateVanishState(Player).
+	public static boolean updateVanishState(Player player){
+		return core.updateVanishState2(player, false); // Mind the difference of flag to core.updateVanishState(Player).
+	}
+	
+	/**
+	 * Force an update of who sees who for this player, without notification.<br>
+	 * @param player
+	 * @param hookId To identify who calls this, 0 = as if SimplyVanish called it.
+	 * @return false, if the action was prevented by a hook, true otherwise.
+	 */
+	public static boolean updateVanishState(Player player, int hookId){
+		return core.updateVanishState2(player, false, hookId);
+	}
+	
+	/**
+	 * Force an update of who sees who for this player, with optional notification messages, as if SimplyVanish would call it internally.<br>
+	 * @param player
+	 * @param message If to send notifications and state messages.
+	 * @return false, if the action was prevented by a hook, true otherwise.
+	 */
+	public static boolean updateVanishState(Player player, boolean message){
+		return core.updateVanishState2(player, message);
 	}
 	
 	/**
 	 * Force an update of who sees who for this player, with optional notification messages.<br>
-	 * This bypasses hooks and events.
 	 * @param player
-	 * @param message If to send notifications and state messages.
+	 * @param message
+	 * @param hookId To identify who calls this, 0 = as if SimplyVanish called it.
+	 * @return false, if the action was prevented by a hook, true otherwise.
 	 */
-	public static void updateVanishState(Player player, boolean message){
-		core.updateVanishState(player, message);
+	public static boolean updateVanishState(Player player, boolean message, int hookId){
+		return core.updateVanishState2(player, message, hookId);
+	}
+	
+	/**
+	 * Get a new hook id to be passed for certain calls, to allow knwing if your own code called updateVanishState.
+	 * API
+	 * @return
+	 */
+	public static int getNewHookId(){
+		return core.getNewHookId();
 	}
 	
 	/**
