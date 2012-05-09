@@ -112,12 +112,7 @@ public class DisguiseCraftHook  extends AbstractHook {
 		DisguiseCraftAPI api = DisguiseCraft.getAPI();
 		return !api.isDisguised(player);
 	}
-
-	@Override
-	public boolean allowHide(Player player, Player canNotSee, boolean isAllowed) {
-		return true;
-	}
-
+	
 	@Override
 	public String getHookName() {
 		return "DisguiseCraft";
@@ -125,7 +120,7 @@ public class DisguiseCraftHook  extends AbstractHook {
 
 	@Override
 	public HookPurpose[] getSupportedMethods() {
-		return new HookPurpose[]{HookPurpose.LISTENER, HookPurpose.ALLOW_UPDATE, HookPurpose.ALLOW_SHOW, HookPurpose.ALLOW_HIDE};
+		return new HookPurpose[]{HookPurpose.LISTENER, HookPurpose.ALLOW_UPDATE, HookPurpose.ALLOW_SHOW};
 	}
 
 	@Override
