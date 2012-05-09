@@ -383,15 +383,15 @@ public class SimplyVanishCore{
 	 * @param player
 	 * @param message If to message the player.
 	 */
-	public void updateVanishState(Player player, boolean message){
-		long ns = System.nanoTime();
-		String playerName = player.getName();
-		Server server = Bukkit.getServer();
-		Player[] players = server.getOnlinePlayers();
-		boolean shouldSee = shouldSeeVanished(player);
-		boolean was = isVanished(playerName);
+	public void updateVanishState(final Player player, final boolean message){
+		final long ns = System.nanoTime();
+		final String playerName = player.getName();
+		final Server server = Bukkit.getServer();
+		final Player[] players = server.getOnlinePlayers();
+		final boolean shouldSee = shouldSeeVanished(player);
+		final boolean was = isVanished(playerName);
 		// Show or hide other players to player:
-		for (Player other : players){
+		for (final Player other : players){
 			if (shouldSee||!isVanished(other.getName())){
 				if (!player.canSee(other)) showPlayer(other, player);
 			} 
