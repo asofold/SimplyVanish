@@ -1,6 +1,6 @@
 name: SimplyVanish
 main: me.asofold.bukkit.simplyvanish.SimplyVanish
-version: 0.4.2
+version: 0.4.3
 commands:
   vanish: 
      description: 'Ensure you or another player is vanished (then: /vanish <player>).'
