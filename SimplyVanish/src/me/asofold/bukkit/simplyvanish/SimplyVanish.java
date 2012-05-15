@@ -92,8 +92,9 @@ public class SimplyVanish extends JavaPlugin {
 		removeAllHooks();
 		// load settings
 		loadSettings(); // will also load vanished players
+		Server server = getServer();
 		// register events:
-		PluginManager pm = getServer().getPluginManager();
+		PluginManager pm = server.getPluginManager();
 		for ( Listener listener : new Listener[]{
 				new AttackListener(core),
 				new ChatListener(core),
@@ -111,11 +112,29 @@ public class SimplyVanish extends JavaPlugin {
 		core.setEnabled(true);
 		core.addStandardHooks();
 		// just in case quadratic time checking:
+		try{
+			updateAllPlayers();
+		}
+		catch(Throwable t){
+			Utils.severe("Failed to update players in onEnable (scheduled for next tick), are you using reload?", t);
+			getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+				@Override
+				public void run() {
+					updateAllPlayers();
+				}
+			});
+		}
+		System.out.println("[SimplyVanish] Enabled");
+	}
+	
+	/**
+	 * Quadratic time.
+	 */
+	private void updateAllPlayers(){
 		for ( Player player : getServer().getOnlinePlayers()){
 			core.updateVanishState(player);
 			// TODO: this remains a source of trouble when reloading !
 		}
-		System.out.println("[SimplyVanish] Enabled");
 	}
 
 	/**

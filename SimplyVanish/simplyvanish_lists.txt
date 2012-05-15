@@ -83,15 +83,15 @@ STACK
 *** 0.4.3
 ? remove checkInvolved checks ? 
 - !(bugfix) At enable: permission checks: schedule or try catch ?
-
+- ? try catch for players ?
 
 CHANGELOG 
 ---------------------------------------------
 
 (0.4.3)
-- (add) "load-plugins" option in the configuration, to allow loading the permissions plugins first.
+- (add) "load-plugins" option in the configuration, to allow loading other plugins first.
 - (adjust) Potential fix: Add DisguiseCraft to softdepend.
-- (bugfix) onEnable: upadate player states after all other action.
+- (bugfix) onEnable: update player states after all other action, wrapping with try-catch + schedule for next tick on failure.
 
 (0.4.2)
 - (bugfix) DisguiseCraft compatibility
