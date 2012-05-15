@@ -23,10 +23,12 @@ import me.asofold.bukkit.simplyvanish.stats.Stats;
 import me.asofold.bukkit.simplyvanish.util.Utils;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -90,11 +92,6 @@ public class SimplyVanish extends JavaPlugin {
 		removeAllHooks();
 		// load settings
 		loadSettings(); // will also load vanished players
-		// just in case quadratic time checking:
-		for ( Player player : getServer().getOnlinePlayers()){
-			core.updateVanishState(player);
-			// TODO: this remains a source of trouble when reloading !
-		}
 		// register events:
 		PluginManager pm = getServer().getPluginManager();
 		for ( Listener listener : new Listener[]{
@@ -113,6 +110,11 @@ public class SimplyVanish extends JavaPlugin {
 		// finished enabling.
 		core.setEnabled(true);
 		core.addStandardHooks();
+		// just in case quadratic time checking:
+		for ( Player player : getServer().getOnlinePlayers()){
+			core.updateVanishState(player);
+			// TODO: this remains a source of trouble when reloading !
+		}
 		System.out.println("[SimplyVanish] Enabled");
 	}
 
@@ -120,7 +122,8 @@ public class SimplyVanish extends JavaPlugin {
 	 * Force reloading the config.
 	 */
 	public void loadSettings() {
-		BukkitScheduler sched = getServer().getScheduler();
+		Server server = getServer();
+		BukkitScheduler sched = server.getScheduler();
 		sched.cancelTasks(this);
 		CompatConfig config = CompatConfigFactory.getConfig(new File(getDataFolder(), "config.yml"));
 		final Path path;
@@ -161,6 +164,12 @@ public class SimplyVanish extends JavaPlugin {
 					core.doSaveVanished();
 				}
 			}, period, period);
+		}
+		// Load plugins (permissions!):
+		PluginManager pm = server.getPluginManager(); 
+		for (String plgName : settings.loadPlugins){
+			Plugin plg = pm.getPlugin(plgName);
+			if (plg != null && !plg.isEnabled()) pm.enablePlugin(plg);
 		}
 	}
 	

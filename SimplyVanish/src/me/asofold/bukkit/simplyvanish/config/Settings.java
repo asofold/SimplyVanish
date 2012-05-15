@@ -144,6 +144,8 @@ public class Settings {
 	
 	public final Map<String, String[]> flagSets = new HashMap<String, String[]>();
 	
+	public List<String> loadPlugins = new LinkedList<String>();
+	
 	/**
 	 * Adjust internal settings to the given configuration.
 	 * TODO: put this to plugin / some settings helper
@@ -203,6 +205,9 @@ public class Settings {
 		bypassBlocks.addAll(getIdList(config.getStringList(path.flagsBypassBlocks, null)));
 		bypassEntities.clear();
 		bypassEntities.addAll(getEntityList(config.getStringList(path.flagsBypassEntities, null)));
+		
+		loadPlugins.clear();
+		loadPlugins.addAll(config.getStringList(path.loadPlugins, new LinkedList<String>()));
 		
 		// cmd flag:
 		cmdWhitelist = config.getBoolean(path.flagsCmdWhitelist, ref.cmdWhitelist);
@@ -351,6 +356,8 @@ public class Settings {
 			cmds.add(cmd);
 		}
 		defaults.set(path.flagsCmdCommands, cmds);
+		
+		defaults.set(path.loadPlugins, ref.loadPlugins);
 		
 		// Sets are not added, for they can interfere.
 		

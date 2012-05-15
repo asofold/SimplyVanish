@@ -80,6 +80,8 @@ public class Path {
 	public final String flagsCmdWhitelist;
 	public final String flagsCmdCommands;
 	
+	public final String loadPlugins;
+	
 	public final String[] deprecated = new String[]{
 			"save-vanished", 
 			"save-vanished-always",
@@ -163,5 +165,7 @@ public class Path {
 		flagsCmdCommands = flagsCmd + sep + "commands";
 		
 		flagSets = "flag-sets";
+		
+		loadPlugins = "load-plugins";
 	}
 }
