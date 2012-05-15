@@ -1,6 +1,6 @@
 name: SimplyVanish
 main: me.asofold.bukkit.simplyvanish.SimplyVanish
-version: 0.4.3
+version: 0.4.4
 softdepend:
 - DisguiseCraft
 commands:

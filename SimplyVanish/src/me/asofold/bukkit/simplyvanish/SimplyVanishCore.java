@@ -741,13 +741,14 @@ public class SimplyVanishCore{
 	public final boolean hasPermission(final CommandSender sender, final String perm) {
 		if (!(sender instanceof Player)) return sender.isOp();
 		if (settings.allowOps && sender.isOp()) return true;
-		else if (settings.superperms && sender.hasPermission(perm)) return true;
-		else{
-			final Set<String> perms = settings.fakePermissions.get(((Player)sender).getName().toLowerCase());
-			if (perms == null) return false;
-			else if (perms.contains("simplyvanish.all")) return true;
-			else return perms.contains(perm.toLowerCase());
+		else if (settings.superperms){
+			if (sender.hasPermission(perm)) return true;
+			else if (sender.hasPermission("simplyvanish.all")) return true; 
 		}
+		final Set<String> perms = settings.fakePermissions.get(((Player)sender).getName().toLowerCase());
+		if (perms == null) return false;
+		else if (perms.contains("simplyvanish.all")) return true;
+		else return perms.contains(perm.toLowerCase());
 	}
 
 	public Settings getSettings() {

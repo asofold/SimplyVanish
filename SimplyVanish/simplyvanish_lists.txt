@@ -88,6 +88,9 @@ STACK
 CHANGELOG 
 ---------------------------------------------
 
+(0.4.4)
+- (add) Support for the permission "simplyvanish.all".
+
 (0.4.3)
 - (add) "load-plugins" option in the configuration, to allow loading other plugins first.
 - (adjust) Potential fix: Add DisguiseCraft to softdepend.
