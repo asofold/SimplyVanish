@@ -45,7 +45,7 @@ public class SimplyVanish extends JavaPlugin {
 	static final SimplyVanishCore core = new SimplyVanishCore();
 
 	public static final String[] baseLabels = new String[]{
-		"vanish", "reappear", "tvanish", "simplyvanish","vanished", "vanflag",
+		"vanish", "reappear", "tvanish", "simplyvanish", "vanished", "vanflag", "vantell",
 	};
 	
 	public static final String cmdNoOpArg = "??NOOP??";
