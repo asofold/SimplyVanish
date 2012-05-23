@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import me.asofold.bukkit.simplyvanish.SimplyVanish;
+import me.asofold.bukkit.simplyvanish.command.SimplyVanishCommand;
 import me.asofold.bukkit.simplyvanish.config.compatlayer.CompatConfig;
 import me.asofold.bukkit.simplyvanish.config.compatlayer.CompatConfigFactory;
 import me.asofold.bukkit.simplyvanish.config.compatlayer.ConfigUtil;
@@ -411,7 +411,7 @@ public class Settings {
 			changed = true;
 		}
 		// Command aliases:
-		for ( String cmd : SimplyVanish.baseLabels){
+		for ( String cmd : SimplyVanishCommand.baseLabels){
 			String p = "commands"+path.sep+cmd+path.sep+"aliases";
 			if (!config.contains(p)){
 				config.set(p, new LinkedList<String>());

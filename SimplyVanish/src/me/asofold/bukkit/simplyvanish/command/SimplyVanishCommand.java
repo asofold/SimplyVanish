@@ -1,9 +1,12 @@
 package me.asofold.bukkit.simplyvanish.command;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import me.asofold.bukkit.simplyvanish.SimplyVanish;
 import me.asofold.bukkit.simplyvanish.SimplyVanishCore;
@@ -33,6 +36,20 @@ public class SimplyVanishCommand{
 	 * Map aliases to recognized labels.
 	 */
 	public Map<String, String> commandAliases = new HashMap<String, String>();
+
+	/**
+	 * All command labels (not aliases).
+	 */
+	public static final String[] baseLabels = new String[]{
+		"vanish", "reappear", "tvanish", "simplyvanish", "vanished", "vanflag", "vantell",
+	};
+	
+	/**
+	 * Command labels (not aliases) that take flags.
+	 */
+	private final Set<String> flagLabels = new HashSet<String>(Arrays.asList(new String[]{
+			"vanish", "reappear", "tvanish", "simplyvanish", "vanflag",
+		}));
 	
 	
 	public SimplyVanishCommand(SimplyVanishCore core) {
@@ -56,7 +73,7 @@ public class SimplyVanishCommand{
 		aliasManager.cmdNoOp =  SimplyVanish.cmdNoOp; //  hack :)
 		// Register aliases from configuration ("fake"). 
 		aliasManager.clear();
-		for ( String cmd : SimplyVanish.baseLabels){
+		for ( String cmd : SimplyVanishCommand.baseLabels){
 			// TODO: only register the needed aliases.
 			cmd = cmd.trim().toLowerCase();
 			List<String> mapped = config.getStringList("commands"+path.sep+cmd+path.sep+"aliases", null);
@@ -93,7 +110,7 @@ public class SimplyVanishCommand{
 		}
 		
 		// Register aliases for commands from plugin.yml:
-		for ( String cmd : SimplyVanish.baseLabels){
+		for ( String cmd : SimplyVanishCommand.baseLabels){
 			cmd = cmd.trim().toLowerCase();
 			PluginCommand command = plugin.getCommand(cmd);
 			if (command == null) continue;
@@ -111,12 +128,15 @@ public class SimplyVanishCommand{
 		label = getMappedCommandLabel(label);
 		int len = args.length;
 		boolean hasFlags = false;
-		for ( int i=args.length-1; i>=0; i--){
-			if (args[i].startsWith("+") || args[i].startsWith("-") || args [i].startsWith("*")){
-				len --;
-				hasFlags = true;
-			} 
-			else break;
+		if (flagLabels.contains(label)){
+			// reduce len by number of flags.
+			for ( int i=args.length-1; i>=0; i--){
+				if (args[i].startsWith("+") || args[i].startsWith("-") || args [i].startsWith("*")){
+					len --;
+					hasFlags = true;
+				} 
+				else break;
+			}
 		}
 		if ( label.equals("vanish")) return vanishCommand(sender, args, len, hasFlags);
 		else if (label .equals("reappear")) return reappearCommand(sender, args, len, hasFlags);

@@ -80,10 +80,20 @@ STACK
 !? unregister hooks somehow ?
 !?bugfix: static handlerlist atlogin event vs. stateevent
 
-*** 0.4.3
+*** 
 ? remove checkInvolved checks ? 
 - !(bugfix) At enable: permission checks: schedule or try catch ?
 - ? try catch for players ?
+
+?? vangod -> problem: many people will want to use it independently of the flags
+
+?? API to get some config options (important for messages etc)
+
+
+---
+
+!(add) tell flag + /vantell player message : to allow using the tell flag [+log option + permissions to always tell ! + configurable message]
+!(adjust) Only parse flags for commands that accept flags.
 
 CHANGELOG 
 ---------------------------------------------
