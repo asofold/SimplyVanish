@@ -30,3 +30,7 @@ commands:
      description: 'Set or display flags for yourself or others.'
      aliases:
      - flagvan
+  vantell:
+     description: 'Whisper to other players, respects see state, tell flag, special permissions.'
+     aliases:
+     - tellvan
