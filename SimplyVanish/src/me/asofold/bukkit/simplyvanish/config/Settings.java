@@ -45,7 +45,7 @@ public class Settings {
 	};
 
 	public static final String[] defaultFLagCmds = new String[]{
-		"me", "tell",
+		"me", "tell", "vantell", "tellvan",
 	};
 
 	private static final String[][] defaultFlagSets = new String[][]{
