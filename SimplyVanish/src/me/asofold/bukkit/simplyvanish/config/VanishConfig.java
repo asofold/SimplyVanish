@@ -37,6 +37,8 @@ public class VanishConfig {
 				{"bypass", "byp", "by", "bp"},
 				{"cmd", "command", "cm"}, // The only flag that maps to something shorter.
 				{"chat", "cha" ,"ch"},
+//				{"god", "gd", "go"}, // maybe not used as a flag
+				{"tell", "tel", "tl", "te"},
 		}){
 			for (int i = 1; i < c.length; i++){
 				mappedFlags.put(c[i] , c[0]);
@@ -101,6 +103,11 @@ public class VanishConfig {
 	 * Allow chat.
 	 */
 	public final Flag chat = addFlag("chat", false);
+	
+	/**
+	 * Put through tell messages, even though cancelled.
+	 */
+	public final Flag tell = addFlag("tell", false);
 	
 	/**
 	 * Allow blocked cmds (...).
