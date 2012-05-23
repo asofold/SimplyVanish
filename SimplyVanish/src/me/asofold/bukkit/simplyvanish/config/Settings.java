@@ -147,6 +147,11 @@ public class Settings {
 	public List<String> loadPlugins = new LinkedList<String>();
 	
 	/**
+	 * If to log vantell messages.
+	 */
+	public boolean logVantell = false;
+	
+	/**
 	 * Adjust internal settings to the given configuration.
 	 * TODO: put this to plugin / some settings helper
 	 * @param config
@@ -208,6 +213,8 @@ public class Settings {
 		
 		loadPlugins.clear();
 		loadPlugins.addAll(config.getStringList(path.loadPlugins, new LinkedList<String>()));
+		
+		logVantell = config.getBoolean(path.cmdVantellLog, ref.logVantell);
 		
 		// cmd flag:
 		cmdWhitelist = config.getBoolean(path.flagsCmdWhitelist, ref.cmdWhitelist);
@@ -358,6 +365,8 @@ public class Settings {
 		defaults.set(path.flagsCmdCommands, cmds);
 		
 		defaults.set(path.loadPlugins, ref.loadPlugins);
+		
+		defaults.set(path.cmdVantellLog, ref.logVantell);
 		
 		// Sets are not added, for they can interfere.
 		

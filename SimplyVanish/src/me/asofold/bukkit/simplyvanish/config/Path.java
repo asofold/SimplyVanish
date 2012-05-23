@@ -69,6 +69,10 @@ public class Path {
 
 	public final String addExtended;
 	
+	public final String cmd;
+	public final String cmdVantell;
+	public final String cmdVantellLog;
+	
 	
 	public final String flags;
 	public final String flagsBypass;
@@ -167,5 +171,9 @@ public class Path {
 		flagSets = "flag-sets";
 		
 		loadPlugins = "load-plugins";
+		
+		cmd = "commands";
+		cmdVantell = cmd + sep + "vantell";
+		cmdVantellLog = cmdVantell + sep + "log";
 	}
 }

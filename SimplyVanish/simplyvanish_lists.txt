@@ -85,21 +85,21 @@ STACK
 - !(bugfix) At enable: permission checks: schedule or try catch ?
 - ? try catch for players ?
 
-?? vangod -> problem: many people will want to use it independently of the flags
-
 ?? API to get some config options (important for messages etc)
 
+? add configurable messages for vantell
+
+?? vangod -> problem: many people will want to use it independently of the flags
 
 ---
-
-!(add) tell flag + /vantell player message : to allow using the tell flag [+log option + permissions to always tell ! + configurable message]
-!(adjust) Only parse flags for commands that accept flags.
 
 CHANGELOG 
 ---------------------------------------------
 
 (0.4.4)
+- (add) /vantell command + tell flag.
 - (add) Support for the permission "simplyvanish.all".
+- (adjust) Only parse flags for commands that accept flags.
 
 (0.4.3)
 - (add) "load-plugins" option in the configuration, to allow loading other plugins first.

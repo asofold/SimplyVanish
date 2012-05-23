@@ -12,10 +12,12 @@ import me.asofold.bukkit.simplyvanish.SimplyVanish;
 import me.asofold.bukkit.simplyvanish.SimplyVanishCore;
 import me.asofold.bukkit.simplyvanish.config.Flag;
 import me.asofold.bukkit.simplyvanish.config.Path;
+import me.asofold.bukkit.simplyvanish.config.Settings;
 import me.asofold.bukkit.simplyvanish.config.VanishConfig;
 import me.asofold.bukkit.simplyvanish.config.compatlayer.CompatConfig;
 import me.asofold.bukkit.simplyvanish.util.Utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -165,6 +167,10 @@ public class SimplyVanishCommand{
 			}
 			return flagCommand(sender, args, len, hasFlags);
 		}
+		else if (label.equals("vantell")){
+			onVantell(sender, args);
+			return true;
+		}
 		return unrecognized(sender);
 	}
 
@@ -296,6 +302,67 @@ public class SimplyVanishCommand{
 		}
 		return false; // command not executed, maybe unknown.
 		
+	}
+	
+	/**
+	 * "vantell" command (Attempt to make it somewhat compatible with tell).
+	 * @param sender
+	 * @param args
+	 */
+	private void onVantell(CommandSender sender, String[] args) {
+		// TODO: make messages configurable.
+		// permissions
+		if (!SimplyVanish.hasPermission(sender, "simplyvanish.cmd.vantell")){
+			sender.sendMessage(ChatColor.DARK_RED + "You don't have permission.");
+			return;
+		}
+		// Usage check:
+		if (args.length < 2){
+			sender.sendMessage(ChatColor.DARK_RED + "Whisper: You must give a player and a message !");
+			return;
+		}
+		// Availability check:
+		String playerName = args[0];
+		Player other = Bukkit.getServer().getPlayerExact(playerName);
+		String otherName = null;
+		if (other != null){
+			otherName = other.getName();
+			if (sender instanceof Player){
+				Player player = (Player) sender;
+				if (player.equals(other)) other = null;
+				else if (!player.canSee(other)){
+					VanishConfig cfg = core.getVanishConfig(otherName, false);
+					if (cfg == null) other = null; // don't let pass
+					else{
+						if (!cfg.tell.state){
+							// check permissions (global bypass, individual bypass)
+							if (!core.hasPermission(sender, "simplyvanish.vantell.bypass") && !core.hasPermission(sender, "simplyvanish.vantell.bypass.player."+otherName.toLowerCase())) other = null;
+						}
+						// else: let pass
+					}
+				}
+				// else: let pass
+			}
+			// else: let pass
+		}
+		if (other == null){
+			sender.sendMessage(ChatColor.RED + playerName + " is not available.");
+			return;
+		}
+		
+		// Message:
+		StringBuilder b = new StringBuilder();
+		b.append(ChatColor.GRAY + sender.getName() + " whispers:");
+		for (int i = 1; i< args.length; i++){
+			b.append(" ");
+			b.append(args[i]);
+		}
+		String fullMessage = b.toString();
+		other.sendMessage(fullMessage);
+		// Log if desired
+		// TODO: check settings for log and probably log.
+		Settings settings = core.getSettings();
+		if (settings.logVantell) Bukkit.getServer().getLogger().info("[vantell] ("+sender.getName()+" -> "+otherName+")" + fullMessage);
 	}
 
 	/**
