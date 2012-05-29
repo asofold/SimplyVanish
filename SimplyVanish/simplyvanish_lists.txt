@@ -15,6 +15,7 @@ PLANNED FEATURES AND QUESTIONS
 ? check update for efficiency (uh uh)
 ? Faster exclusion checks (mix-in permission?) for setFlags
 ? test performance :)
+? remove the checking if palyers are online ?
 
 *** FLAGS
 - !(add) Permission/some setup what flags to set automtically (default flags)? Or sets with a defined permission.
@@ -45,6 +46,7 @@ PLANNED FEATURES AND QUESTIONS
 
 *** APPEARANCE
 - !(add) Panic: Digest warning messages where possible (show one instead of two).
+
 
 
 STACK
@@ -90,6 +92,8 @@ STACK
 ? add configurable messages for vantell
 
 ?? vangod -> problem: many people will want to use it independently of the flags
+
+? check collisions: on -interact: prevent vehicle and arrow collisions (how arrows?) 
 
 ---
 
