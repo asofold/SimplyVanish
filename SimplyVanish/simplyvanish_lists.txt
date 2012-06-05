@@ -42,7 +42,7 @@ PLANNED FEATURES AND QUESTIONS
 ? language update
 
 *** PERMISSIONS
-- ?bind-auto-vanish: bind permission to visibility at login (force reappear) [problematic]
+- ?bind-permisisons-to-vanish: bind permission to visibility at login or other occasions (force reappear) [problematic]
 
 *** APPEARANCE
 - !(add) Panic: Digest warning messages where possible (show one instead of two).
@@ -52,7 +52,7 @@ PLANNED FEATURES AND QUESTIONS
 STACK
 ---------------------------------------------
 
-*** (0.5.0) 
+*** (0.X.0) 
 
 
 ***[EXTRAS]
@@ -87,15 +87,22 @@ STACK
 - !(bugfix) At enable: permission checks: schedule or try catch ?
 - ? try catch for players ?
 
-?? API to get some config options (important for messages etc)
-
 ? add configurable messages for vantell
 
 ?? vangod -> problem: many people will want to use it independently of the flags
 
-? check collisions: on -interact: prevent vehicle and arrow collisions (how arrows?) 
 
----
+
+
+***
+? chat: /tell /me configurable: treat as commands or as chat?
+?? API to get some config options (important for messages etc)
+? check collisions: on -interact: prevent vehicle and arrow collisions (how arrows?) 
+command/other bypass permissions (then flag dependent), toggle by configuration ?
+!(add) Tamables / prevent targeting others and teleporting. (EntityTarget, EntityTeleport)
+
+
+--- 
 
 CHANGELOG 
 ---------------------------------------------
