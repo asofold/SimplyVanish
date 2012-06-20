@@ -111,6 +111,9 @@ bind permissions flag ? (for simple permissions use)
 CHANGELOG 
 ---------------------------------------------
 
+(0.5.0)
+- (bugfix) Updated descriptions for commands, add usage to vantell.
+
 (0.4.4)
 - (add) /vantell command + tell flag.
 - (add) Support for the permission "simplyvanish.all".
