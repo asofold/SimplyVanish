@@ -97,12 +97,17 @@ STACK
 ***
 ? chat: /tell /me configurable: treat as commands or as chat?
 ?? API to get some config options (important for messages etc)
-? check collisions: on -interact: prevent vehicle and arrow collisions (how arrows?) 
+? check collisions: on -interact: prevent vehicle and arrow collisions (how arrows?) with vanished players ! 
 command/other bypass permissions (then flag dependent), toggle by configuration ?
 !(add) Tamables / prevent targeting others and teleporting. (EntityTarget, EntityTeleport)
+!(add) Allow setting specific flags as "configuration defaults" (saving will be by standard defaults), setting of defaults in constructor then.
+!(add) Care: loading flags from file: allow manual entry *clear (check if possible, impirtant for default states)
+? how to "restore" old state (new flags, default config flags -> not restore).
 
-
+bind permissions flag ?
 --- 
+
+?(add) move Inventory peeking here ! 
 
 CHANGELOG 
 ---------------------------------------------
