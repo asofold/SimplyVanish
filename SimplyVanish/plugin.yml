@@ -1,19 +1,19 @@
 name: SimplyVanish
 main: me.asofold.bukkit.simplyvanish.SimplyVanish
-version: 0.4.4
+version: 0.5.0
 softdepend:
 - DisguiseCraft
 commands:
   vanish: 
-     description: 'Ensure you or another player is vanished (then: /vanish <player>).'
+     description: 'Ensure you or another player is vanished (/vanish | /vanish <player>), optional: flags.'
      aliases:
      - van
   reappear:
-     description: 'Ensure you or another player is visible (then: /vanish <player>).'
+     description: 'Ensure you or another player is visible (/reappear | /vanish <player>), optional: flags'
      aliases:
      - rea
   tvanish: 
-     description: 'Toggle your vanished state.'
+     description: 'Toggle your or another players visibility state (/tvanish | /tvanish <player>), optional: flags.'
      aliases:
      - vanisht
      - tvan
@@ -27,10 +27,11 @@ commands:
      aliases:
      - simvan
   vanflag:
-     description: 'Set or display flags for yourself or others.'
+     description: 'Set or display flags for yourself or others. *clear to restore default flags, to see all possible flags use: /simvan flags'
      aliases:
      - flagvan
   vantell:
      description: 'Whisper to other players, respects see state, tell flag, special permissions.'
+     usage: 'Specify a player whom to tell a message.'
      aliases:
      - tellvan
