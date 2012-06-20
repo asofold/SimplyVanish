@@ -83,7 +83,6 @@ STACK
 !?bugfix: static handlerlist atlogin event vs. stateevent
 
 *** 
-? remove checkInvolved checks ? 
 - !(bugfix) At enable: permission checks: schedule or try catch ?
 - ? try catch for players ?
 
@@ -91,23 +90,23 @@ STACK
 
 ?? vangod -> problem: many people will want to use it independently of the flags
 
-
-
-
 ***
-? chat: /tell /me configurable: treat as commands or as chat?
-?? API to get some config options (important for messages etc)
-? check collisions: on -interact: prevent vehicle and arrow collisions (how arrows?) with vanished players ! 
-command/other bypass permissions (then flag dependent), toggle by configuration ?
-!(add) Tamables / prevent targeting others and teleporting. (EntityTarget, EntityTeleport)
 !(add) Allow setting specific flags as "configuration defaults" (saving will be by standard defaults), setting of defaults in constructor then.
-!(add) Care: loading flags from file: allow manual entry *clear (check if possible, impirtant for default states)
+!(add) Care: loading flags from file: allow manual entry *clear (check if possible, important for default states)
 ? how to "restore" old state (new flags, default config flags -> not restore).
 
-bind permissions flag ?
---- 
+***
 
+? chat: /tell /me configurable: treat as commands or as chat?
+?? API to get some config options (important for messages etc)
+command/other bypass permissions (then flag dependent), toggle by configuration ?
+bind permissions flag ? (for simple permissions use)
+
+***
+? remove checkInvolved checks ? 
+? check collisions: on -interact: prevent vehicle and arrow collisions (other entities, how arrows?) with vanished players ! 
 ?(add) move Inventory peeking here ! 
+!(add) Tamables / prevent targeting others and teleporting. (EntityTarget, EntityTeleport)
 
 CHANGELOG 
 ---------------------------------------------
