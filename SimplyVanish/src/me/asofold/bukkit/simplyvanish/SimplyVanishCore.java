@@ -763,5 +763,18 @@ public class SimplyVanishCore{
 		return hookUtil.getNewHookId();
 	}
 
+	public void setGod(String name, boolean god, CommandSender notify) {
+		VanishConfig cfg = getVanishConfig(name, true);
+		if (god == cfg.god.state){
+			if (notify != null) Utils.send(notify, SimplyVanish.msgLabel + ChatColor.GRAY + (name.equalsIgnoreCase(notify.getName())?" You were ":(name + " was "))+(god?"already":"not")+" in "+(god?ChatColor.GREEN:ChatColor.RED)+"god-mode.");
+		}
+		else{
+			cfg.set("god", god);
+			if (settings.saveVanishedAlways) onSaveVanished();
+			Utils.tryMessage(name, SimplyVanish.msgLabel + ChatColor.GRAY + "You are "+(god?"now":"no longer")+" in "+(god?ChatColor.GREEN:ChatColor.RED)+"god-mode.");
+			if (notify != null && !name.equalsIgnoreCase(notify.getName())) Utils.send(notify, SimplyVanish.msgLabel + ChatColor.GRAY + name + " is "+(god?"now":"no longer")+" in "+(god?ChatColor.GREEN:ChatColor.RED)+"god-mode.");
+		}
+		if (!cfg.needsSave()) removeVanishConfig(name);
+	}
 
 }

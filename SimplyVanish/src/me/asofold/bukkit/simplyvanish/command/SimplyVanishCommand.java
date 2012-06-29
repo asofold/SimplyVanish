@@ -50,8 +50,8 @@ public class SimplyVanishCommand{
 	 * Command labels (not aliases) that take flags.
 	 */
 	private final Set<String> flagLabels = new HashSet<String>(Arrays.asList(new String[]{
-			"vanish", "reappear", "tvanish", "simplyvanish", "vanflag",
-		}));
+			"vanish", "reappear", "tvanish", "simplyvanish", "vanflag", "vangod", "vanungod"
+	}));
 	
 	
 	public SimplyVanishCommand(SimplyVanishCore core) {
@@ -140,7 +140,11 @@ public class SimplyVanishCommand{
 				else break;
 			}
 		}
-		if ( label.equals("vanish")) return vanishCommand(sender, args, len, hasFlags);
+		if (label.equals("vantell")){
+			onVantell(sender, args);
+			return true;
+		}
+		else if ( label.equals("vanish")) return vanishCommand(sender, args, len, hasFlags);
 		else if (label .equals("reappear")) return reappearCommand(sender, args, len, hasFlags);
 		else if ( label.equals("tvanish")){
 			String name;
@@ -167,11 +171,35 @@ public class SimplyVanishCommand{
 			}
 			return flagCommand(sender, args, len, hasFlags);
 		}
-		else if (label.equals("vantell")){
-			onVantell(sender, args);
+		else if (label.equals("vangod")){
+			return vanGodCommand(sender, args, len, hasFlags, false);
+		}
+		else if (label.equals("vanungod")){
+			return vanGodCommand(sender, args, len, hasFlags, true);
+		}
+		return unrecognized(sender);
+	}
+
+	private boolean vanGodCommand(CommandSender sender, String[] args,
+			int len, boolean hasFlags, boolean ungod) {
+		// TODO: maybe later accept flags.
+		String perm = "simplyvanish.cmd." + (ungod?"ungod.":"god.");
+		if (len == 0){
+			if (!Utils.checkPlayer(sender)) return true;
+			checkVangod(sender, perm + ".self", sender.getName(), ungod);
+			return true;
+		}
+		else if (len == 1){
+			checkVangod(sender, perm + ".other", args[0].trim(), ungod);
 			return true;
 		}
 		return unrecognized(sender);
+	}
+
+	private void checkVangod(CommandSender sender, String perm, String name,
+			boolean ungod) {
+		if (!Utils.checkPerm(sender, perm)) return;
+		core.setGod(name, !ungod, sender);
 	}
 
 	private boolean flagCommand(CommandSender sender, String[] args, int len,

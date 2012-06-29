@@ -35,3 +35,10 @@ commands:
      usage: 'Specify a player whom to tell a message.'
      aliases:
      - tellvan
+  vangod:
+    description: 'Enable god mode.'
+    usage: '/vangod | /vangod <other>'
+  vanungod:
+    description: 'Enable god mode.'
+    usage: '/vanungod | /vanungod <other>'
+    

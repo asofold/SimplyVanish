@@ -37,7 +37,7 @@ public class VanishConfig {
 				{"bypass", "byp", "by", "bp"},
 				{"cmd", "command", "cm"}, // The only flag that maps to something shorter.
 				{"chat", "cha" ,"ch"},
-//				{"god", "gd", "go"}, // maybe not used as a flag
+				{"god", "gd", "go"}, // maybe not used as a flag
 				{"tell", "tel", "tl", "te"},
 		}){
 			for (int i = 1; i < c.length; i++){
@@ -58,6 +58,11 @@ public class VanishConfig {
 	final Map<String, Flag> flags = new LinkedHashMap<String, Flag>(); // takes more space but is the fastest way.
 	
 	// False flags:
+	
+	/**
+	 * "god"-mode flag.
+	 */
+	public final Flag god = addFlag("god", false);
 	
 	/**
 	 * Player is vanished.
@@ -146,7 +151,7 @@ public class VanishConfig {
 	 * @param startIndex
 	 * @return
 	 */
-	public void readFromArray(String[] parts, int startIndex, boolean allowVanish){
+	public void readFromArray(String[] parts, int startIndex, boolean allowAll){
 		for (int i = startIndex; i<parts.length; i++){
 			String part = parts[i];
 			String s = part.trim().toLowerCase();
@@ -167,7 +172,7 @@ public class VanishConfig {
 			else state = true;
 			
 			s = getMappedFlagName(s);
-			if ( !allowVanish && s.equals("vanished") ) continue;
+			if ( !allowAll && (s.equals("vanished") || s.equals("god"))  ) continue;
 			
 			Flag flag = flags.get(s);
 			if (flag==null) continue; // should not happen by contract.

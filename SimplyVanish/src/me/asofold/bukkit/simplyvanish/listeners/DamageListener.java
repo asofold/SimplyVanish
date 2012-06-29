@@ -28,13 +28,14 @@ public class DamageListener implements Listener {
 	private final boolean shouldCancelDamage(final String name) {
 		final VanishConfig cfg = core.getVanishConfig(name, false);
 		if (cfg == null) return false;
+		if (cfg.god.state) return true;
 		if (!cfg.vanished.state || cfg.damage.state) return false;
 		return true;
 	}
 	
-	@EventHandler(priority=EventPriority.LOW)
+	@EventHandler(priority=EventPriority.LOW, ignoreCancelled=true)
 	void onFoodLevel(FoodLevelChangeEvent event){
-		if ( event.isCancelled() ) return;
+//		if ( event.isCancelled() ) return;
 		final LivingEntity entity = event.getEntity();
 		if (!(entity instanceof Player)) return;
 		Player player = (Player) entity;
@@ -42,9 +43,9 @@ public class DamageListener implements Listener {
 		if (shouldCancelDamage(player.getName()))	event.setCancelled(true);
 	}
 	
-	@EventHandler(priority=EventPriority.LOW)
+	@EventHandler(priority=EventPriority.LOW, ignoreCancelled=true)
 	final void onEntityDamage(final EntityDamageEvent event){
-		if ( event.isCancelled() ) return;
+//		if ( event.isCancelled() ) return;
 		final Entity entity = event.getEntity();
 		if (!(entity instanceof Player)) return;
 		if (shouldCancelDamage(((Player) entity).getName())){

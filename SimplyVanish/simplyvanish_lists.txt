@@ -104,14 +104,20 @@ bind permissions flag ? (for simple permissions use)
 
 ***
 ? remove checkInvolved checks ? 
+
 ? check collisions: on -interact: prevent vehicle and arrow collisions (other entities, how arrows?) with vanished players ! 
+!(Add) join message :if godded.
+!(add) vangods command.
+!(add) API for certain config settings !
+!(add) god mode - config: classical god mode + flag oriented godmode?
 ?(add) move Inventory peeking here ! 
 !(add) Tamables / prevent targeting others and teleporting. (EntityTarget, EntityTeleport)
 
 CHANGELOG 
 ---------------------------------------------
 
-(0.5.0)
+(0.5.0) 
+- (add) classical god-mode: /vangod and /vanungod
 - (bugfix) Updated descriptions for commands, add usage to vantell.
 - (update) config: compatlayer
 

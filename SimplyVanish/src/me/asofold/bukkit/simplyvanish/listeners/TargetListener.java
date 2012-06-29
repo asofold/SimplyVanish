@@ -22,17 +22,17 @@ public class TargetListener implements Listener {
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	void onEntityTarget(final EntityTargetEvent event){
+	final void onEntityTarget(final EntityTargetEvent event){
 		if ( event.isCancelled() ) return;
 		final Entity target = event.getTarget();
 		if (!(target instanceof Player)) return;
 		final String playerName = ((Player) target).getName();
 		final VanishConfig cfg = core.getVanishConfig(playerName, false);
 		if (cfg == null) return;
-		if (cfg.vanished.state){
-			Settings settings = core.getSettings();
-			if (settings.expEnabled && !cfg.pickup.state){
-				Entity entity = event.getEntity();
+		if (cfg.vanished.state || cfg.god.state){
+			final Settings settings = core.getSettings();
+			if (settings.expEnabled && (!cfg.pickup.state || cfg.god.state)){
+				final Entity entity = event.getEntity();
 				if ( entity instanceof ExperienceOrb){
 					repellExpOrb((Player) target, (ExperienceOrb) entity, settings);
 					event.setCancelled(true);
@@ -40,7 +40,7 @@ public class TargetListener implements Listener {
 					return;
 				}
 			}
-			if (!cfg.target.state) event.setTarget(null);
+			if (!cfg.target.state || cfg.god.state) event.setTarget(null);
 		}
 	}
 	
