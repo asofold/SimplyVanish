@@ -214,4 +214,10 @@ public class Utils {
 		if (block == null) return;
 		player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
 	}
+
+	public static void tryMessage(String name, String msg) {
+		Player player = Bukkit.getPlayerExact(name);
+		if (player == null) return;
+		else player.sendMessage(msg);
+	}
 }
