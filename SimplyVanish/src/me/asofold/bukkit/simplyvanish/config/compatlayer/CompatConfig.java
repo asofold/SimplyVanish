@@ -60,7 +60,17 @@ public interface CompatConfig {
 	public Object getProperty(String path, Object defaultValue);
 	public void set(String path, Object value);
 	public void setProperty(String path, Object value);
+	
+	/**
+	 * Remove a path (would also remove sub sections, unless for path naming problems).
+	 * @param path
+	 */
 	public void remove(String path);
+	
+	/**
+	 * Works same as remove(path): removes properties and sections alike.
+	 * @param path
+	 */
 	public void removeProperty(String path);
 	
 	// Contains/has
@@ -123,6 +133,23 @@ public interface CompatConfig {
 	public void load();
 	
 	public boolean save();
+	
+	/**
+	 * Clear all contents.
+	 */
+	public void clear();
+
+	/**
+	 * Return a YAML-String representation of the contents, null if not supported.
+	 * @return null if not supported.
+	 */
+	public String getYAMLString();
+	
+	/**
+	 * Add all entries from the YAML-String representation to the configuration, forget or clear all previous entries. 
+	 * @return
+	 */
+	public boolean fromYamlString(String input);
 	
 
 }

@@ -113,6 +113,7 @@ CHANGELOG
 
 (0.5.0)
 - (bugfix) Updated descriptions for commands, add usage to vantell.
+- (update) config: compatlayer
 
 (0.4.4)
 - (add) /vantell command + tell flag.

@@ -1,6 +1,9 @@
 package me.asofold.bukkit.simplyvanish.config.compatlayer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ConfigUtil {
 	
@@ -90,4 +93,104 @@ public class ConfigUtil {
 		}
 		return changed;
 	}
+	
+	/**
+	 * Add StringList entries to a set.
+	 * @param cfg
+	 * @param path
+	 * @param set
+	 * @param clear If to clear the set.
+	 * @param trim
+	 * @param lowerCase
+	 */
+	public static void readStringSetFromList(CompatConfig cfg, String path, Set<String> set, boolean clear, boolean trim, boolean lowerCase){
+		if (clear) set.clear();
+		List<String> tempList = cfg.getStringList(path , null);
+		if (tempList != null){
+			for (String entry : tempList){
+				if (trim) entry = entry.trim();
+				if (lowerCase) entry = entry.toLowerCase();
+				set.add(entry);
+			}
+		}
+	}
+	
+	/**
+	 * Return an ArrayList.
+	 * @param input
+	 * @return
+	 */
+	public static final <T>  List<T> asList(final T[] input){
+		final List<T> out = new ArrayList<T>(input.length);
+		for (int i = 0; i < input.length; i++){
+			out.add(input[i]);
+		}
+		return out;
+	}
+	
+	/**
+	 * Return an ArrayList.
+	 * @param input
+	 * @return
+	 */
+	public static final List<Integer> asList(final int[] input){
+		final List<Integer> out = new ArrayList<Integer>(input.length);
+		for (int i = 0; i < input.length; i++){
+			out.add(input[i]);
+		}
+		return out;
+	}
+	
+	/**
+	 * Return an ArrayList.
+	 * @param input
+	 * @return
+	 */
+	public static final List<Long> asList(final long[] input){
+		final List<Long> out = new ArrayList<Long>(input.length);
+		for (int i = 0; i < input.length; i++){
+			out.add(input[i]);
+		}
+		return out;
+	}
+	
+	/**
+	 * Return an ArrayList.
+	 * @param input
+	 * @return
+	 */
+	public static final List<Double> asList(final double[] input){
+		final List<Double> out = new ArrayList<Double>(input.length);
+		for (int i = 0; i < input.length; i++){
+			out.add(input[i]);
+		}
+		return out;
+	}
+	
+	/**
+	 * Return an ArrayList.
+	 * @param input
+	 * @return
+	 */
+	public static final List<Float> asList(final float[] input){
+		final List<Float> out = new ArrayList<Float>(input.length);
+		for (int i = 0; i < input.length; i++){
+			out.add(input[i]);
+		}
+		return out;
+	}
+	
+	/**
+	 * Return an ArrayList.
+	 * @param input
+	 * @return
+	 */
+	public static final List<Boolean> asList(final boolean[] input){
+		final List<Boolean> out = new ArrayList<Boolean>(input.length);
+		for (int i = 0; i < input.length; i++){
+			out.add(input[i]);
+		}
+		return out;
+	}
+	
 }
