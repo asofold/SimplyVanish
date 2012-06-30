@@ -104,7 +104,7 @@ bind permissions flag ? (for simple permissions use)
 
 ***
 ? remove checkInvolved checks ? 
-
+? order of vanished and god (vanished always first ?)
 ? check collisions: on -interact: prevent vehicle and arrow collisions (other entities, how arrows?) with vanished players ! 
 !(Add) join message :if godded.
 !(add) vangods command.
