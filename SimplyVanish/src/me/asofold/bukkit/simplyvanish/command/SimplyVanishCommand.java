@@ -183,7 +183,7 @@ public class SimplyVanishCommand{
 	private boolean vanGodCommand(CommandSender sender, String[] args,
 			int len, boolean hasFlags, boolean ungod) {
 		// TODO: maybe later accept flags.
-		String perm = "simplyvanish.cmd." + (ungod?"ungod.":"god.");
+		String perm = "simplyvanish." + (ungod?"ungod.":"god.");
 		if (len == 0){
 			if (!Utils.checkPlayer(sender)) return true;
 			checkVangod(sender, perm + ".self", sender.getName(), ungod);
