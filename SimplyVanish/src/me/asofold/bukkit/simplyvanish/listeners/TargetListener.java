@@ -15,9 +15,9 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
 
-public class TargetListener implements Listener {
+public final class TargetListener implements Listener {
 	private final SimplyVanishCore core;
-	public TargetListener(SimplyVanishCore core){
+	public TargetListener(final SimplyVanishCore core){
 		this.core = core;
 	}
 	

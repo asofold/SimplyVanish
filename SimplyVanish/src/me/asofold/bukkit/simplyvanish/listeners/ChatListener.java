@@ -18,11 +18,11 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
  * @author mc_dev
  *
  */
-public class ChatListener implements Listener {
+public final class ChatListener implements Listener {
 	
 	private final SimplyVanishCore core;
 	
-	public ChatListener(SimplyVanishCore core){
+	public ChatListener(final SimplyVanishCore core){
 		this.core = core;
 	}
 	
@@ -39,12 +39,12 @@ public class ChatListener implements Listener {
 	 * @param cmd command (lower case, trim).
 	 * @return
 	 */
-	private final boolean shouldCancelCmd(final String name, String cmd) {
+	private final boolean shouldCancelCmd(final String name, final String cmd) {
 		final VanishConfig cfg = core.getVanishConfig(name, false);
 		if (cfg == null) return false;
 		if (!cfg.vanished.state) return false;
 		if (!cfg.cmd.state){
-			Settings settings = core.getSettings();
+			final Settings settings = core.getSettings();
 			final boolean contains = settings.cmdCommands.contains(cmd);
 			if (settings.cmdWhitelist) return !contains;
 			else return contains;
@@ -53,7 +53,7 @@ public class ChatListener implements Listener {
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	public void onChat(PlayerChatEvent event){
+	final void onChat(final PlayerChatEvent event){
 		if (event.isCancelled()) return;
 		// Just prevent accidental chat.
 		final Player player = event.getPlayer();
@@ -64,7 +64,7 @@ public class ChatListener implements Listener {
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	void onCommandPreprocess(PlayerCommandPreprocessEvent event){
+	final void onCommandPreprocess(final PlayerCommandPreprocessEvent event){
 		if (event.isCancelled()) return;
 		String cmd = event.getMessage().trim().split(" ", 2)[0].toLowerCase();
 		if (cmd.length()>1) cmd = cmd.substring(1);

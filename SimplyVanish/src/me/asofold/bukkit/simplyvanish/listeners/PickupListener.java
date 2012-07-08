@@ -9,16 +9,16 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
-public class PickupListener implements Listener {
+public final class PickupListener implements Listener {
 	private final SimplyVanishCore core;
-	public PickupListener(SimplyVanishCore core){
+	public PickupListener(final SimplyVanishCore core){
 		this.core = core;
 	}
 	@EventHandler(priority=EventPriority.LOW)
-	void onItemPickUp(PlayerPickupItemEvent event){
+	final void onItemPickUp(final PlayerPickupItemEvent event){
 		if ( event.isCancelled() ) return;
-		Player player = event.getPlayer();
-		VanishConfig cfg = core.getVanishConfig(player.getName(), false);
+		final Player player = event.getPlayer();
+		final VanishConfig cfg = core.getVanishConfig(player.getName(), false);
 		if (cfg == null) return;
 		if (!cfg.vanished.state) return;
 		if (!cfg.pickup.state) event.setCancelled(true);

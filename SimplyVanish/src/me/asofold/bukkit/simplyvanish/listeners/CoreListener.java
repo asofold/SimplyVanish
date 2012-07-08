@@ -17,19 +17,19 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class CoreListener implements Listener {
+public final class CoreListener implements Listener {
 	private final SimplyVanishCore core;
 	public CoreListener(SimplyVanishCore core){
 		this.core = core;
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
-	void onPlayerQuit(PlayerQuitEvent event){
+	final void onPlayerQuit(final PlayerQuitEvent event){
 		if (onLeave(event.getPlayer().getName(), false, " quit.")) event.setQuitMessage(null);
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
-	void onPlayerKick(PlayerKickEvent event){
+	final void onPlayerKick(final PlayerKickEvent event){
 		if (onLeave(event.getPlayer().getName(), event.isCancelled(), " was kicked.")) event.setLeaveMessage(null);
 	}
 	
@@ -39,8 +39,8 @@ public class CoreListener implements Listener {
 	 * @param cancelled if event was cancelled
 	 * @return If to clear the leave message.
 	 */
-	boolean onLeave(String name, boolean cancelled, String action){
-		Settings settings = core.getSettings();
+	final boolean onLeave(final String name, boolean cancelled, final String action){
+		final Settings settings = core.getSettings();
 		if (settings.suppressQuitMessage && core.isVanished(name)){
 			if (settings.notifyState && !cancelled){
 				String msg = SimplyVanish.msgLabel+ChatColor.GREEN+name+ChatColor.GRAY+action;
@@ -65,10 +65,10 @@ public class CoreListener implements Listener {
 
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
-	void onPlayerJoin(PlayerJoinEvent event){
-		Player player = event.getPlayer();
-		String playerName = player.getName();
-		Settings settings = core.getSettings();
+	final void onPlayerJoin(final PlayerJoinEvent event){
+		final Player player = event.getPlayer();
+		final String playerName = player.getName();
+		final Settings settings = core.getSettings();
 		VanishConfig cfg = core.getVanishConfig(playerName, false);
 		boolean was = cfg != null && cfg.vanished.state;
 		boolean auto = false; // Indicate if the player should be vanished due to auto-vanish.
@@ -80,9 +80,9 @@ public class CoreListener implements Listener {
 			}
 		}
 		boolean doVanish = auto || was;
-		HookUtil hookUtil = core.getHookUtil();
+		final HookUtil hookUtil = core.getHookUtil();
 		if (doVanish){
-			SimplyVanishAtLoginEvent svEvent = new SimplyVanishAtLoginEvent(playerName, was, doVanish, auto);
+			final SimplyVanishAtLoginEvent svEvent = new SimplyVanishAtLoginEvent(playerName, was, doVanish, auto);
 			Bukkit.getServer().getPluginManager().callEvent(svEvent);
 			if (svEvent.isCancelled()){
 				// no update

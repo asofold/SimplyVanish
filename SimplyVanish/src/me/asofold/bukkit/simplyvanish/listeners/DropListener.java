@@ -9,19 +9,19 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
-public class DropListener implements Listener {
+public final class DropListener implements Listener {
 	
 	private final SimplyVanishCore core;
 	
-	public DropListener(SimplyVanishCore core){
+	public DropListener(final SimplyVanishCore core){
 		this.core = core;
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	void onItemDrop(PlayerDropItemEvent event){
+	final void onItemDrop(final PlayerDropItemEvent event){
 		if ( event.isCancelled() ) return;
-		Player player = event.getPlayer();
-		VanishConfig cfg = core.getVanishConfig(player.getName(), false);
+		final Player player = event.getPlayer();
+		final VanishConfig cfg = core.getVanishConfig(player.getName(), false);
 		if (cfg == null) return;
 		if (!cfg.vanished.state) return;
 		if (!cfg.drop.state) event.setCancelled(true);

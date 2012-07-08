@@ -30,9 +30,9 @@ import org.bukkit.event.vehicle.VehicleExitEvent;
  * @author mc_dev
  *
  */
-public class InteractListener implements Listener {
+public final class InteractListener implements Listener {
 	private final SimplyVanishCore core;
-	public InteractListener(SimplyVanishCore core){
+	public InteractListener(final SimplyVanishCore core){
 		this.core = core;
 	}
 	
@@ -43,30 +43,30 @@ public class InteractListener implements Listener {
 		return true;
 	}
 	
-	private boolean hasBypass(Player player, EntityType type) {
+	private final boolean hasBypass(final Player player, final EntityType type) {
 		if (!core.getVanishConfig(player.getName(), false).bypass.state) return false;
 		if (type == null) return false;
-		Settings settings = core.getSettings();
+		final Settings settings = core.getSettings();
 		if (!settings.bypassIgnorePermissions && player.hasPermission("simplyvanish.flags.bypass."+(type.toString().toLowerCase()))) return true;
 		else if (settings.bypassEntities.contains(type)) return true; 
 		else return false;
 	}
 	
-	private boolean hasBypass(Player player, int blockId) {
+	private final boolean hasBypass(final Player player, final int blockId) {
 		if (!core.getVanishConfig(player.getName(), false).bypass.state) return false;
-		Settings settings = core.getSettings();
+		final Settings settings = core.getSettings();
 		if (!settings.bypassIgnorePermissions && player.hasPermission("simplyvanish.flags.bypass."+blockId)) return true;
 		else if (settings.bypassBlocks.contains(blockId)) return true;
 		else return false;
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
-	void onInteract(PlayerInteractEvent event){
+	final void onInteract(final PlayerInteractEvent event){
 		// This is on highest to allow the use of info and teleport tools.
 		if (event.isCancelled()) return;
 		final Player player = event.getPlayer();
 		if (shouldCancel(player.getName())){
-			Block block = event.getClickedBlock();
+			final Block block = event.getClickedBlock();
 			if (block != null && hasBypass(player, block.getTypeId())) return;
 			event.setCancelled(true);
 			Utils.sendBlock(event.getPlayer(), block);
@@ -75,7 +75,7 @@ public class InteractListener implements Listener {
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
 	// This is on highest to allow the use of info and teleport tools.
-	void onInteractEntity(PlayerInteractEntityEvent event){
+	final void onInteractEntity(final PlayerInteractEntityEvent event){
 		if (event.isCancelled()) return;
 		final Player player = event.getPlayer();
 		if (shouldCancel(player.getName())){
@@ -86,7 +86,7 @@ public class InteractListener implements Listener {
 	}
 
 	@EventHandler(priority=EventPriority.LOW)
-	void onBucketFill(PlayerBucketFillEvent event){
+	final void onBucketFill(final PlayerBucketFillEvent event){
 		if (event.isCancelled()) return;
 		if (shouldCancel(event.getPlayer().getName())){
 			event.setCancelled(true);
@@ -95,7 +95,7 @@ public class InteractListener implements Listener {
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	void onBlockBreak(BlockBreakEvent event){
+	final void onBlockBreak(final BlockBreakEvent event){
 		// Do add these for bypasses.
 		if (event.isCancelled()) return;
 		if (shouldCancel(event.getPlayer().getName())) event.setCancelled(true);
@@ -105,7 +105,7 @@ public class InteractListener implements Listener {
 	// TODO: some of the following might be obsolete (interact-entity)
 
 	@EventHandler(priority=EventPriority.LOW)
-	void onBucketEmpty(PlayerBucketEmptyEvent event){
+	final void onBucketEmpty(final PlayerBucketEmptyEvent event){
 		if (event.isCancelled()) return;
 		if (shouldCancel(event.getPlayer().getName())){
 			event.setCancelled(true);
@@ -114,7 +114,7 @@ public class InteractListener implements Listener {
 	}
 
 	@EventHandler(priority=EventPriority.LOW)
-	void onVehicleDestroy(VehicleDestroyEvent event){
+	final void onVehicleDestroy(final VehicleDestroyEvent event){
 		Entity entity = event.getAttacker();
 		if (entity instanceof Projectile) entity = ((Projectile) entity).getShooter();
 		if (entity == null) return;
@@ -123,16 +123,16 @@ public class InteractListener implements Listener {
  	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	void onVehicleEnter(VehicleEnterEvent event){
+	final void onVehicleEnter(final VehicleEnterEvent event){
 		// this could be omitted, probably
-		Entity entity = event.getEntered();
+		final Entity entity = event.getEntered();
 		if (entity == null) return;
 		if (!(entity instanceof Player)) return;
 		if (shouldCancel(((Player) entity).getName())) event.setCancelled(true);
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	void onVehicleExit(VehicleExitEvent event){
+	final void onVehicleExit(final VehicleExitEvent event){
 		Entity entity = event.getExited();
 		if (entity == null) return;
 		if (!(entity instanceof Player)) return;
@@ -141,21 +141,21 @@ public class InteractListener implements Listener {
 	
 	
 	@EventHandler(priority=EventPriority.LOW)
-	void onPaintingBreak(PaintingBreakByEntityEvent event){
-		Entity entity = event.getRemover();
+	final void onPaintingBreak(final PaintingBreakByEntityEvent event){
+		final Entity entity = event.getRemover();
 		if (entity == null) return;
 		if (!(entity instanceof Player)) return;
 		if (shouldCancel(((Player) entity).getName())) event.setCancelled(true);
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	void onEgg(PlayerEggThrowEvent event){
+	final void onEgg(final PlayerEggThrowEvent event){
 		if (shouldCancel(event.getPlayer().getName())) event.setHatching(false);
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	void onCollision(VehicleEntityCollisionEvent event){
-		Entity entity = event.getEntity();
+	final void onCollision(final VehicleEntityCollisionEvent event){
+		final Entity entity = event.getEntity();
 		if (entity == null) return;
 		if (!(entity instanceof Player)) return;
 		if (shouldCancel(((Player) entity).getName())){

@@ -17,11 +17,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 
-public class DamageListener implements Listener {
+public final class DamageListener implements Listener {
 	
 	private final SimplyVanishCore core;
 	
-	public DamageListener(SimplyVanishCore core){
+	public DamageListener(final SimplyVanishCore core){
 		this.core = core;
 	}
 	
@@ -34,11 +34,11 @@ public class DamageListener implements Listener {
 	}
 	
 	@EventHandler(priority=EventPriority.LOW, ignoreCancelled=true)
-	void onFoodLevel(FoodLevelChangeEvent event){
+	final void onFoodLevel(final FoodLevelChangeEvent event){
 //		if ( event.isCancelled() ) return;
 		final LivingEntity entity = event.getEntity();
 		if (!(entity instanceof Player)) return;
-		Player player = (Player) entity;
+		final Player player = (Player) entity;
 		if (event.getFoodLevel() - player.getFoodLevel() >= 0) return;
 		if (shouldCancelDamage(player.getName()))	event.setCancelled(true);
 	}
@@ -55,11 +55,11 @@ public class DamageListener implements Listener {
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
-	void onPotionSplash(PotionSplashEvent event){
+	final void onPotionSplash(final PotionSplashEvent event){
 		try{
 			final List<Entity> rem = new LinkedList<Entity>();
 			final Collection<LivingEntity> affected = event.getAffectedEntities();
-			for ( LivingEntity entity : affected){
+			for ( final LivingEntity entity : affected){
 				if (entity instanceof Player ){
 					if (shouldCancelDamage(((Player) entity).getName())) rem.add(entity);
 				}

@@ -13,9 +13,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 
-public class AttackListener implements Listener {
+public final class AttackListener implements Listener {
 	private final SimplyVanishCore core;
-	public AttackListener(SimplyVanishCore core){
+	public AttackListener(final SimplyVanishCore core){
 		this.core = core;
 	}
 	
@@ -27,7 +27,7 @@ public class AttackListener implements Listener {
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	void onEntitiyDamage(EntityDamageByEntityEvent event){
+	final void onEntitiyDamage(final EntityDamageByEntityEvent event){
 		// TODO: maybe integrate with the damage check
 		if (event.isCancelled()) return;
 		Entity entity = event.getDamager();
@@ -38,16 +38,16 @@ public class AttackListener implements Listener {
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	void onProjectileLaunch(ProjectileLaunchEvent event){
-		Entity entity = event.getEntity().getShooter();
+	final void onProjectileLaunch(final ProjectileLaunchEvent event){
+		final Entity entity = event.getEntity().getShooter();
 		if (!(entity instanceof Player)) return;
 		if (shouldCancelAttack(((Player) entity).getName())) event.setCancelled(true);
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	void onShootBow(EntityShootBowEvent event){
+	final void onShootBow(final EntityShootBowEvent event){
 		// nmot sure about this one.
-		Entity entity = event.getEntity();
+		final Entity entity = event.getEntity();
 		if (!(entity instanceof Player)) return;
 		if (shouldCancelAttack(((Player) entity).getName())) event.setCancelled(true);
 	}
