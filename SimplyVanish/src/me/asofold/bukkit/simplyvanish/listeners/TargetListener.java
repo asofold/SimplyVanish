@@ -44,25 +44,27 @@ public class TargetListener implements Listener {
 		}
 	}
 	
+	
+	
 	/**
 	 * Attempt some workaround for experience orbs:
 	 * prevent it getting near the player.
 	 * @param target
 	 * @param entity
 	 */
-	void repellExpOrb(Player player, ExperienceOrb orb, Settings settings) {
-		Location pLoc = player.getLocation();
-		Location oLoc = orb.getLocation();
-		Vector dir = oLoc.toVector().subtract(pLoc.toVector());
-		double dx = Math.abs(dir.getX());
-		double dz = Math.abs(dir.getZ());
+	final void repellExpOrb(final Player player, final ExperienceOrb orb, final Settings settings) {
+		final Location pLoc = player.getLocation();
+		final Location oLoc = orb.getLocation();
+		final Vector dir = oLoc.toVector().subtract(pLoc.toVector());
+		final double dx = Math.abs(dir.getX());
+		final double dz = Math.abs(dir.getZ());
 		if ( (dx == 0.0) && (dz == 0.0)){
 			// Special case probably never happens
 			dir.setX(0.001);
 		}
 		if ((dx < settings.expThreshold) && (dz < settings.expThreshold)){
-			Vector nDir = dir.normalize();
-			Vector newV = nDir.clone().multiply(settings.expVelocity);
+			final Vector nDir = dir.normalize();
+			final Vector newV = nDir.clone().multiply(settings.expVelocity);
 			newV.setY(0);
 			orb.setVelocity(newV);
 			if ((dx < settings.expTeleDist) && (dz < settings.expTeleDist)){
