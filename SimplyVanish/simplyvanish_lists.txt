@@ -113,9 +113,13 @@ bind permissions flag ? (for simple permissions use)
 *** ?add ignore worlds to do no updating on those worlds and update on world changes maybe! Or hook into PlayersInCubes !
 
 
-
+*** vangod: config flag (or other hidden flag for experts -> maybe better hidden flag + default flag states) to make god mode respect all set flags.
 
 *** 0.5.0 MINIMUM RELEASE
+
+
+***API
+! make config options available to be able to interpret all flags correctly.
 
 *** Tameables
 ? Teleport of dogs (cats?): currently impossible to prevent when happening !
@@ -123,6 +127,7 @@ bind permissions flag ? (for simple permissions use)
 ? (add) Workaround: Let all (nearby) tamed cats and dogs sit when a player vanishes !
 
 *** Permissions
+! consider for all/most flags: Make configurable if to use at all, if to use permissions only, or enable / disable by default.
 ? consider: simple-permissions flag ! + shortcut permissions.
 
 *** Appearance
