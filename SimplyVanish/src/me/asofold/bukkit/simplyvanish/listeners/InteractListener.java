@@ -8,12 +8,17 @@ import me.asofold.bukkit.simplyvanish.util.Utils;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.painting.PaintingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -162,6 +167,46 @@ public final class InteractListener implements Listener {
 			event.setPickupCancelled(true);
 			event.setCollisionCancelled(true);
 			// maybe that is enough:
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)
+	final void onInventoryOpen(final InventoryOpenEvent event){
+		final LivingEntity entitiy = event.getPlayer();
+		if (!(entitiy instanceof Player)) return;
+		final Player player = (Player) entitiy;
+		final VanishConfig cfg = core.getVanishConfig(player.getName(), false);
+		if (cfg == null) return;
+		if (!cfg.vanished.state){
+			cfg.preventInventoryAction = false;
+			return;
+		}
+		// TODO: extra inventory settings or permission or one more flag ?
+		if (core.hasPermission(player, "simplyvanish.inventories.manipulate")) cfg.preventInventoryAction = false;
+		else if (event.getInventory() == player.getInventory()) cfg.preventInventoryAction = false;
+		else cfg.preventInventoryAction = true;
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)
+	final void onInventoryClose(final InventoryCloseEvent event){
+		final LivingEntity entitiy = event.getPlayer();
+		if (!(entitiy instanceof Player)) return;
+		final Player player = (Player) entitiy;
+		final VanishConfig cfg = core.getVanishConfig(player.getName(), false);
+		if (cfg == null) return;
+		cfg.preventInventoryAction = false;
+	}
+	
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled=true)
+	final void onInventoryClick(final InventoryClickEvent event){
+		final LivingEntity entitiy = event.getWhoClicked();
+		if (!(entitiy instanceof Player)) return;
+		final Player player = (Player) entitiy;
+		final VanishConfig cfg = core.getVanishConfig(player.getName(), false);
+		if (cfg == null) return;
+		if (cfg.preventInventoryAction){
+			event.setResult(Result.DENY);
 			event.setCancelled(true);
 		}
 	}

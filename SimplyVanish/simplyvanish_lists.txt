@@ -106,17 +106,51 @@ bind permissions flag ? (for simple permissions use)
 ? remove checkInvolved checks ? 
 ? order of vanished and god (vanished always first ?)
 ? check collisions: on -interact: prevent vehicle and arrow collisions (other entities, how arrows?) with vanished players ! 
-!(Add) join message :if godded.
-!(add) vangods command.
 !(add) API for certain config settings !
 !(add) god mode - config: classical god mode + flag oriented godmode?
-?(add) move Inventory peeking here ! 
-!(add) Tamables / prevent targeting others and teleporting. (EntityTarget, EntityTeleport)
+
+
+*** ?add ignore worlds to do no updating on those worlds and update on world changes maybe! Or hook into PlayersInCubes !
+
+
+
+
+*** 0.5.0 MINIMUM RELEASE
+
+*** Tameables
+? Teleport of dogs (cats?): currently impossible to prevent when happening !
+? Following the player when nearby: currently impossible to prevent when happening!
+? (add) Workaround: Let all (nearby) tamed cats and dogs sit when a player vanishes !
+
+*** Permissions
+? consider: simple-permissions flag ! + shortcut permissions.
+
+*** Appearance
+!(Add) join message :if godded.
+
+**** Inventories
+!check where updateInventory might be necessary (cancelled drops, clicks ? !)
+! (consider) close inventories when payers vanish !
+? check: specialties about gamemode ? -> no.
+
+!! CONCEPT: How to bring this in ? config flag + permissions (smallest change, optional) ?
+
+!(add) /vanpeek <player> + right click inventories + ? right click players (!) [switchable by configuration !]
+?(add) move Inventory peeking here ! [at first : permission based + vanish related, respect interact and bypass flag]
+
+
+*** Uncategorized 
+? add configuration for block updates when canceling interaction.
+!(add) vangods command.
+!check projectile collisions: move the projectile around / behind the player or set velocity and bouncing !
+!check : VehicleEntityCollision: 1. works? -> allows walking through minecarts ! 
+
 
 CHANGELOG 
 ---------------------------------------------
 
-(0.5.0) 
+
+(0.5.0-DEV-1)
 - (add) classical god-mode: /vangod and /vanungod
 - (bugfix) Updated descriptions for commands, add usage to vantell.
 - (update) config: compatlayer

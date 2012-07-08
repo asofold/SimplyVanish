@@ -47,6 +47,11 @@ public class VanishConfig {
 	}
 	
 	/**
+	 * Used by the interact listener for fake inventory opening.
+	 */
+	public boolean preventInventoryAction = false;
+	
+	/**
 	 * Flag for indicating that this might get saved.<br>
 	 * Handled not too strictly (used like: setFlags, then vanish, vanish checks this flag).
 	 */
