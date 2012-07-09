@@ -145,7 +145,7 @@ bind permissions flag ? (for simple permissions use)
 
 
 *** Uncategorized 
-? add configuration for block updates when canceling interaction.
+? add configuration for block updates when canceling interaction. or maybe a list of ids for the item in hand ?
 !(add) vangods command.
 !check projectile collisions: move the projectile around / behind the player or set velocity and bouncing !
 !check : VehicleEntityCollision: 1. works? -> allows walking through minecarts ! 
@@ -154,8 +154,10 @@ bind permissions flag ? (for simple permissions use)
 CHANGELOG 
 ---------------------------------------------
 
+(0.5.0-DEV-2)
 
 (0.5.0-DEV-1)
+- (add) Inventory manipulation prevention when vanished (RAW).
 - (add) classical god-mode: /vangod and /vanungod
 - (bugfix) Updated descriptions for commands, add usage to vantell.
 - (update) config: compatlayer
