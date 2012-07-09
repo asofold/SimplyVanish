@@ -50,7 +50,19 @@ public final class DamageListener implements Listener {
 		if (!(entity instanceof Player)) return;
 		if (shouldCancelDamage(((Player) entity).getName())){
 			event.setCancelled(true);
-			if ( entity.getFireTicks()>0) entity.setFireTicks(0);
+			if (entity.getFireTicks()>0) entity.setFireTicks(0);
+//			if (event instanceof EntityDamageByEntityEvent){
+//				final EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent) event;
+//				final Entity damager = edbee.getDamager();
+//				if (damager instanceof Projectile){
+//					final Projectile p = (Projectile) damager;
+//					// TODO: maybe just remove ? / Settings .
+//					if (p.doesBounce()) p.setBounce(false);
+//					// TODO: test / maybe set the position / velocity
+//					p.teleport(p.getLocation().add(p.getLocation().getDirection().normalize()));
+//					p.setVelocity(p.getVelocity().multiply(-1.0));
+//				}
+//			}
 		}
 	}
 	
