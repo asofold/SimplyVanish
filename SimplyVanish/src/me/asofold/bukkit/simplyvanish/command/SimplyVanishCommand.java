@@ -15,6 +15,7 @@ import me.asofold.bukkit.simplyvanish.config.Path;
 import me.asofold.bukkit.simplyvanish.config.Settings;
 import me.asofold.bukkit.simplyvanish.config.VanishConfig;
 import me.asofold.bukkit.simplyvanish.config.compatlayer.CompatConfig;
+import me.asofold.bukkit.simplyvanish.inventories.InventoryUtil;
 import me.asofold.bukkit.simplyvanish.util.Utils;
 
 import org.bukkit.Bukkit;
@@ -43,7 +44,7 @@ public class SimplyVanishCommand{
 	 * All command labels (not aliases).
 	 */
 	public static final String[] baseLabels = new String[]{
-		"vanish", "reappear", "tvanish", "simplyvanish", "vanished", "vanflag", "vantell",
+		"vanish", "reappear", "tvanish", "simplyvanish", "vanished", "vanflag", "vantell", "vanpeek"
 	};
 	
 	/**
@@ -177,7 +178,22 @@ public class SimplyVanishCommand{
 		else if (label.equals("vanungod")){
 			return vanGodCommand(sender, args, len, hasFlags, true);
 		}
+		else if (label.equals("vanpeek") && len == 1){
+			return vanPeekCommand(sender, args[0]);
+		}
 		return unrecognized(sender);
+	}
+
+	private boolean vanPeekCommand(CommandSender sender, String name) {
+		name = name.trim().toLowerCase();
+		if (name.isEmpty()) return false;
+		if (name.equalsIgnoreCase(sender.getName())){
+			Utils.send(sender, SimplyVanish.msgLabel + ChatColor.YELLOW + "You can not peek into your own inventory :) !");
+			return true;
+		}
+		if (!Utils.checkPerm(sender, "simplyvanish.inventories.peek.at-all")) return true; // TODO
+		InventoryUtil.showInventory(sender, (sender instanceof Player)?core.getVanishConfig(sender.getName(), true):null,  name, core.getSettings());
+		return true;
 	}
 
 	private boolean vanGodCommand(CommandSender sender, String[] args,

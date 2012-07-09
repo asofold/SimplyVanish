@@ -41,4 +41,7 @@ commands:
   vanungod:
     description: 'Enable god mode.'
     usage: '/vanungod | /vanungod <other>'
+  vanpeek:
+    description: 'Peek into other players inventories.'
+    usage: '/vanpeek <player>'
     

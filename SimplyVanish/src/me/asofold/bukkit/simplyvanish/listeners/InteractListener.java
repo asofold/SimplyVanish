@@ -3,6 +3,7 @@ package me.asofold.bukkit.simplyvanish.listeners;
 import me.asofold.bukkit.simplyvanish.SimplyVanishCore;
 import me.asofold.bukkit.simplyvanish.config.Settings;
 import me.asofold.bukkit.simplyvanish.config.VanishConfig;
+import me.asofold.bukkit.simplyvanish.inventories.InventoryUtil;
 import me.asofold.bukkit.simplyvanish.util.Utils;
 
 import org.bukkit.block.Block;
@@ -183,9 +184,7 @@ public final class InteractListener implements Listener {
 			return;
 		}
 		// TODO: extra inventory settings or permission or one more flag ?
-		if (core.hasPermission(player, "simplyvanish.inventories.manipulate")) cfg.preventInventoryAction = false;
-		else if (event.getInventory() == player.getInventory()) cfg.preventInventoryAction = false;
-		else cfg.preventInventoryAction = true;
+		InventoryUtil.prepareInventoryOpen(player, event.getInventory(), cfg);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)

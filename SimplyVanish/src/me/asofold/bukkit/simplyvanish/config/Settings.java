@@ -151,6 +151,8 @@ public class Settings {
 	 */
 	public boolean logVantell = false;
 	
+	public boolean allowRealPeek = true;
+	
 	/**
 	 * Adjust internal settings to the given configuration.
 	 * TODO: put this to plugin / some settings helper
@@ -215,6 +217,8 @@ public class Settings {
 		loadPlugins.addAll(config.getStringList(path.loadPlugins, new LinkedList<String>()));
 		
 		logVantell = config.getBoolean(path.cmdVantellLog, ref.logVantell);
+		
+		allowRealPeek = config.getBoolean(path.allowRealPeek, ref.allowRealPeek);
 		
 		// cmd flag:
 		cmdWhitelist = config.getBoolean(path.flagsCmdWhitelist, ref.cmdWhitelist);
@@ -367,6 +371,8 @@ public class Settings {
 		defaults.set(path.loadPlugins, ref.loadPlugins);
 		
 		defaults.set(path.cmdVantellLog, ref.logVantell);
+		
+		defaults.set(path.allowRealPeek, ref.allowRealPeek);
 		
 		// Sets are not added, for they can interfere.
 		

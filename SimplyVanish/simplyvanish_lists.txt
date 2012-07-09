@@ -120,6 +120,7 @@ bind permissions flag ? (for simple permissions use)
 
 ***API
 ! make config options available to be able to interpret all flags correctly.
+? if simple config is checked: remvoe some tentries if at default values ?
 
 *** Tameables
 ? Teleport of dogs (cats?): currently impossible to prevent when happening !
@@ -133,7 +134,15 @@ bind permissions flag ? (for simple permissions use)
 *** Appearance
 !(Add) join message :if godded.
 
+*** Teleport tool
+! low range teleport : into the middle of a door block or next to it (rotating principle ?).
+! at least two longer distance permissions.
+! pass through and teleport. 
+? safe ground feature 
+
 **** Inventories
+? maybe just use permissions for allow real peek ? => no, but make permissios fit for distinguishing
+!flesh out permissions for when to peek and when not.
 !check where updateInventory might be necessary (cancelled drops, clicks ? !)
 ! (consider) close inventories when payers vanish !
 ? check: specialties about gamemode ? -> no.
@@ -151,10 +160,14 @@ bind permissions flag ? (for simple permissions use)
 !check : VehicleEntityCollision: 1. works? -> allows walking through minecarts ! 
 
 
+
+!silent container peek
+
 CHANGELOG 
 ---------------------------------------------
 
 (0.5.0-DEV-2)
+- (add) Peek command (RAW).
 
 (0.5.0-DEV-1)
 - (add) Inventory manipulation prevention when vanished (RAW).
