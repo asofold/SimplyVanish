@@ -310,6 +310,7 @@ public class VanishConfig {
 		VanishConfig cfg = new VanishConfig();
 		cfg.setAll(this);
 		cfg.changed =  true;
+		cfg.preventInventoryAction = preventInventoryAction;
 		return cfg;
 	}
 
