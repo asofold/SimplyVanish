@@ -731,9 +731,7 @@ public class SimplyVanishCore{
 	
 	void addStandardHooks(){
 		try{
-			Hook hook = new DisguiseCraftHook();
-			hookUtil.addHook(hook);
-			System.out.println("[SimplyVanish] Add hook: "+hook.getHookName());
+			hookUtil.addHook(new DisguiseCraftHook());
 		} catch(Throwable t){
 		}
 	}

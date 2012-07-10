@@ -73,6 +73,7 @@ public class HookUtil {
 					usedHookListeners.put(hookName, listener);
 				}
 			}
+			System.out.println("[SimplyVanish] Add hook: "+hook.getHookName());
 		} catch (Throwable t){
 			Utils.warn("Disable hook ("+hook.getHookName()+") due to failure on registration: "+t.getMessage());
 			t.printStackTrace();
