@@ -11,7 +11,7 @@ import org.bukkit.plugin.Plugin;
  *
  * @param <T>
  */
-public final class PluginGetter<T extends Plugin> implements Listener{
+public class PluginGetter<T extends Plugin> implements Listener{
 	private T plugin = null;
 	private final String pluginName;
 	public PluginGetter(final String pluginName){
