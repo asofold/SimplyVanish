@@ -1,6 +1,6 @@
 name: SimplyVanish
 main: me.asofold.bukkit.simplyvanish.SimplyVanish
-version: 0.5.0-DEV-3
+version: 0.5.0-DEV-4
 softdepend:
 - DisguiseCraft
 - dynmap
