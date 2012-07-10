@@ -136,11 +136,16 @@ command/other bypass permissions (then flag dependent), toggle by configuration 
 *** ?add ignore worlds to do no updating on those worlds and update on world changes maybe! Or hook into PlayersInCubes !
 
 
+!CHECK: implications of API: maybe add API to call hooks or make it consistent with updatevanishdstate (HookChangedVisibilityEvent ?)
+!(add) Tickets from bukkitdev
+!(add) config for hooks +  
+
 CHANGELOG 
----------------------------------------------
+--------------------------------------------
 
 (0.5.0-DEV-2)
-- (add) Peek command (RAW).
+- (add) Dynmap hook (RAW).
+- (add) /vanpeek command (RAW).
 
 (0.5.0-DEV-1)
 - (add) Inventory manipulation prevention when vanished (RAW).

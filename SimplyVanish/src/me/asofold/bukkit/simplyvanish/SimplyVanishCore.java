@@ -18,8 +18,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import me.asofold.bukkit.simplyvanish.api.events.SimplyVanishStateEvent;
-import me.asofold.bukkit.simplyvanish.api.hooks.Hook;
 import me.asofold.bukkit.simplyvanish.api.hooks.impl.DisguiseCraftHook;
+import me.asofold.bukkit.simplyvanish.api.hooks.impl.DynmapHook;
 import me.asofold.bukkit.simplyvanish.config.Settings;
 import me.asofold.bukkit.simplyvanish.config.VanishConfig;
 import me.asofold.bukkit.simplyvanish.util.HookUtil;
@@ -732,6 +732,10 @@ public class SimplyVanishCore{
 	void addStandardHooks(){
 		try{
 			hookUtil.addHook(new DisguiseCraftHook());
+		} catch(Throwable t){
+		}
+		try{
+			hookUtil.addHook(new DynmapHook());
 		} catch(Throwable t){
 		}
 	}
