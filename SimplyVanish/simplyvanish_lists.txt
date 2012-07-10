@@ -133,8 +133,10 @@ command/other bypass permissions (then flag dependent), toggle by configuration 
 ? remove checkInvolved checks ? 
 !(add) API for certain config settings !
 !(add) god mode - config: classical god mode + flag oriented godmode?
-*** ?add ignore worlds to do no updating on those worlds and update on world changes maybe! Or hook into PlayersInCubes !
+!(add) vanlist command ! (cansee + vanished tag + ?godded + sorted + prefix)
 
+? (add) Hook for PlayersInCubes ?
+*** ?add ignore worlds to do no updating on those worlds and update on world changes maybe! Or hook into PlayersInCubes !
 
 !CHECK: implications of API: maybe add API to call hooks or make it consistent with updatevanishdstate (HookChangedVisibilityEvent ?)
 !(add) Tickets from bukkitdev
@@ -142,6 +144,9 @@ command/other bypass permissions (then flag dependent), toggle by configuration 
 
 CHANGELOG 
 --------------------------------------------
+
+(0.5.0-DEV-3)
+- (add) Dynmap hook fix.
 
 (0.5.0-DEV-2)
 - (add) Dynmap hook (RAW).

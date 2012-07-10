@@ -13,6 +13,7 @@ public class DynmapHook extends AbstractHook {
 	
 	public DynmapHook(){
 		getter = new HookPluginGetter<DynmapPlugin>("dynmap");
+		if (getter.getPlugin() == null) throw new RuntimeException("Dynmap not found."); // To let it fail.
 	}
 	
 	@Override
