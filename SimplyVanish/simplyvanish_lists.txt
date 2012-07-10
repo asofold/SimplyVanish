@@ -5,134 +5,104 @@ SimplyVanish lists
 PLANNED FEATURES AND QUESTIONS
 ------------------------------------
 
-*** OBFUSCATION OF PRESENCE
+
+*** GRAVEYARD (PRESUMABLY)
+? make config flags if to register the listeners at all ?
+
+
+*** REAL PROBLEMS
 - !(add) Configurable: fake a lower number of players on list-ping [WAITING FOR FEATURE REQUEST]
 ? add configurability and on demand event registrations (by config !)
 - !(adjust) Better xp orb handling !
+? check collisions: on -interact: prevent vehicle and arrow collisions (other entities, how arrows?) with vanished players ! 
+Tamable problems ...
+PigZombies till problematic !
+!? unregister hooks somehow ? -> would need re-enabling the plugin currently, because of listeners.
 
-*** PERFORMANCE
+
+*** PERFORMANCE AND CONSISTENCY
 ? use entity ids or similar for fastest checking ?
 ? check update for efficiency (uh uh)
 ? Faster exclusion checks (mix-in permission?) for setFlags
 ? test performance :)
-? remove the checking if palyers are online ?
+? remove the checking if players are online ?
 
-*** FLAGS
-- !(add) Permission/some setup what flags to set automtically (default flags)? Or sets with a defined permission.
-- ?(add) setDefaultFlags ? to start with those flags always ! +config. [or on initial vanish or /vanish other]
-
-*** CORE FEATURES: INTERACTION
-? camera vanish
-? add canceling of more interaction !
-- ?(add) prevent chat toggle 
-?(add) Prevent commands feature ? 
 
 **** COMMANDS
 ?(add) '/simplyvanish clear' command to let all players be seen again.
 
+
 *** COMPATIBILITY / HOOKS
 - ?hide / show player: collect Map<String, Set<String>> or similar then call hooks then hide/show cumulative
-? (add) API / Hooks for players (other plugins, whatever): onVanish, onReappear, toLine, boolean parse
-- ?(add) boolean hooks for hide and show player. (though they get called many times)
 - !(add) prevent-hooks 
 - !(adjust) Check PalyerJoin twice: lowest = update state, highest = update messages
 - !CONSIDER: Delayed message on join. 
 
+
 *** LANGUAGE
 ? language update
 
+
 *** PERMISSIONS
-- ?bind-permisisons-to-vanish: bind permission to visibility at login or other occasions (force reappear) [problematic]
+
+
+*** FLAGS
+? flag set aliases ? -> + use some class to wrap flag sets ?
+? (add) Flag sets: permissions for applying just those flag sets ? -> not yet
+* consider: flag without +/- => use default state or extra prefix (complicates all though)?* consider: flag without +/- => use default state or extra prefix (complicates all though)?
+
+
+*** FEATURES
+? (add) Expiration time for vanishconfigs (checked at getVanishConfig) to allow temporary vanishing. ? RSP- integration: invisible arena ? 
+
 
 *** APPEARANCE
-- !(add) Panic: Digest warning messages where possible (show one instead of two).
+?(add) colored flag output: red = - green = + // name gray if default value and configured to show
+? DisplayPolice for flags: DEFAULT, POSITIVE, NEGATIVE (Show only changes to those stats, saving and loading always with difference to DEFAULT)  
+? some help text  / more info
+- !(add) Panic: Digest warning messages where possible (show one instead of two). <- remove panic :)
 
 
 
 STACK
 ---------------------------------------------
 
-*** (0.X.0) 
 
-
-***[EXTRAS]
-- ?(add) god mode ? /simgod = all flags apply though not vanished ! + /simungod [aliases by LightCommands]
-? make config flags if to register the listeners at all ?
-? (add) Expiration time for vanishconfigs (checked at getVanishConfig) to allow temporary vanishing. ? RSP- integration: invisible arena ? 
-? some help text  / more info
-
-? DisplayPolice for flags: DEFAULT, POSITIVE, NEGATIVE (Show only changes to those stats, saving and loading always with difference to DEFAULT)  
-* consider: flag without +/- => use default state or extra prefix (complicates all though)?
-
-
+*** STILL ON STACK
 ? refactor: only use updatevanishstate also from doVanish and doReappear!
-
-? flag set aliases ? -> + use some class to wrap flag sets ?
-? (add) Flag sets: permissions for applying just those flag sets ? -> not yet
-
-?(add) colored flag output: red = - green = + // name gray if default value and configured to show
-
-! new mob targeting problems ?
-* Check what else could be done for flags (interact, attack).
-- ?cmd flag / bypass : allow certain commands by bypass flag.
-
-
-- ?(bugfix) Display correct flags on error inputs. [could not reproduice anymore]
-
-!? unregister hooks somehow ?
 !?bugfix: static handlerlist atlogin event vs. stateevent
-
-*** 
-- !(bugfix) At enable: permission checks: schedule or try catch ?
-- ? try catch for players ?
-
 ? add configurable messages for vantell
+- ?cmd flag / bypass : allow certain commands by bypass flag.
+? chat: /tell /me configurable: treat as commands or as chat?
+command/other bypass permissions (then flag dependent), toggle by configuration ?
 
-?? vangod -> problem: many people will want to use it independently of the flags
 
-***
+*** DEFAULT FLAG STATES
 !(add) Allow setting specific flags as "configuration defaults" (saving will be by standard defaults), setting of defaults in constructor then.
 !(add) Care: loading flags from file: allow manual entry *clear (check if possible, important for default states)
 ? how to "restore" old state (new flags, default config flags -> not restore).
 
-***
 
-? chat: /tell /me configurable: treat as commands or as chat?
-?? API to get some config options (important for messages etc)
-command/other bypass permissions (then flag dependent), toggle by configuration ?
-bind permissions flag ? (for simple permissions use)
-
-***
-? remove checkInvolved checks ? 
-? order of vanished and god (vanished always first ?)
-? check collisions: on -interact: prevent vehicle and arrow collisions (other entities, how arrows?) with vanished players ! 
-!(add) API for certain config settings !
-!(add) god mode - config: classical god mode + flag oriented godmode?
+*** OPENINV INTEGRATION
+(wait for API)
 
 
-*** ?add ignore worlds to do no updating on those worlds and update on world changes maybe! Or hook into PlayersInCubes !
-
-
-*** vangod: config flag (or other hidden flag for experts -> maybe better hidden flag + default flag states) to make god mode respect all set flags.
-
-*** 0.5.0 MINIMUM RELEASE
+*** 0.5.0 MINIMUM RELEASE ---------------------------------------------------------------
 
 
 ***API
 ! make config options available to be able to interpret all flags correctly.
 ? if simple config is checked: remvoe some tentries if at default values ?
 
-*** Tameables
-? Teleport of dogs (cats?): currently impossible to prevent when happening !
-? Following the player when nearby: currently impossible to prevent when happening!
-? (add) Workaround: Let all (nearby) tamed cats and dogs sit when a player vanishes !
 
 *** Permissions
 ! consider for all/most flags: Make configurable if to use at all, if to use permissions only, or enable / disable by default.
-? consider: simple-permissions flag ! + shortcut permissions.
+? shortcut permissions (mapped!).
+
 
 *** Appearance
 !(Add) join message :if godded.
+? order of vanished and god (vanished always first ?)
 
 *** Teleport tool
 ! low range teleport : into the middle of a door block or next to it (rotating principle ?).
@@ -140,28 +110,31 @@ bind permissions flag ? (for simple permissions use)
 ! pass through and teleport. 
 ? safe ground feature 
 
-**** Inventories
+
+**** Inventories [Make a basic peek setup, including silent chest (permission), and blocked chest (permission)]
 ? maybe just use permissions for allow real peek ? => no, but make permissios fit for distinguishing
 !flesh out permissions for when to peek and when not.
-!check where updateInventory might be necessary (cancelled drops, clicks ? !)
-! (consider) close inventories when payers vanish !
-? check: specialties about gamemode ? -> no.
-
-!! CONCEPT: How to bring this in ? config flag + permissions (smallest change, optional) ?
-
 !(add) /vanpeek <player> + right click inventories + ? right click players (!) [switchable by configuration !]
 ?(add) move Inventory peeking here ! [at first : permission based + vanish related, respect interact and bypass flag]
+
+
+*** Actions on vanish
+? OpenInv: toggle silent and blocked chest automatically when vanishing ?
+! (consider) close inventories when payers vanish !
+? (add) Workaround: Let all (nearby) tamed cats and dogs sit when a player vanishes !
+
+*** Projectiles
+!(add) Option to remove projectiles on hit.
 
 
 *** Uncategorized 
 ? add configuration for block updates when canceling interaction. or maybe a list of ids for the item in hand ?
 !(add) vangods command.
-!check projectile collisions: move the projectile around / behind the player or set velocity and bouncing !
-!check : VehicleEntityCollision: 1. works? -> allows walking through minecarts ! 
+? remove checkInvolved checks ? 
+!(add) API for certain config settings !
+!(add) god mode - config: classical god mode + flag oriented godmode?
+*** ?add ignore worlds to do no updating on those worlds and update on world changes maybe! Or hook into PlayersInCubes !
 
-
-
-!silent container peek
 
 CHANGELOG 
 ---------------------------------------------
