@@ -153,6 +153,7 @@ CHANGELOG
 --------------------------------------------
 
 (0.5.0-DEV-4)
+- (add) Inventory peek with right click (RAW, only when vanished).
 - (adjust) Dynmap hook: Check state of player + use assertPlayerInvisibility as well.
 - (adjust) vantell: add mirror option.
 
