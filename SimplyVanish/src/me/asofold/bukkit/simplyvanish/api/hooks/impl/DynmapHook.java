@@ -34,12 +34,19 @@ public class DynmapHook extends AbstractHook {
 
 	@Override
 	public void afterVanish(String playerName) {
-		getter.getPlugin().setPlayerVisiblity(playerName, SimplyVanish.isVanished(playerName));
+		adjust(playerName);
 	}
 
 	@Override
 	public void afterReappear(String playerName) {
-		getter.getPlugin().setPlayerVisiblity(playerName, SimplyVanish.isVanished(playerName));
+		adjust(playerName);
+	}
+	
+	private void adjust(String playerName){
+		boolean vanished = SimplyVanish.isVanished(playerName);
+		DynmapPlugin plg = getter.getPlugin();
+		plg.assertPlayerInvisibility(playerName, vanished, "SimplyVanish");
+		plg.setPlayerVisiblity(playerName, vanished);
 	}
 
 }
