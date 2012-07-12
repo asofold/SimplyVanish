@@ -140,6 +140,7 @@ dynmap: check if after vanish is called for login of vanished players.
 
 !(add) vanlist command ! (cansee + vanished tag + ?godded + sorted + prefix)
 ? (add) /vanreply command to reply to last tell message
+check: vantell to mirror the message
 
 ? (add) Hook for PlayersInCubes ?
 *** ?add ignore worlds to do no updating on those worlds and update on world changes maybe! Or hook into PlayersInCubes !
@@ -150,6 +151,9 @@ dynmap: check if after vanish is called for login of vanished players.
 
 CHANGELOG 
 --------------------------------------------
+
+(0.5.0-DEV-4)
+- (adjust) vantell: add mirror option.
 
 (0.5.0-DEV-3)
 - (add) Dynmap hook fix.

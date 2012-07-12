@@ -151,6 +151,8 @@ public class Settings {
 	 */
 	public boolean logVantell = false;
 	
+	public boolean mirrorVantell = true;
+	
 	public boolean allowRealPeek = true;
 	
 	/**
@@ -217,6 +219,7 @@ public class Settings {
 		loadPlugins.addAll(config.getStringList(path.loadPlugins, new LinkedList<String>()));
 		
 		logVantell = config.getBoolean(path.cmdVantellLog, ref.logVantell);
+		mirrorVantell = config.getBoolean(path.cmdVantellMirror, ref.mirrorVantell);
 		
 		allowRealPeek = config.getBoolean(path.allowRealPeek, ref.allowRealPeek);
 		
@@ -371,6 +374,7 @@ public class Settings {
 		defaults.set(path.loadPlugins, ref.loadPlugins);
 		
 		defaults.set(path.cmdVantellLog, ref.logVantell);
+		defaults.set(path.cmdVantellMirror, ref.mirrorVantell);
 		
 		defaults.set(path.allowRealPeek, ref.allowRealPeek);
 		

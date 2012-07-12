@@ -72,6 +72,8 @@ public class Path {
 	public final String cmd;
 	public final String cmdVantell;
 	public final String cmdVantellLog;
+	public final String cmdVantellMirror;
+
 	
 	public final String allowRealPeek;
 	
@@ -93,6 +95,7 @@ public class Path {
 			"save-vanished-always",
 			"save-vanished-interval",
 	};
+
 
 
 	public Path(char sep){
@@ -178,6 +181,7 @@ public class Path {
 		cmd = "commands";
 		cmdVantell = cmd + sep + "vantell";
 		cmdVantellLog = cmdVantell + sep + "log";
+		cmdVantellMirror = cmdVantell + sep + "mirror";
 		
 		allowRealPeek = "inventories.allow-real-peek"; // TODO
 	}

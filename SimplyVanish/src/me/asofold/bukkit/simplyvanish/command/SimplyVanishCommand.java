@@ -396,17 +396,17 @@ public class SimplyVanishCommand{
 		
 		// Message:
 		StringBuilder b = new StringBuilder();
-		b.append(ChatColor.GRAY + sender.getName() + " whispers:");
 		for (int i = 1; i< args.length; i++){
 			b.append(" ");
 			b.append(args[i]);
 		}
-		String fullMessage = b.toString();
-		other.sendMessage(fullMessage);
+		String coreMessage = b.toString();
+		other.sendMessage(ChatColor.GRAY + sender.getName() + " whispers:" + coreMessage);
 		// Log if desired
 		// TODO: check settings for log and probably log.
 		Settings settings = core.getSettings();
-		if (settings.logVantell) Bukkit.getServer().getLogger().info("[vantell] ("+sender.getName()+" -> "+otherName+")" + fullMessage);
+		if (settings.logVantell) Bukkit.getServer().getLogger().info("[vantell] ("+sender.getName()+" -> "+otherName+")" + coreMessage);
+		if (settings.mirrorVantell) Utils.send(sender, ChatColor.DARK_GRAY + "(-> " + otherName +")" + coreMessage);
 	}
 
 	/**
