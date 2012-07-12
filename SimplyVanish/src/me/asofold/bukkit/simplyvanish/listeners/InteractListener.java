@@ -88,7 +88,7 @@ public final class InteractListener implements Listener {
 		final VanishConfig cfg = core.getVanishConfig(playerName, false);
 		if (cfg == null) return;
 		final Entity entity = event.getRightClicked();
-		if (entity instanceof Player){
+		if (cfg.vanished.state && entity instanceof Player){
 			if (core.hasPermission(player,  "simplyvanish.inventories.peek.at-all")){
 				final Player other = ((Player) entity);
 				InventoryUtil.showInventory(player, cfg, other.getName(), core.getSettings());
