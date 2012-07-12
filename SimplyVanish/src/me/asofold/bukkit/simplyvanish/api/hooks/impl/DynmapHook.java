@@ -1,5 +1,6 @@
 package me.asofold.bukkit.simplyvanish.api.hooks.impl;
 
+import me.asofold.bukkit.simplyvanish.SimplyVanish;
 import me.asofold.bukkit.simplyvanish.api.hooks.AbstractHook;
 import me.asofold.bukkit.simplyvanish.api.hooks.HookListener;
 import me.asofold.bukkit.simplyvanish.api.hooks.HookPurpose;
@@ -33,12 +34,12 @@ public class DynmapHook extends AbstractHook {
 
 	@Override
 	public void afterVanish(String playerName) {
-		getter.getPlugin().setPlayerVisiblity(playerName, false);
+		getter.getPlugin().setPlayerVisiblity(playerName, SimplyVanish.isVanished(playerName));
 	}
 
 	@Override
 	public void afterReappear(String playerName) {
-		getter.getPlugin().setPlayerVisiblity(playerName, true);
+		getter.getPlugin().setPlayerVisiblity(playerName, SimplyVanish.isVanished(playerName));
 	}
 
 }
