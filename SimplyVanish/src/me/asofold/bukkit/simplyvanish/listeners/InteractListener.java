@@ -91,7 +91,6 @@ public final class InteractListener implements Listener {
 		if (entity instanceof Player){
 			if (core.hasPermission(player,  "simplyvanish.inventories.peek.at-all")){
 				final Player other = ((Player) entity);
-				InventoryUtil.prepareInventoryOpen(player, other.getInventory(), cfg);
 				InventoryUtil.showInventory(player, cfg, other.getName(), core.getSettings());
 			}
 		}
