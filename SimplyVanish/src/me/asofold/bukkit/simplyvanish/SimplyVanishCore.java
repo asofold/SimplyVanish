@@ -355,7 +355,7 @@ public class SimplyVanishCore{
 		Player player = Bukkit.getServer().getPlayerExact(playerName);
 		if (player != null){
 			// The simple but costly part.
-			if ( vanished) doVanish(player, true);
+			if (vanished) doVanish(player, true);
 			else doReappear(player, true);
 		}
 		else{
@@ -363,9 +363,6 @@ public class SimplyVanishCore{
 			if (vanished) addVanishedName(playerName);
 			else removeVanishedName(playerName); 
 		}
-		// call further hooks:
-		if (vanished) hookUtil.callAfterVanish(playerName);
-		else hookUtil.callAfterReappear(playerName);
 		return true;
 	}
 	
@@ -578,6 +575,8 @@ public class SimplyVanishCore{
 			res = true;
 		}
 		if (cfg.changed && settings.saveVanishedAlways) onSaveVanished();
+		// call further hooks:
+		hookUtil.callAfterVanish(name);
 		return res;
 	}
 
@@ -596,6 +595,7 @@ public class SimplyVanishCore{
 			res = true;
 		}
 		if (cfg.changed && settings.saveVanishedAlways) onSaveVanished();
+		hookUtil.callAfterReappear(name);
 		return res;
 	}
 	
