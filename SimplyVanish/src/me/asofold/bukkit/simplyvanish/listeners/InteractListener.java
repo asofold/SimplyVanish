@@ -84,9 +84,20 @@ public final class InteractListener implements Listener {
 	final void onInteractEntity(final PlayerInteractEntityEvent event){
 		if (event.isCancelled()) return;
 		final Player player = event.getPlayer();
+		final String playerName = player.getName();
+		final VanishConfig cfg = core.getVanishConfig(playerName, false);
+		if (cfg == null) return;
+		final Entity entity = event.getRightClicked();
+		if (entity instanceof Player){
+			if (core.hasPermission(player,  "simplyvanish.inventories.peek.at-all")){
+				final Player other = ((Player) entity);
+				InventoryUtil.prepareInventoryOpen(player, other.getInventory(), cfg);
+				InventoryUtil.showInventory(player, cfg, other.getName(), core.getSettings());
+			}
+		}
 		if (shouldCancel(player.getName())){
 			// check bypass:
-			if (hasBypass(player, event.getRightClicked().getType())) return;
+			if (hasBypass(player, entity.getType())) return;
 			event.setCancelled(true);
 		}
 	}
