@@ -158,8 +158,8 @@ ITERATIONS
 
 CHANGELOG 
 --------------------------------------------
-
-(0.5.0-DEV-5)
+(1.0.0)
+- (CHANGE) Packet naming.
 
 (0.5.0-DEV-4)
 - (add) Inventory peek with right click (RAW, only when vanished).
