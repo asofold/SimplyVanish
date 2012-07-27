@@ -75,7 +75,7 @@ STACK
 - ?cmd flag / bypass : allow certain commands by bypass flag.
 ? chat: /tell /me configurable: treat as commands or as chat?
 command/other bypass permissions (then flag dependent), toggle by configuration ?
-
+? add configuration for block updates when canceling interaction. or maybe a list of ids for the item in hand ? [NOT: CB bug ?]
 
 *** DEFAULT FLAG STATES
 !(add) Allow setting specific flags as "configuration defaults" (saving will be by standard defaults), setting of defaults in constructor then.
@@ -91,13 +91,19 @@ command/other bypass permissions (then flag dependent), toggle by configuration 
 ? maplist / mappos ... flags for appearing there.
 
 
-*** 0.5.0 MINIMUM RELEASE ---------------------------------------------------------------
+*** 0.5.0 "MINIMUM" RELEASE ---------------------------------------------------------------
 
 
 ***API
 ! API: make config options available to be able to interpret all flags correctly.
 ? if simple config is checked: remove some entries if at default values ?
 dynmap: check if after vanish is called for login of vanished players.
+!CHECK: implications of API: maybe add API to call hooks or make it consistent with updatevanishdstate (HookChangedVisibilityEvent ?)
+
+*** Hooks
+? (add) Hook for PlayersInCubes ?
+?add ignore worlds to do no updating on those worlds and update on world changes maybe! Or hook into PlayersInCubes !
+?(add) config for hooks 
 
 *** Permissions
 ! consider for all/most flags: Make configurable if to use at all, if to use permissions only, or enable / disable by default.
@@ -116,11 +122,7 @@ dynmap: check if after vanish is called for login of vanished players.
 
 
 **** Inventories [Make a basic peek setup, including silent chest (permission), and blocked chest (permission)]
-? maybe just use permissions for allow real peek ? => no, but make permissios fit for distinguishing
 !flesh out permissions for when to peek and when not.
-!(add) /vanpeek <player> + right click inventories + ? right click players (!) [switchable by configuration !]
-?(add) move Inventory peeking here ! [at first : permission based + vanish related, respect interact and bypass flag]
-!(add) right click vanpeek
 ?vanconfiscate
 
 *** Actions on vanish
@@ -131,26 +133,33 @@ dynmap: check if after vanish is called for login of vanished players.
 *** Projectiles
 !(add) Option to remove projectiles on hit.
 
-
-*** Uncategorized 
-? add configuration for block updates when canceling interaction. or maybe a list of ids for the item in hand ?
+*** Convenience commands
 !(add) vangods command.
-? remove checkInvolved checks ? 
-!(add) API for certain config settings !
-
 !(add) vanlist command ! (cansee + vanished tag + ?godded + sorted + prefix)
 ? (add) /vanreply command to reply to last tell message
-check: vantell to mirror the message
+?(add) update (all) command
 
-? (add) Hook for PlayersInCubes ?
-*** ?add ignore worlds to do no updating on those worlds and update on world changes maybe! Or hook into PlayersInCubes !
-
-!CHECK: implications of API: maybe add API to call hooks or make it consistent with updatevanishdstate (HookChangedVisibilityEvent ?)
+*** Uncategorized 
+? remove checkInvolved checks ? 
 !(add) Tickets from bukkitdev
-!(add) config for hooks +  
+
+
+ITERATIONS
+--------------------------------------------
+*** Docs
+!Add tickets from bukkitdev
+
+*** Permissions
+!Shortcut permissions: mapped permissions (how: context dependent checks or raw mapping?).
+
+*** Inventory
+!Make features definitive, concerning flags, permissisons, config. 
+
 
 CHANGELOG 
 --------------------------------------------
+
+(0.5.0-DEV-5)
 
 (0.5.0-DEV-4)
 - (add) Inventory peek with right click (RAW, only when vanished).
