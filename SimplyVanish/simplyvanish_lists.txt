@@ -143,6 +143,7 @@ dynmap: check if after vanish is called for login of vanished players.
 ? remove checkInvolved checks ? 
 !(add) Tickets from bukkitdev
 
+dynmap: consider using a player command !
 
 ITERATIONS
 --------------------------------------------
@@ -153,11 +154,22 @@ ITERATIONS
 !Shortcut permissions: mapped permissions (how: context dependent checks or raw mapping?).
 
 *** Inventory
-!Make features definitive, concerning flags, permissisons, config. 
+!Make features definitive, concerning flags, permissisons, config.
 
+
+?(add) Debugging hook !
+
+
+*** 1.3.1
+
+? (add) Workaround for players not showing properly ?
 
 CHANGELOG 
 --------------------------------------------
+
+(1.0.1)
+- (adapt) Use asynchronous player chat events !
+
 (1.0.0)
 - (CHANGE) Packet naming.
 
