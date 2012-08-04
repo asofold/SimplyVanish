@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 /**
@@ -26,8 +26,12 @@ public final class ChatListener implements Listener {
 		this.core = core;
 	}
 	
-	private final boolean shouldCancelChat(final String name) {
-		final VanishConfig cfg = core.getVanishConfig(name, false);
+//	private final boolean shouldCancelChat(final String name) {
+//		final VanishConfig cfg = core.getVanishConfig(name, false);
+//		return shouldCancelChat(name, cfg);
+//	}
+	
+	private static final boolean shouldCancelChat(final String name, final VanishConfig cfg) {
 		if (cfg == null) return false;
 		if (!cfg.vanished.state || cfg.chat.state) return false;
 		return true;
@@ -53,11 +57,12 @@ public final class ChatListener implements Listener {
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
-	final void onChat(final PlayerChatEvent event){
+	final void onChat(final AsyncPlayerChatEvent event){
 		if (event.isCancelled()) return;
 		// Just prevent accidental chat.
 		final Player player = event.getPlayer();
-		if (shouldCancelChat(player.getName())){
+		final String playerName = player.getName();
+		if (shouldCancelChat(playerName, SimplyVanish.getVanishConfigThreadSafe(playerName, false))){
 			event.setCancelled(true);
 			player.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"Disabled! (/vanflag +chat or /reappear)");
 		}

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import me.asofold.bpl.simplyvanish.api.events.GetVanishConfigEvent;
 import me.asofold.bpl.simplyvanish.api.hooks.Hook;
 import me.asofold.bpl.simplyvanish.command.SimplyVanishCommand;
 import me.asofold.bpl.simplyvanish.config.Path;
@@ -22,6 +23,7 @@ import me.asofold.bpl.simplyvanish.listeners.TargetListener;
 import me.asofold.bpl.simplyvanish.stats.Stats;
 import me.asofold.bpl.simplyvanish.util.Utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
@@ -407,6 +409,19 @@ public class SimplyVanish extends JavaPlugin {
 	 */
 	public static SimplyVanish getPluginInstance(){
 		return core.getPlugin();
+	}
+
+	/**
+	 * Get a thread safe copy of the VanishConfig for a player.
+	 * @param playerName
+	 * @param b
+	 * @return
+	 */
+	public static VanishConfig getVanishConfigThreadSafe(String playerName, boolean create) {
+		// bit hacky:
+		GetVanishConfigEvent event = new GetVanishConfigEvent(playerName, create);
+		Bukkit.getPluginManager().callEvent(event);
+		return event.getVanishConfig();
 	}
 	
 }

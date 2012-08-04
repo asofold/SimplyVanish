@@ -2,6 +2,7 @@ package me.asofold.bpl.simplyvanish.listeners;
 
 import me.asofold.bpl.simplyvanish.SimplyVanish;
 import me.asofold.bpl.simplyvanish.SimplyVanishCore;
+import me.asofold.bpl.simplyvanish.api.events.GetVanishConfigEvent;
 import me.asofold.bpl.simplyvanish.api.events.SimplyVanishAtLoginEvent;
 import me.asofold.bpl.simplyvanish.config.Settings;
 import me.asofold.bpl.simplyvanish.config.VanishConfig;
@@ -103,5 +104,10 @@ public final class CoreListener implements Listener {
 			}
 			else if (!cfg.needsSave()) core.removeVanishedName(playerName);
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	final void onGetVanishConfig(final GetVanishConfigEvent event){
+		event.setVanishConfig(core.getVanishConfig(event.getPlayerName(), event.getCreate()));
 	}
 }

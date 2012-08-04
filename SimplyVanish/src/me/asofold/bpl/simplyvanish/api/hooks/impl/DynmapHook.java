@@ -6,6 +6,8 @@ import me.asofold.bpl.simplyvanish.api.hooks.HookListener;
 import me.asofold.bpl.simplyvanish.api.hooks.HookPurpose;
 import me.asofold.bpl.simplyvanish.api.hooks.util.HookPluginGetter;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.dynmap.bukkit.DynmapPlugin;
 
 public class DynmapHook extends AbstractHook {
@@ -43,6 +45,8 @@ public class DynmapHook extends AbstractHook {
 	}
 	
 	private void adjust(String playerName){
+		Player player = Bukkit.getPlayer(playerName);
+		if (player != null) playerName = player.getName(); // TODO... 
 		boolean vanished = SimplyVanish.isVanished(playerName);
 		DynmapPlugin plg = getter.getPlugin();
 		plg.assertPlayerInvisibility(playerName, vanished, "SimplyVanish");
