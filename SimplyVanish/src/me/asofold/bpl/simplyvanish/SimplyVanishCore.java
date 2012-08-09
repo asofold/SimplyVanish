@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +44,7 @@ public class SimplyVanishCore{
 	/**
 	 * Vanished players.
 	 */
-	private final Map<String, VanishConfig> vanishConfigs = new HashMap<String, VanishConfig>();
+	private final Map<String, VanishConfig> vanishConfigs = new Hashtable<String, VanishConfig>(20, 0.5f);
 	
 	private final HookUtil hookUtil = new HookUtil();
 	

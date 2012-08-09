@@ -163,12 +163,17 @@ ITERATIONS
 *** 1.3.1
 
 ? (add) Workaround for players not showing properly ?
+? consider: make a synced set of vanishconfigs for async processing (update on addVanishedName and removeVanishedName).
 
 CHANGELOG 
 --------------------------------------------
 
+
+(1.0.2)
+- (adapt) Use simple HashTable for VanishConfigs, for listeners and reading flags concurrency should pose no critical problem.
+
 (1.0.1)
-- (adapt) Use asynchronous player chat events !
+- (adapt) Introduce player chat events for potentially asynchronous use!
 
 (1.0.0)
 - (CHANGE) Packet naming.

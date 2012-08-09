@@ -62,7 +62,7 @@ public final class ChatListener implements Listener {
 		// Just prevent accidental chat.
 		final Player player = event.getPlayer();
 		final String playerName = player.getName();
-		if (shouldCancelChat(playerName, SimplyVanish.getVanishConfigThreadSafe(playerName, false))){
+		if (shouldCancelChat(playerName, SimplyVanish.getVanishConfig(playerName, false))){
 			event.setCancelled(true);
 			player.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"Disabled! (/vanflag +chat or /reappear)");
 		}

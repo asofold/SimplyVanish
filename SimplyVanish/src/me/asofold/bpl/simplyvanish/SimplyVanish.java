@@ -412,7 +412,12 @@ public class SimplyVanish extends JavaPlugin {
 	}
 
 	/**
-	 * Get a thread safe copy of the VanishConfig for a player.
+	 * Get a thread safe copy of the VanishConfig for a player.<br>
+	 * This method will synchronize into the main server thread with an event, 
+	 * this take up to 50 milliseconds for processing, but it will return a copy
+	 * of the VanishCOnfig instance for the player, exactly at a cxertain moment of time.<br>
+	 * 
+	 * NOTE: This probably mostly obsolete and will likely be removed for the use of HashTable, but it is interesting to see (once) to use events to get some object in a thread safe way.  
 	 * @param playerName
 	 * @param b
 	 * @return
