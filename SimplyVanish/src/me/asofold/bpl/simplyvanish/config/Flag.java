@@ -1,6 +1,6 @@
 package me.asofold.bpl.simplyvanish.config;
 
-public class Flag {
+public class Flag implements Cloneable{
 	public final String name;
 	public final boolean preset;
 	public boolean state;

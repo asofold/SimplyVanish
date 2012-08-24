@@ -165,9 +165,13 @@ ITERATIONS
 ? (add) Workaround for players not showing properly ?
 ? consider: make a synced set of vanishconfigs for async processing (update on addVanishedName and removeVanishedName).
 
+? consider: synchronize over map for getting and setting only [and back to HashMap]
+
 CHANGELOG 
 --------------------------------------------
 
+(1.0.3)
+- (bugfix) Minor fixes.
 
 (1.0.2)
 - (adapt) Use simple HashTable for VanishConfigs, for listeners and reading flags concurrency should pose no critical problem.

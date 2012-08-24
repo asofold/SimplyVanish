@@ -18,7 +18,7 @@ import java.util.Map.Entry;
  * @author mc_dev
  *
  */
-public class VanishConfig {
+public class VanishConfig implements Cloneable {
 	
 	/**
 	 * Map alias names to standard name.

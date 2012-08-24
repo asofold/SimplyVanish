@@ -183,8 +183,10 @@ public class Utils {
 		if(stack.getType() == Material.AIR) return;
 		ItemStack newStack = stack.clone();
 		Item item = player.getWorld().dropItem(player.getLocation().add(new Vector(0.0, 1.0, 0.0)), newStack);
-		item.setVelocity(player.getLocation().getDirection().normalize().multiply(0.05));
-		if ( item != null && !item.isDead()) player.setItemInHand(null);
+		if ( item != null && !item.isDead()){
+			item.setVelocity(player.getLocation().getDirection().normalize().multiply(0.05));
+			player.setItemInHand(null);
+		}
 	}
 
 	public static void send(CommandSender sender, String message) {
