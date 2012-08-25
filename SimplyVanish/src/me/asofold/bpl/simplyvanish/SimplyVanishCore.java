@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +44,7 @@ public class SimplyVanishCore{
 	/**
 	 * Vanished players.
 	 */
-	private final Map<String, VanishConfig> vanishConfigs = new Hashtable<String, VanishConfig>(20, 0.5f);
+	private final Map<String, VanishConfig> vanishConfigs = Collections.synchronizedMap(new HashMap<String, VanishConfig>(20, 0.5f));
 	
 	private final HookUtil hookUtil = new HookUtil();
 	
@@ -92,12 +92,19 @@ public class SimplyVanishCore{
 		this.plugin = plugin;
 	}
 	
-	public boolean shouldSave(){
-		for (VanishConfig cfg : vanishConfigs.values()){
-			if (cfg.changed) return true;
-		}
-		return false;
-	}
+	
+//	/**
+//	 * TODO: Unused ?
+//	 * @return
+//	 */
+//	public boolean shouldSave(){
+//		synchronized(vanishConfigs){
+//			for (VanishConfig cfg : vanishConfigs.values()){
+//				if (cfg.changed) return true;
+//			}
+//		}
+//		return false;
+//	}
 
 	/**
 	 * Might save vanished names to file, checks timestamp, does NOT update states (!).
@@ -140,7 +147,13 @@ public class SimplyVanishCore{
 		try {
 			writer = new BufferedWriter( new FileWriter(file));
 			writer.write("\n"); // to write something at least.
-			for (Entry<String, VanishConfig> entry : vanishConfigs.entrySet()){
+			Map<String, VanishConfig> copyMap = new HashMap<String,VanishConfig>(vanishConfigs.size());
+			synchronized(vanishConfigs){
+				for (Entry<String, VanishConfig> entry : vanishConfigs.entrySet()){
+					copyMap.put(entry.getKey(), entry.getValue().clone());
+				}
+			}
+			for (Entry<String, VanishConfig> entry : copyMap.entrySet()){
 				String n = entry.getKey();
 				VanishConfig cfg = entry.getValue();
 				if (cfg.needsSave()){
@@ -170,6 +183,12 @@ public class SimplyVanishCore{
 	 *  Assumes each involved VanishConfig to be changed by loading.
 	 */
 	public void loadVanished(){
+		synchronized(vanishConfigs){
+			doLoadVanished();
+		}
+	}
+	
+	private void doLoadVanished() {
 		File file = getVanishedFile();
 		if ( file == null){
 			Utils.warn("Can not load vanished players: File is not set.");
@@ -212,7 +231,7 @@ public class SimplyVanishCore{
 				}
 		}
 	}
-	
+
 	/**
 	 * Create if not exists.
 	 * @param file
@@ -625,8 +644,10 @@ public class SimplyVanishCore{
 	 */
 	public Set<String> getVanishedPlayers() {
 		Set<String> out = new HashSet<String>();
-		for (Entry<String, VanishConfig> entry : vanishConfigs.entrySet()){
-			if (entry.getValue().vanished.state) out.add(entry.getKey());
+		synchronized(vanishConfigs){
+			for (Entry<String, VanishConfig> entry : vanishConfigs.entrySet()){
+				if (entry.getValue().vanished.state) out.add(entry.getKey());
+			}
 		}
 		return out;
 	}
@@ -671,10 +692,15 @@ public class SimplyVanishCore{
 
 	public void onNotifyPing() {
 		if (!settings.pingEnabled) return;
-		for ( final Entry<String, VanishConfig> entry : vanishConfigs.entrySet()){
-			final Player player = Bukkit.getPlayerExact(entry.getKey());
-			if (player==null) continue;
-			final VanishConfig cfg = entry.getValue();
+		Set<String> keys = new HashSet<String>();
+		synchronized (vanishConfigs) {
+			keys.addAll(vanishConfigs.keySet());
+		}
+		for (final String name : keys){
+			final VanishConfig cfg = vanishConfigs.get(name);
+			if (cfg == null) continue;
+			final Player player = Bukkit.getPlayerExact(name);
+			if (player == null) continue;
 			if (!cfg.vanished.state) continue;
 			if (!cfg.ping.state) continue;
 			player.sendMessage(SimplyVanish.msgNotifyPing);
