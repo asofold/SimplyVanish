@@ -159,10 +159,11 @@ ITERATIONS
 
 ?(add) Debugging hook !
 
-
-
 CHANGELOG 
 --------------------------------------------
+
+(1.1.0)
+- (add) Essentials 2 hook: Hide vanished players from commands output.
 
 (1.0.3)
 - (bugfix) Minor fixes.

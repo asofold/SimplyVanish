@@ -20,6 +20,7 @@ import java.util.Set;
 import me.asofold.bpl.simplyvanish.api.events.SimplyVanishStateEvent;
 import me.asofold.bpl.simplyvanish.api.hooks.impl.DisguiseCraftHook;
 import me.asofold.bpl.simplyvanish.api.hooks.impl.DynmapHook;
+import me.asofold.bpl.simplyvanish.api.hooks.impl.Essentials2Hook;
 import me.asofold.bpl.simplyvanish.config.Settings;
 import me.asofold.bpl.simplyvanish.config.VanishConfig;
 import me.asofold.bpl.simplyvanish.util.HookUtil;
@@ -764,6 +765,9 @@ public class SimplyVanishCore{
 			hookUtil.addHook(new DynmapHook());
 		} catch(Throwable t){
 		}
+		try{
+			hookUtil.addHook(new Essentials2Hook());
+		} catch(Throwable t){}
 	}
 
 	public final boolean hasPermission(final CommandSender sender, final String perm) {
