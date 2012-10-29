@@ -148,7 +148,7 @@ public class HookUtil {
 	}
 	
 	public final void callBeforeVanish(final String playerName) {
-		final HookPurpose sup = HookPurpose.AFTER_VANISH;
+		final HookPurpose sup = HookPurpose.BEFORE_VANISH;
 		for (final Hook hook : getUsedHooks(sup)){
 			try{
 				hook.beforeVanish(playerName);
@@ -206,7 +206,7 @@ public class HookUtil {
 		final HookPurpose sup = HookPurpose.AFTER_REAPPEAR;
 		for (final Hook hook : getUsedHooks(sup)){
 			try{
-				hook.afterSetFlags(playerName);
+				hook.afterReappear(playerName);
 			} catch (Throwable t){
 				onHookCallError(sup, hook, playerName, t);
 			}
