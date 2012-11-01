@@ -17,10 +17,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.painting.PaintingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerEggThrowEvent;
@@ -157,7 +157,7 @@ public final class InteractListener implements Listener {
 	
 	
 	@EventHandler(priority=EventPriority.LOW)
-	final void onPaintingBreak(final PaintingBreakByEntityEvent event){
+	final void onPaintingBreak(final HangingBreakByEntityEvent event){
 		final Entity entity = event.getRemover();
 		if (entity == null) return;
 		if (!(entity instanceof Player)) return;
