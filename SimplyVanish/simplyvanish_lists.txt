@@ -159,6 +159,20 @@ ITERATIONS
 
 ?(add) Debugging hook !
 
+***
+
+? join/quit messages are wrong way round ?
+
+* Something for beacons + potions.
+
+
+***
+protocollib hook <- experiment
+
+!getVanishedOnline (/size).
+!Async access: make a copy of vanished (+online) player each time, use that for access checks (!).
+
+
 CHANGELOG 
 --------------------------------------------
 

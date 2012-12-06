@@ -6,6 +6,7 @@ import java.util.Set;
 
 import me.asofold.bpl.simplyvanish.api.events.GetVanishConfigEvent;
 import me.asofold.bpl.simplyvanish.api.hooks.Hook;
+import me.asofold.bpl.simplyvanish.api.hooks.impl.ProtocolLibHook;
 import me.asofold.bpl.simplyvanish.command.SimplyVanishCommand;
 import me.asofold.bpl.simplyvanish.config.Path;
 import me.asofold.bpl.simplyvanish.config.Settings;
@@ -74,6 +75,20 @@ public class SimplyVanish extends JavaPlugin {
 		cmdExe = new SimplyVanishCommand(core);
 	}
 	
+	
+	
+	@Override
+	public void onLoad() {
+		try{
+//			core.getHookUtil().addOnLoadHook(new ProtocolLibHook(this));
+		}
+		catch (Throwable t){
+//			Utils.warn(t);
+		}
+	}
+
+
+
 	@Override
 	public void onDisable() {
 		if (core.getSettings().saveVanished) core.doSaveVanished();

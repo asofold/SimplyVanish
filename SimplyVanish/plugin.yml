@@ -1,10 +1,11 @@
 name: SimplyVanish
 main: me.asofold.bpl.simplyvanish.SimplyVanish
-version: 1.1.0
+version: 1.2.0
 softdepend:
 - DisguiseCraft
 - dynmap
 - Essentials
+- ProtocolLib
 commands:
   vanish: 
      description: 'Ensure you or another player is vanished (/vanish | /vanish <player>), optional: flags.'

@@ -1,5 +1,6 @@
 package me.asofold.bpl.simplyvanish.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +29,8 @@ public class HookUtil {
 	
 	private final Map<String, HookListener> usedHookListeners = new HashMap<String, HookListener>();
 	
+	private final List<Hook> onLoadHooks = new ArrayList<Hook>();
+	
 	/**
 	 * Registered hooks by name.
 	 */
@@ -49,6 +52,21 @@ public class HookUtil {
 	private void init() {
 		for (HookPurpose sup : HookPurpose.values()){
 			usedHooks.put(sup, new LinkedList<Hook>());
+		}
+	}
+	
+	/**
+	 * Hooks added during loading of the plugin, they will be registered in on enable by calling SimplyVanishCore.addStandardHooks.
+	 * @param hook
+	 */
+	public void addOnLoadHook(Hook hook) {
+		onLoadHooks.add(hook);
+		System.out.println("[SimplyVanish] Queued hook (onLoad): "+hook.getHookName());
+	}
+	
+	public void registerOnLoadHooks(){
+		for (Hook hook : onLoadHooks){
+			addHook(hook);
 		}
 	}
 
