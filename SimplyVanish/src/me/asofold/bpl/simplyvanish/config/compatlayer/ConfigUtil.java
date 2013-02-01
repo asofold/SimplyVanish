@@ -1,15 +1,32 @@
 package me.asofold.bpl.simplyvanish.config.compatlayer;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+
+import org.bukkit.Bukkit;
 
 public class ConfigUtil {
 	
 	public static final int canaryInt = Integer.MIN_VALUE +7;
 	public static final long canaryLong = Long.MIN_VALUE + 7L;
-	public static final double canaryDouble = Double.MIN_VALUE*.7;
+	public static final double canaryDouble = -Double.MAX_VALUE + 1.125798;
 	
 	public static String stringPath( String path){
 		return stringPath(path, '.');
@@ -191,6 +208,137 @@ public class ConfigUtil {
 			out.add(input[i]);
 		}
 		return out;
+	}
+	
+	public static final String[] toArray(final Collection<String> collection){
+		if (collection == null) return null;
+		final String[] a = new String[collection.size()];
+		collection.toArray(a);
+		return a;
+	}
+	
+	/**
+	 * Read keys and return map sorted by inheritance, safe for reading.<br>
+	 * Entries without inheritance have their own key set in the map (!).
+	 * <hr>
+	 * Quadratic time algorithm :)
+	 * @param cfg
+	 * @param path
+	 * @param inheritanceKey
+	 * @return
+	 */
+	public static LinkedHashMap<String, String> getInheritanceOrder(CompatConfig cfg, String path, String inheritanceKey){
+		// TODO: detach this to ConfigUtil from compatlayer !
+		LinkedHashMap<String, String> ordered = new LinkedHashMap<String, String>();
+		
+		List<String> keys = cfg.getStringKeys(path); // node names
+		if (keys.isEmpty()) return ordered;
+	
+		Set<String> done = new HashSet<String>();
+		Map<String, String> inheritance = new HashMap<String, String>();
+		// First sorting in:
+		for (String key : keys){
+			String parent = cfg.getString(path + "." + key + "." + inheritanceKey, null);
+			if (parent == null){
+				done.add(key);
+				ordered.put(key, key);
+			}
+			else inheritance.put(key, parent);
+		}
+		// Now attempt to resolve parents:
+		List<String> rem = new LinkedList<String>();
+		while (!inheritance.isEmpty()){
+			rem.clear();
+			int found = 0;
+			for (Entry<String, String> entry : inheritance.entrySet()){
+				String key = entry.getKey();
+				String parent = entry.getValue();
+				if (done.contains(parent)){
+					rem.add(key);
+					done.add(key);
+					ordered.put(key, parent);
+					found ++;
+				}
+			}
+			for (String key : rem){
+				inheritance.remove(key);
+			}
+			if (found == 0) break;
+		}
+		if (!inheritance.isEmpty()){
+			StringBuilder b = new StringBuilder();
+			b.append("[ConfigUtil] Inheritance entries could not be resolved(" + path + "):");
+			for (Entry<String, String> entry : inheritance.entrySet()){
+				b.append(" " + entry.getKey() + "->" + entry.getValue());
+			}
+			Bukkit.getLogger().warning(b.toString());
+		}
+		return ordered;
+	}
+	
+	/**
+	 * Might have a newline at the end.
+	 * @param name
+	 * @param clazz
+	 * @param folderPart
+	 * @return
+	 */
+	public static String fetchResource(Class<?> clazz, String path) {
+		String className = clazz.getSimpleName() + ".class";
+		String classPath = clazz.getResource(className).toString();
+		if (!classPath.startsWith("jar")) return null;
+		String absPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) + "/"+path;
+		try {
+			URL url = new URL(absPath);
+			try {
+				Object obj  = url.getContent();
+				if (obj instanceof InputStream){
+					BufferedReader r = new BufferedReader(new InputStreamReader((InputStream) obj));
+					StringBuilder builder = new StringBuilder();
+					String last = r.readLine();
+					while (last != null){
+						builder.append(last);
+						builder.append("\n"); // does not hurt if one too many.
+						last = r.readLine();
+					}
+					return builder.toString();
+				}
+				else return null;
+			} catch (IOException e) {
+				return null;
+			}
+		} catch (MalformedURLException e) {
+		}
+		return null;
+	}
+
+	public static boolean writeFile(File file, String content) {
+		if(!file.exists()){
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				return false;
+			}
+		}
+		FileWriter w = null;
+		try {
+			w = new FileWriter(file);
+			BufferedWriter bw = new BufferedWriter(w);
+			bw.write(content);
+			bw.flush();
+			w.flush();
+			w.close();
+			return true;
+		} catch (IOException e) {
+			if (w!=null){
+				try {
+					w.close();
+				} catch (IOException e2) {
+					e.printStackTrace();
+				}
+			}
+			return false;
+		}	
 	}
 	
 }

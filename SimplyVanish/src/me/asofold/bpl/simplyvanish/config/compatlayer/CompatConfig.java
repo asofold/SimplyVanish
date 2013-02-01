@@ -11,6 +11,8 @@ import java.util.Set;
  * - No exceptions, rather leave elements out of lists.
  * - Lists of length 0 and null can not always be distinguished (?->extra safe wrapper ?)
  * - All contents are treated alike, even if given as a string (!): true and 'true', 1 and '1'
+ * <hr>
+ * Convention for methods without default value is to return null if not present, except for the getKeys and related methods.
  * @author mc_dev
  *
  */
@@ -52,6 +54,28 @@ public interface CompatConfig {
 	public String getString(String path, String defaultValue);
 	public List<String> getStringList(String path);
 	public List<String> getStringList(String path, List<String> defaultValue);
+	/**
+	 * Get a HashSet from a list.
+	 * @param path
+	 * @return
+	 */
+	public Set<String> getSetFromStringList(String path);
+	/**
+	 * Get a HashSet from a list.
+	 * @param path
+	 * @param defaultValue
+	 * @return
+	 */
+	public Set<String> getSetFromStringList(String path, Set<String> defaultValue);
+	/**
+	 * Get a HashSet from a list, with string options which are applied if a list was read.
+	 * @param path
+	 * @param defaultValue
+	 * @param trim if to trim entries.
+	 * @param lowerCase If to add entries as lower-case.
+	 * @return
+	 */
+	public Set<String> getSetFromStringList(String path, Set<String> defaultValue, boolean trim, boolean lowerCase);
 	
 	// Generic methods:
 	public Object get(String path);
@@ -60,6 +84,18 @@ public interface CompatConfig {
 	public Object getProperty(String path, Object defaultValue);
 	public void set(String path, Object value);
 	public void setProperty(String path, Object value);
+	/**
+	 * Add entry in form of a list.
+	 * @param path
+	 * @param set
+	 */
+	public <T> void setAsList(String path, Set<T> set);
+	/**
+	 * Add map entries as section entries at path - meant for simple keys.
+	 * @param path
+	 * @param map
+	 */
+	public void setAsSection(String path, Map<String, ?> map);
 	
 	/**
 	 * Remove a path (would also remove sub sections, unless for path naming problems).

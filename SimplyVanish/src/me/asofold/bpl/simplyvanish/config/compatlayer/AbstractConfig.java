@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 
@@ -209,5 +210,48 @@ public abstract class AbstractConfig implements CompatConfig {
 		return getLong(path, null);
 	}
 
+	@Override
+	public Set<String> getSetFromStringList(String path) {
+		return getSetFromStringList(path, null);
+	}
+
+	@Override
+	public Set<String> getSetFromStringList(String path,
+			Set<String> defaultValue) {
+		return getSetFromStringList(path, defaultValue, false, false);
+	}
+
+	@Override
+	public Set<String> getSetFromStringList(String path,
+			Set<String> defaultValue, boolean trim, boolean lowerCase) {
+		List<String> list = getStringList(path);
+		if (list == null) return defaultValue;
+		Set<String> set = new HashSet<String>();
+		if (lowerCase) {
+			for (String entry : list){
+				set.add((trim?entry.trim():entry).toLowerCase());
+			}
+		} else set.addAll(list);
+		return set;
+	}
+	
+	public <T> void setAsList(String path, Set<T> set){
+		if (set == null){
+			// Not sure about this one.
+			set(path, (List<T>) null);
+			return;
+		}
+		List<T> list = new LinkedList<T>();
+		list.addAll(set);
+		set(path, list);
+	}
+	
+	public void setAsSection(String path, Map<String, ?> map){
+		for (Entry<String, ?> entry : map.entrySet()){
+			set(path + sep + entry.getKey(), entry.getValue());
+		}
+	}
+
+	
 	
 }
