@@ -31,7 +31,6 @@ public class DisguiseCraftHook  extends AbstractHook {
 			return false;
 		}
 		
-		@SuppressWarnings("unused")
 		@EventHandler(priority = EventPriority.MONITOR)
 		void onVisibility(SimplyVanishStateEvent event){
 			if (event.isCancelled()) return;
@@ -49,7 +48,6 @@ public class DisguiseCraftHook  extends AbstractHook {
 			}
 		}
 		
-		@SuppressWarnings("unused")
 		@EventHandler(priority=EventPriority.MONITOR)
 		void onDisguise(PlayerDisguiseEvent event){
 			if (event.isCancelled()) return;

@@ -5,9 +5,6 @@ import me.asofold.bpl.simplyvanish.api.hooks.AbstractHook;
 import me.asofold.bpl.simplyvanish.api.hooks.HookListener;
 import me.asofold.bpl.simplyvanish.api.hooks.HookPurpose;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-
 public class ProtocolLibHook extends AbstractHook {
 
 	private static final HookPurpose[] purpose = new HookPurpose[]{
@@ -16,10 +13,10 @@ public class ProtocolLibHook extends AbstractHook {
 //		HookPurpose.AFTER_SETFLAGS,
 	};
 	
-	private final ProtocolManager protocolManager;
+//	private final ProtocolManager protocolManager;
 	
 	public ProtocolLibHook(SimplyVanish plugin){
-		protocolManager = ProtocolLibrary.getProtocolManager();
+//		protocolManager = ProtocolLibrary.getProtocolManager();
 		throw new RuntimeException("not intended for use :)");
 //		protocolManager.addPacketListener(new PacketAdapter(plugin, ConnectionSide.SERVER_SIDE, ListenerPriority.NORMAL, 0x1F, 0x22) {
 //			@Override

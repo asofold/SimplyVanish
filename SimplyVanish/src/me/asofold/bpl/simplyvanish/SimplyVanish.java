@@ -6,7 +6,6 @@ import java.util.Set;
 
 import me.asofold.bpl.simplyvanish.api.events.GetVanishConfigEvent;
 import me.asofold.bpl.simplyvanish.api.hooks.Hook;
-import me.asofold.bpl.simplyvanish.api.hooks.impl.ProtocolLibHook;
 import me.asofold.bpl.simplyvanish.command.SimplyVanishCommand;
 import me.asofold.bpl.simplyvanish.config.Path;
 import me.asofold.bpl.simplyvanish.config.Settings;
