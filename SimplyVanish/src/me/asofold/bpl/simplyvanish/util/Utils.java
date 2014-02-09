@@ -3,6 +3,7 @@ package me.asofold.bpl.simplyvanish.util;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,8 +18,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -222,4 +225,36 @@ public class Utils {
 		if (player == null) return;
 		else player.sendMessage(msg);
 	}
+	
+	/**
+	 * Get an entity if the shooter is an entity, otherwise return null.
+	 * @param projectile
+	 * @return
+	 */
+	public static Entity getShooterEntity(Projectile projectile) {
+		return getEntity(projectile, "getShooter");
+	}
+	
+	/**
+	 * Get an entity by reflection from a method without arguments (fail-safe).
+	 * @param projectile
+	 * @return
+	 */
+	public static Entity getEntity(Object object, String methodName) {
+		Object entity = null;
+		try {
+			entity = object.getClass().getMethod("getShooter").invoke(object);
+		} catch (IllegalArgumentException e) {
+		} catch (SecurityException e) {
+		} catch (IllegalAccessException e) {
+		} catch (InvocationTargetException e) {
+		} catch (NoSuchMethodException e) {
+		}
+		if (entity instanceof Entity) {
+			return (Entity) entity;
+		} else {
+			return null;
+		}
+	}
+	
 }

@@ -132,7 +132,7 @@ public final class InteractListener implements Listener {
 	@EventHandler(priority=EventPriority.LOW)
 	final void onVehicleDestroy(final VehicleDestroyEvent event){
 		Entity entity = event.getAttacker();
-		if (entity instanceof Projectile) entity = ((Projectile) entity).getShooter();
+		if (entity instanceof Projectile) entity = Utils.getShooterEntity((Projectile) entity);
 		if (entity == null) return;
 		if (!(entity instanceof Player)) return;
 		if (shouldCancel(((Player) entity).getName())) event.setCancelled(true);

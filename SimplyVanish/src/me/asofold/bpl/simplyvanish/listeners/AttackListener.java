@@ -2,6 +2,7 @@ package me.asofold.bpl.simplyvanish.listeners;
 
 import me.asofold.bpl.simplyvanish.SimplyVanishCore;
 import me.asofold.bpl.simplyvanish.config.VanishConfig;
+import me.asofold.bpl.simplyvanish.util.Utils;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -32,14 +33,14 @@ public final class AttackListener implements Listener {
 		if (event.isCancelled()) return;
 		Entity entity = event.getDamager();
 		if (entity == null) return;
-		if (entity instanceof Projectile) entity = ((Projectile) entity).getShooter();
+		if (entity instanceof Projectile) entity = Utils.getShooterEntity((Projectile) entity);
 		if (!(entity instanceof Player)) return;
 		if (shouldCancelAttack(((Player) entity).getName())) event.setCancelled(true);		
 	}
 	
 	@EventHandler(priority=EventPriority.LOW)
 	final void onProjectileLaunch(final ProjectileLaunchEvent event){
-		final Entity entity = event.getEntity().getShooter();
+		final Entity entity = Utils.getShooterEntity(event.getEntity());
 		if (!(entity instanceof Player)) return;
 		if (shouldCancelAttack(((Player) entity).getName())) event.setCancelled(true);
 	}
