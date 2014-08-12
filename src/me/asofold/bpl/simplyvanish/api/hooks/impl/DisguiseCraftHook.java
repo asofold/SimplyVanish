@@ -6,6 +6,7 @@ import me.asofold.bpl.simplyvanish.api.events.SimplyVanishStateEvent;
 import me.asofold.bpl.simplyvanish.api.hooks.AbstractHook;
 import me.asofold.bpl.simplyvanish.api.hooks.HookListener;
 import me.asofold.bpl.simplyvanish.api.hooks.HookPurpose;
+import me.asofold.bpl.simplyvanish.config.VanishConfig;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,7 +44,10 @@ public class DisguiseCraftHook  extends AbstractHook {
 				Player player = Bukkit.getServer().getPlayerExact(event.getPlayerName());
 				if (player !=null && DisguiseCraft.getAPI().isDisguised(player)){
 					event.setCancelled(true);
-					player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Use "+ChatColor.YELLOW+"/undis"+ChatColor.GRAY+"guise !");
+					// TODO: Consider suppressing if notify=false.
+					if (shouldNotify(player)) {
+						player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Use "+ChatColor.YELLOW+"/undis"+ChatColor.GRAY+"guise !");
+					}
 				}
 			}
 		}
@@ -55,9 +59,21 @@ public class DisguiseCraftHook  extends AbstractHook {
 			String name = player.getName();
 			if (SimplyVanish.isVanished(name)){
 				if (!SimplyVanish.setVanished(player, false)){
-					player.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"Can not disguise (something prevents reappear).");
 					event.setCancelled(true); // TODO: something
+					// TODO: Consider suppressing if notify=false.
+					if (shouldNotify(player)) {
+						player.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"Can not disguise (something prevents reappear).");
+					}
 				}
+			}
+		}
+		
+		private boolean shouldNotify(Player player) {
+			final VanishConfig vcfg = SimplyVanish.getVanishConfig(player.getName(), false);
+			if (vcfg == null) {
+				return true;
+			} else {
+				return vcfg.notify.state;
 			}
 		}
 		

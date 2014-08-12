@@ -62,9 +62,12 @@ public final class ChatListener implements Listener {
 		// Just prevent accidental chat.
 		final Player player = event.getPlayer();
 		final String playerName = player.getName();
-		if (shouldCancelChat(playerName, SimplyVanish.getVanishConfig(playerName, false))){
+		final VanishConfig vcfg = SimplyVanish.getVanishConfig(playerName, false);
+		if (shouldCancelChat(playerName, vcfg)){
 			event.setCancelled(true);
-			player.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"Disabled! (/vanflag +chat or /reappear)");
+			if (vcfg == null || vcfg.notify.state) {
+				player.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"Disabled! (/vanflag +chat or /reappear)");
+			}
 		}
 	}
 	
@@ -77,7 +80,10 @@ public final class ChatListener implements Listener {
 		final Player player = event.getPlayer();
 		if (shouldCancelCmd(player.getName(), cmd)){
 			event.setCancelled(true);
-			player.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"Disabled! (/vanflag +cmd or /reappear)");
+			final VanishConfig vcfg = SimplyVanish.getVanishConfig(player.getName(), false);
+			if (vcfg == null || vcfg.notify.state) {
+				player.sendMessage(SimplyVanish.msgLabel+ChatColor.RED+"Disabled! (/vanflag +cmd or /reappear)");
+			}
 		}
 	}
 }

@@ -275,39 +275,50 @@ public class SimplyVanishCore{
 	 * @param player
 	 * @param message If to message players.
 	 */
-	public void doVanish(Player player, boolean message) {
-		long ns = System.nanoTime();
-		String name = player.getName();
+	public void doVanish(final Player player, final boolean message) {
+		final long ns = System.nanoTime();
+		final String name = player.getName();
 		boolean was = !addVanishedName(name);
 		String fakeQuit = null;
 		final VanishConfig vcfg = getVanishConfig(name, true);
 		if (settings.sendFakeMessages && !settings.fakeQuitMessage.isEmpty() && !vcfg.online.state) {
-			// TODO: Also if already vanished !?
 			fakeQuit = settings.fakeQuitMessage.replaceAll("%name", name);
 			fakeQuit = fakeQuit.replaceAll("%displayname", player.getDisplayName());
 		}
 		final String msgNotify = SimplyVanish.msgLabel+ChatColor.GREEN+name+ChatColor.GRAY+" vanished.";
-		for ( Player other : Bukkit.getServer().getOnlinePlayers()){
+		for (final Player other : Bukkit.getServer().getOnlinePlayers()){
 			if (other.getName().equals(name)) continue;
-			boolean shouldSee = shouldSeeVanished(other);
-			boolean notify = settings.notifyState && hasPermission(other, settings.notifyStatePerm);
-			if ( other.canSee(player)){
-				if (!shouldSee) hidePlayer(player, other); 
+			final boolean shouldSee = shouldSeeVanished(other);
+			final boolean notify = settings.notifyState && hasPermission(other, settings.notifyStatePerm);
+			if (other.canSee(player)){
+				if (!shouldSee) {
+					hidePlayer(player, other); 
+				}
 				if (notify){
 					if (!was){
-						if (message) other.sendMessage(msgNotify);
+						if (message) {
+							other.sendMessage(msgNotify);
+						}
 					}
 				} else if (!shouldSee){
-					if (fakeQuit != null) other.sendMessage(fakeQuit);
+					if (fakeQuit != null) {
+						other.sendMessage(fakeQuit);
+					}
 				}
 			} else{
-				if (shouldSee) showPlayer(player, other); // added as consistency check
+				if (shouldSee) {
+					showPlayer(player, other); // added as consistency check
+				}
 				if (!was && notify){
-					if (message) other.sendMessage(msgNotify);
+					if (message) {
+						other.sendMessage(msgNotify);
+					}
 				}
 			}
 		}
-		if (message) player.sendMessage(was?SimplyVanish.msgStillInvisible:SimplyVanish.msgNowInvisible);
+		if (message && vcfg.notify.state) {
+			player.sendMessage(was?SimplyVanish.msgStillInvisible:SimplyVanish.msgNowInvisible);
+		}
 		SimplyVanish.stats.addStats(SimplyVanish.statsVanish, System.nanoTime()-ns);
 	}
 
@@ -316,10 +327,10 @@ public class SimplyVanishCore{
 	 * @param player
 	 *  @param message If to send messages.
 	 */
-	public void doReappear(Player player, boolean message) {
-		long ns = System.nanoTime();
-		String name = player.getName();
-		boolean was = removeVanishedName(name);
+	public void doReappear(final Player player, final boolean message) {
+		final long ns = System.nanoTime();
+		final String name = player.getName();
+		final boolean was = removeVanishedName(name);
 		String fakeJoin = null;
 		final VanishConfig vcfg = getVanishConfig(name, true);
 		if (settings.sendFakeMessages && !settings.fakeJoinMessage.isEmpty() &&!vcfg.online.state) {
@@ -327,25 +338,35 @@ public class SimplyVanishCore{
 			fakeJoin = fakeJoin.replaceAll("%displayname", player.getDisplayName());
 		}
 		final String msgNotify = SimplyVanish.msgLabel+ChatColor.RED+name+ChatColor.GRAY+" reappeared.";
-		for ( Player other : Bukkit.getServer().getOnlinePlayers()){
-			if (other.getName().equals(name)) continue;
+		for (final Player other : Bukkit.getServer().getOnlinePlayers()){
+			if (other.getName().equals(name)) {
+				continue;
+			}
 			boolean notify = settings.notifyState && hasPermission(other, settings.notifyStatePerm);
 			if (!other.canSee(player)){
 				showPlayer(player, other);
 				if (notify){
-					if (message) other.sendMessage(msgNotify);
+					if (message) {
+						other.sendMessage(msgNotify);
+					}
 				} else if (!shouldSeeVanished(other)){
-					if (fakeJoin != null) other.sendMessage(fakeJoin);
+					if (fakeJoin != null) {
+						other.sendMessage(fakeJoin);
+					}
 				}
 			} 
 			else{
 				// No need to adjust visibility.
 				if (was && notify){
-					if (message) other.sendMessage(msgNotify);
+					if (message) {
+						other.sendMessage(msgNotify);
+					}
 				}
 			}
 		}
-		if (message) player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You are "+(was?"now":"still")+" "+ChatColor.RED+"visible"+ChatColor.GRAY+" to everyone!");
+		if (message && vcfg.notify.state) {
+			player.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"You are "+(was?"now":"still")+" "+ChatColor.RED+"visible"+ChatColor.GRAY+" to everyone!");
+		}
 		SimplyVanish.stats.addStats(SimplyVanish.statsReappear, System.nanoTime()-ns);
 	}
 	
@@ -551,10 +572,16 @@ public class SimplyVanishCore{
 		name = name.toLowerCase();
 		VanishConfig cfg = getVanishConfig(name, false);
 		if (cfg != null){
-			if (!cfg.needsSave()) sender.sendMessage(SimplyVanish.msgDefaultFlags);
-			else sender.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Flags("+name+"): "+cfg.toLine());
+			if (!cfg.needsSave()) {
+				sender.sendMessage(SimplyVanish.msgDefaultFlags);
+			}
+			else {
+				sender.sendMessage(SimplyVanish.msgLabel+ChatColor.GRAY+"Flags("+name+"): " + cfg.toLine());
+			}
 		}
-		else sender.sendMessage(SimplyVanish.msgDefaultFlags);
+		else {
+			sender.sendMessage(SimplyVanish.msgDefaultFlags);
+		}
 	}
 	
 	/**
@@ -706,7 +733,7 @@ public class SimplyVanishCore{
 			final Player player = Bukkit.getPlayerExact(name);
 			if (player == null) continue;
 			if (!cfg.vanished.state) continue;
-			if (!cfg.ping.state) continue;
+			if (!cfg.ping.state || !cfg.notify.state) continue;
 			player.sendMessage(SimplyVanish.msgNotifyPing);
 		}
 	}

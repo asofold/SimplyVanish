@@ -44,6 +44,7 @@ public final class CoreListener implements Listener {
 		final Settings settings = core.getSettings();
 		if (settings.suppressQuitMessage && core.isVanished(name)){
 			final boolean online = core.getVanishConfig(name, true).online.state;
+			// TODO: Not sure about the notify flag here.
 			if (settings.notifyState && !cancelled && !online){
 				String msg = SimplyVanish.msgLabel+ChatColor.GREEN+name+ChatColor.GRAY+action;
 				for (Player other : Bukkit.getServer().getOnlinePlayers()){

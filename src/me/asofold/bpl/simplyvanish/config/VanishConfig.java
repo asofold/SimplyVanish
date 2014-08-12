@@ -138,9 +138,14 @@ public class VanishConfig implements Cloneable {
 	public final Flag auto = addFlag("auto", true);
 
 	/**
-	 * Notify ping.
+	 * Notify ping (periodic reminder of being vanished).
 	 */
 	public final Flag ping = addFlag("ping", true);
+	
+	/**
+	 * Notify the player (at all) about their own vanish state changes. If set to false, this will override ping.
+	 */
+	public final Flag notify = addFlag("notify", true);
 	
 	/**
 	 * "I am online": If set, fake join/leave messages are suppressed and suppression of actual join/leave messages is bypassed.
