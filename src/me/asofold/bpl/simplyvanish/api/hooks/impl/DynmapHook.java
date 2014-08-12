@@ -50,7 +50,7 @@ public class DynmapHook extends AbstractHook {
 		boolean vanished = SimplyVanish.isVanished(playerName);
 		DynmapPlugin plg = getter.getPlugin();
 		plg.assertPlayerInvisibility(playerName, vanished, "SimplyVanish");
-		plg.setPlayerVisiblity(playerName, vanished);
+		//plg.setPlayerVisiblity(playerName, vanished);
 	}
 
 }
