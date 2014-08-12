@@ -94,7 +94,7 @@ public class Settings {
 	public boolean panicKickAll = false;
 	public boolean panicKickInvolved = false;
 	public String panicKickMessage = "[ERROR] Please log in again, contact staff.";
-	public String panicMessage = "§a[SimplyVanish] §eAdmin notice: check the logs.";
+	public String panicMessage = "ï¿½a[SimplyVanish] ï¿½eAdmin notice: check the logs.";
 	public String panicMessageTargets = "ops";
 	public boolean panicRunCommand = false;
 	public String panicCommand = "";
@@ -169,7 +169,7 @@ public class Settings {
 		expKillDist = config.getDouble(path.expKillDist, ref.expKillDist);
 		expTeleDist = config.getDouble(path.expTeleDist, ref.expTeleDist);
 		expVelocity = config.getDouble(path.expVelocity, ref.expVelocity);
-		// suppress mesages:
+		// suppress messages:
 		suppressJoinMessage = config.getBoolean(path.suppressJoinMessage, ref.suppressJoinMessage);
 		suppressQuitMessage  = config.getBoolean(path.suppressQuitMessage, ref.suppressQuitMessage);
 		// fake messages:
@@ -196,7 +196,7 @@ public class Settings {
 		panicKickInvolved =  config.getBoolean(path.panicKickInvolved, ref.panicKickInvolved);
 		panicKickMessage = config.getString(path.panicKickMessage, ref.panicKickMessage);
 		
-		panicMessage = config.getString(path.panicMessage, "§a[SimplyVanish] §eAdmin notice: check the logs.");
+		panicMessage = config.getString(path.panicMessage, "ï¿½a[SimplyVanish] ï¿½eAdmin notice: check the logs.");
 		panicMessageTargets = config.getString(path.panicMessageTargets, "ops");
 		
 		panicRunCommand = config.getBoolean(path.panicRunCommand, false);

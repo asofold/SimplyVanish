@@ -280,7 +280,9 @@ public class SimplyVanishCore{
 		String name = player.getName();
 		boolean was = !addVanishedName(name);
 		String fakeQuit = null;
-		if (settings.sendFakeMessages && !settings.fakeQuitMessage.isEmpty()){
+		final VanishConfig vcfg = getVanishConfig(name, true);
+		if (settings.sendFakeMessages && !settings.fakeQuitMessage.isEmpty() && !vcfg.online.state) {
+			// TODO: Also if already vanished !?
 			fakeQuit = settings.fakeQuitMessage.replaceAll("%name", name);
 			fakeQuit = fakeQuit.replaceAll("%displayname", player.getDisplayName());
 		}
@@ -319,7 +321,8 @@ public class SimplyVanishCore{
 		String name = player.getName();
 		boolean was = removeVanishedName(name);
 		String fakeJoin = null;
-		if (settings.sendFakeMessages && !settings.fakeJoinMessage.isEmpty()){
+		final VanishConfig vcfg = getVanishConfig(name, true);
+		if (settings.sendFakeMessages && !settings.fakeJoinMessage.isEmpty() &&!vcfg.online.state) {
 			fakeJoin = settings.fakeJoinMessage.replaceAll("%name", name);
 			fakeJoin = fakeJoin.replaceAll("%displayname", player.getDisplayName());
 		}

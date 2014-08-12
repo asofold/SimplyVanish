@@ -142,6 +142,12 @@ public class VanishConfig implements Cloneable {
 	 */
 	public final Flag ping = addFlag("ping", true);
 	
+	/**
+	 * "I am online": If set, fake join/leave messages are suppressed and suppression of actual join/leave messages is bypassed.
+	 */
+	public final Flag online = addFlag("online", false);
+	
+	
 	protected Flag addFlag(String name, boolean preset){
 		if (flags.containsKey(name)) throw new IllegalArgumentException("Flags must be unique, got: "+name);
 		else if (name == null) throw new IllegalArgumentException("Flag is null: "+name);

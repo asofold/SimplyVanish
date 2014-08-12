@@ -43,13 +43,16 @@ public final class CoreListener implements Listener {
 	final boolean onLeave(final String name, boolean cancelled, final String action){
 		final Settings settings = core.getSettings();
 		if (settings.suppressQuitMessage && core.isVanished(name)){
-			if (settings.notifyState && !cancelled){
+			final boolean online = core.getVanishConfig(name, true).online.state;
+			if (settings.notifyState && !cancelled && !online){
 				String msg = SimplyVanish.msgLabel+ChatColor.GREEN+name+ChatColor.GRAY+action;
 				for (Player other : Bukkit.getServer().getOnlinePlayers()){
-					if (core.hasPermission(other, settings.notifyStatePerm)) other.sendMessage(msg);
+					if (core.hasPermission(other, settings.notifyStatePerm)) {
+						other.sendMessage(msg);
+					}
 				}
 			}
-			return true; // suppress in any case if vanished.
+			return !online; // suppress in any case if vanished.
 		}
 		else return false;
 	}
@@ -99,8 +102,10 @@ public final class CoreListener implements Listener {
 		}
 		if (doVanish){
 			hookUtil.callAfterVanish(playerName);	
-			if ( settings.suppressJoinMessage && cfg.vanished.state){
-				event.setJoinMessage(null);
+			if (settings.suppressJoinMessage && cfg.vanished.state) {
+				if (!cfg.online.state) {
+					event.setJoinMessage(null);
+				}
 			}
 			else if (!cfg.needsSave()) core.removeVanishedName(playerName);
 		}
