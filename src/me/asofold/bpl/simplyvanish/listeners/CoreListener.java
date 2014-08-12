@@ -1,5 +1,7 @@
 package me.asofold.bpl.simplyvanish.listeners;
 
+import java.util.Iterator;
+
 import me.asofold.bpl.simplyvanish.SimplyVanish;
 import me.asofold.bpl.simplyvanish.SimplyVanishCore;
 import me.asofold.bpl.simplyvanish.api.events.GetVanishConfigEvent;
@@ -17,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.ServerListPingEvent;
 
 public final class CoreListener implements Listener {
 	private final SimplyVanishCore core;
@@ -62,10 +65,25 @@ public final class CoreListener implements Listener {
 	
 
 	
-//	@EventHandler(priority=EventPriority.HIGHEST)
-//	void onServerListPing(ServerListPingEvent event){
-//		// TODO: try reflection ??
-//	}
+	@EventHandler(priority=EventPriority.HIGHEST)
+	void onServerListPing(ServerListPingEvent event){
+		Iterator<Player> it;
+		try {
+			it = event.iterator();
+		} catch (UnsupportedOperationException e) {
+			return;
+		} catch (NoSuchMethodError e2) {
+			return;
+		}
+		while (it.hasNext()) {
+			final Player player = it.next();
+			final VanishConfig cfg = core.getVanishConfig(player.getName(), false);
+			if (cfg != null && cfg.vanished.state && !cfg.online.state) {
+				// No catch here.
+				it.remove();
+			}
+		}
+	}
 	
 
 	
